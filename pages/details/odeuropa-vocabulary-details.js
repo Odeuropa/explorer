@@ -52,9 +52,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
   const pageTitle = getEntityMainLabel(result, { route, language: i18n.language });
 
-  const related = Array.isArray(result.related) ? result.related : [result.related]
+  const related = (Array.isArray(result.related) ? result.related : [result.related]).filter(x => x)
 
-  const adjectives = Array.isArray(result.adjective) ? result.adjective : [result.adjective]
+  const adjectives = (Array.isArray(result.adjective) ? result.adjective : [result.adjective]).filter(x => x)
   const tags = adjectives.map(adj => ({
     value: adj,
     count: Math.random()
