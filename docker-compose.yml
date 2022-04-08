@@ -1,0 +1,35 @@
+version: '3'
+services:
+  web:
+    container_name: odeuropa-explorer-web
+    build: .
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - NODE_ENV=${NODE_ENV}
+  mongo:
+    container_name: odeuropa-explorer-mongo
+    image: mongo
+    ports:
+      - '27019:27017'
+    volumes:
+      - mongo:/data/db
+  imaginary:
+    container_name: odeuropa-explorer-imaginary
+    image: h2non/imaginary:latest
+    volumes:
+      - images:/mnt/data
+    environment:
+      PORT: 9000
+    command: -enable-url-source -mount /mnt/data -allowed-origins ${IMAGINARY_ALLOWED_ORIGINS} -http-cache-ttl 31556926
+    ports:
+      - '9000:9000'
+  redis:
+    container_name: odeuropa-explorer-redis
+    image: redis
+    ports:
+      - '6379:6379'
+volumes:
+  mongo: {}
+  images: {}

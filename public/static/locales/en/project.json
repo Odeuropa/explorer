@@ -1,0 +1,36 @@
+{
+  "site": {
+    "description": "Explore the European Olfactory Heritage"
+  },
+  "search": "Search",
+  "footer": {
+    "text": "This demonstrator has been developed in the context of the <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a> research project, founded by the European Commission in the H2020 programme."
+  },
+  "metadata": {
+    "@id": "Permalink",
+    "subject": "Subject",
+    "episodeNumber": "Episode number",
+    "genre": "Genre",
+    "theme": "Theme",
+    "description": "Description",
+    "language": "Language",
+    "publisher": "Publisher",
+    "annotation": "Annotations",
+    "keyword": "Keywords",
+    "contributor": "Contributors",
+    "publicationStartDateTime": "Publication date"
+  },
+  "routes": {
+    "channels": "Channels",
+    "collections": "Collections",
+    "programmes": "Programmes"
+  },
+  "filters": {
+    "serviceDescription": "Service",
+    "genre": "Genre",
+    "theme": "Theme",
+    "language": "Language",
+    "with-video": "With video",
+    "with-segments": "With segments"
+  }
+}

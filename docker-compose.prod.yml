@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    ports:
+      - '4733:3000'
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+  mongo:
+    restart: unless-stopped
+  imaginary:
+    restart: unless-stopped
+  redis:
+    restart: unless-stopped

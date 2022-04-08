@@ -1,0 +1,37 @@
+version: '3'
+services:
+  web:
+    command: npm run dev
+    ports:
+      - '3001:3001'
+    volumes:
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+      - ./.env:/usr/src/app/.env
+      - ./config.js:/usr/src/app/config.js
+      - ./config:/usr/src/app/config
+      - ./theme.js:/usr/src/app/theme.js
+      - ./public/fonts/FuturaStdBook.woff:/usr/src/app/public/fonts/FuturaStdBook.woff
+      - ./public/fonts/Garamond.woff:/usr/src/app/public/fonts/Garamond.woff
+      - ./public/images/odeuropa-vocabularies/:/usr/src/app/public/images/odeuropa-vocabularies/
+      - ./public/images/footer.png:/usr/src/app/public/images/footer.png
+      - ./public/images/logo.png:/usr/src/app/public/images/logo.png
+      - ./public/images/placeholder.jpg:/usr/src/app/public/images/placeholder.jpg
+      - ./public/images/thumbnail.jpg:/usr/src/app/public/images/thumbnail.jpg
+      - ./public/images/favicon.png:/usr/src/app/public/images/favicon.png
+      - ./public/images/flowers.jpg:/usr/src/app/public/images/flowers.jpg
+      - ./public/images/horse.jpg:/usr/src/app/public/images/horse.jpg
+      - ./public/images/tea.jpg:/usr/src/app/public/images/tea.jpg
+      - ./public/images/perfume.jpg:/usr/src/app/public/images/perfume.jpg
+      - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
+      - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
+      - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
+      - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
+      - ./pages/index.js:/usr/src/app/src/pages/index.js
+      - ./pages/browse.js:/usr/src/app/src/pages/browse.js
+      - ./pages/details/odeuropa-details.js:/usr/src/app/src/pages/details/odeuropa-details.js
+      - ./pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
+      - ./pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
