@@ -11,8 +11,6 @@ services:
   mongo:
     container_name: odeuropa-explorer-mongo
     image: mongo
-    ports:
-      - '27019:27017'
     volumes:
       - mongo:/data/db
   imaginary:
@@ -28,8 +26,6 @@ services:
   redis:
     container_name: odeuropa-explorer-redis
     image: redis
-    ports:
-      - '6379:6379'
 volumes:
   mongo: {}
   images: {}

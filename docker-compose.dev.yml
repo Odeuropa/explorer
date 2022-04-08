@@ -35,3 +35,6 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
+  mongo:
+    ports:
+      - '27019:27017'
