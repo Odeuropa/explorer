@@ -7,8 +7,9 @@ module.exports = {
   filterByGraph: false,
   details: {
     view: 'odeuropa-details',
-    showPermalink: true,
+    showPermalink: false,
     excludedMetadata: [],
+    route: 'smells',
   },
   textSearchFunc: (q) => {
     const quotedValue = JSON.stringify(q);

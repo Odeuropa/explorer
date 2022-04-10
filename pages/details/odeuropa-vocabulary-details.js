@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -16,10 +17,44 @@ import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
+import OdeuropaCard from '@components/OdeuropaCard';
 import { slugify, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
+
+const Results = styled.div`
+  --visible-cols: 4;
+  --col-gap: 20px;
+  --col-hint: 0px;
+  --scrollbar-padding: 20px;
+  --col-size: calc((100% / var(--visible-cols)) - var(--col-gap) - var(--col-hint));
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: var(--col-size);
+  grid-auto-columns: var(--col-size);
+  overflow-x: auto;
+  overflow-y: hidden;
+  grid-gap: var(--col-gap);
+
+  a {
+    text-decoration: none;
+    &:hover {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+`;
+
+const Result = styled.div`
+  padding: 1em;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+`;
 
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
@@ -59,6 +94,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     value: adj,
     count: Math.random()
   }))
+
+  const cardRoute = config.routes[route.details.route]
 
   return (
     <Layout>
@@ -109,8 +146,17 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         </Element>
 
         {result.items?.length > 0 && (
-          <Element style={{ padding: '1em', color: 'gray' }}>
-            <h2>In texts ({result.items.length} occurrences)</h2>
+          <Element>
+            <Element style={{ padding: '1em', color: 'gray' }}>
+              <h2>In texts ({result.items.length} occurrences)</h2>
+            </Element>
+            <Results>
+              {result.items.map(item => (
+                <Result key={item['@id']} style={{ margin: '0 1em' }}>
+                  <OdeuropaCard item={item} route={cardRoute} type={route.details.route} />
+                </Result>
+              ))}
+            </Results>
           </Element>
         )}
 
@@ -135,7 +181,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, inList = false, debugSparqlQuery } = await (
+  const { result = null, inList = false, error, debugSparqlQuery = null } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
       headers:
         req && req.headers

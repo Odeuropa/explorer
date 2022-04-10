@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
 import Router, { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
 import queryString from 'query-string';
@@ -21,10 +20,10 @@ import Select from '@components/Select';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import PageTitle from '@components/PageTitle';
 import ScrollDetector from '@components/ScrollDetector';
-import { absoluteUrl, uriToId } from '@helpers/utils';
+import { absoluteUrl } from '@helpers/utils';
+import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
-import { getEntityMainLabel } from '@helpers/explorer';
 import { search, getFilters } from '@pages/api/search';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import { useTranslation } from 'next-i18next';
@@ -170,87 +169,9 @@ const ResultPage = styled.h3`
   margin-bottom: 1rem;
 `;
 
-const OdeuropaCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  box-shadow: rgba(0, 0, 0, 0.28) 0px 0px 8px;
-`;
-
-OdeuropaCard.Header = styled.div`
-  font-family: Garamond;
-  font-weight: bold;
-  background-color: #B9D59B;
-  padding: 0.25rem 0.75rem;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-`;
-
-OdeuropaCard.Title = styled.div`
-  font-size: 1.4rem;
-`;
-
-OdeuropaCard.Date = styled.div`
-  margin-left: auto;
-`;
-
-OdeuropaCard.Body = styled.div`
-  padding: 0.75em;
-`;
-
-OdeuropaCard.Row = styled.div`
-  display: flex;
-`;
-
-OdeuropaCard.Label = styled.div`
-  flex-shrink: 0;
-  font-size: 0.9rem;
-  width: 80px;
-  margin-right: 1rem;
-  padding-top: 0.25rem;
-  text-transform: uppercase;
-`;
-
-OdeuropaCard.Value = styled.div`
-  font-size: 1.2rem;
-`;
-
-OdeuropaCard.Separator = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 0.5rem 0;
-  --text-divider-gap: 0.5rem;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  color: #464C5A;
-
-  &::before, &::after {
-    content: '';
-    height: 1px;
-    background-color: silver;
-    flex-grow: 1;
-  }
-
-  &::before {
-    margin-right: var(--text-divider-gap);
-  }
-
-  &::after {
-    margin-left: var(--text-divider-gap);
-  }
-`;
-
-OdeuropaCard.Footer = styled.div`
-  background-color: #B9D59B;
-  text-align: center;
-  padding: 0.5em 0.75em;
-  text-transform: uppercase;
-  margin-top: auto;
-`;
-
 const BrowsePage = ({ initialData }) => {
   const { req, query, pathname } = useRouter();
-  const { t, i18n } = useTranslation(['common', 'search', 'project']);
+  const { t } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const currentPage = parseInt(query.page, 10) || 1;
@@ -426,66 +347,9 @@ const BrowsePage = ({ initialData }) => {
     value: display,
   }));
 
-  const renderCardRow = (label, value) => {
-    if (typeof value === 'undefined' || value === null) {
-      return null;
-    }
-
-    const renderedValue = Array.isArray(value) ? value.join(', ') : value;
-
-    return (
-      <OdeuropaCard.Row>
-        <OdeuropaCard.Label>{label}</OdeuropaCard.Label>
-        <OdeuropaCard.Value>{renderedValue}</OdeuropaCard.Value>
-      </OdeuropaCard.Row>
-    )
-  }
-
-  const renderResults = (results) => results.map((result) => {
-    const label = getEntityMainLabel(result, { route, language: i18n.language });
-    return (
-      <OdeuropaCard key={result['@id']}>
-        <OdeuropaCard.Header>
-          <OdeuropaCard.Title>
-            Smell: {label}
-          </OdeuropaCard.Title>
-          <OdeuropaCard.Date>
-            {result.time}
-          </OdeuropaCard.Date>
-        </OdeuropaCard.Header>
-        <OdeuropaCard.Body>
-          {renderCardRow('Source', result.source)}
-          {renderCardRow('Carrier', result.carrier)}
-          {renderCardRow('Date', result.time)}
-          {renderCardRow('Place', result.place)}
-
-          {(result.actor || result.gesture || result.adjective) && (
-            <OdeuropaCard.Separator>Olfactory Experience</OdeuropaCard.Separator>
-          )}
-
-          {renderCardRow('Actor', result.actor)}
-          {renderCardRow('Gesture', result.gesture)}
-          {renderCardRow('Defined as', result.adjective)}
-        </OdeuropaCard.Body>
-        <OdeuropaCard.Footer>
-          <Link
-            key={result['@id']}
-            href={`/details/${route.details.view}?id=${encodeURIComponent(
-              uriToId(result['@id'], {
-                base: route.uriBase,
-              })
-            )}&type=${query.type}`}
-            as={`/${query.type}/${encodeURI(uriToId(result['@id'], { base: route.uriBase }))}`}
-            passHref
-          >
-            <a>
-              See more
-            </a>
-          </Link>
-        </OdeuropaCard.Footer>
-      </OdeuropaCard>
-    );
-  });
+  const renderResults = (results) => results.map((result) => (
+    <OdeuropaCard item={result} route={route} type={route.details.route} />
+  ));
 
   const onScrollToPage = (pageIndex) => {
     if (initialPage + pageIndex !== query.page) {

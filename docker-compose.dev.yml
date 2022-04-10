@@ -23,6 +23,7 @@ services:
       - ./public/images/horse.jpg:/usr/src/app/public/images/horse.jpg
       - ./public/images/tea.jpg:/usr/src/app/public/images/tea.jpg
       - ./public/images/perfume.jpg:/usr/src/app/public/images/perfume.jpg
+      - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
       - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
       - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
@@ -32,6 +33,7 @@ services:
       - ./pages/details/odeuropa-details.js:/usr/src/app/src/pages/details/odeuropa-details.js
       - ./pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
       - ./pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
+      - ./components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
     environment:
       - NODE_ENV=development
       - PORT=3001

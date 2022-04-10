@@ -30,34 +30,45 @@ const Hero = styled.div`
   background-position: center;
 
   ${breakpoints.mobile`
-    height: 300px;
+    height: 294px;
   `}
 
   ${breakpoints.weirdMedium`
-    height: 380px;
+    height: 490px;
   `}
 `;
 
 const VocabularyTitle = styled.div`
   align-self: flex-end;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  margin: 0 auto;
+  color: #725cae;
+  padding-bottom: 2em;
 
   h1 {
-    margin-right: 0.25em;
-    padding-left: 0.8em;
-    padding-bottom: 0.6em;
-    text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2), 0px 8px 13px rgba(0, 0, 0, 0.1),
-      0px 18px 23px rgba(0, 0, 0, 0.1);
     word-break: break-all;
     font-size: 3rem;
     font-weight: 200;
+    line-height: 100%;
 
     ${breakpoints.mobile`
       font-size: 5rem;
     `}
     ${breakpoints.weirdMedium`
-      font-size: 6rem;
+      font-size: 10rem;
+    `}
+  }
+
+  p {
+    font-weight: 200;
+
+    ${breakpoints.mobile`
+      font-size: 1rem;
+    `}
+    ${breakpoints.weirdMedium`
+      font-size: 2rem;
     `}
   }
 `;
@@ -131,6 +142,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                 query.type.substr(0, 1).toUpperCase() + query.type.substr(1)
               )}
             </h1>
+            <p>Objects and substances which are recognised to emit an odour</p>
           </VocabularyTitle>
         </Hero>
         <Content>

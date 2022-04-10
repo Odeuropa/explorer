@@ -8,29 +8,25 @@
   },
   "metadata": {
     "@id": "Permalink",
-    "subject": "Subject",
-    "episodeNumber": "Episode number",
-    "genre": "Genre",
-    "theme": "Theme",
-    "description": "Description",
-    "language": "Language",
-    "publisher": "Publisher",
-    "annotation": "Annotations",
-    "keyword": "Keywords",
-    "contributor": "Contributors",
-    "publicationStartDateTime": "Publication date"
+    "source": "Source",
+    "carrier": "Carrier",
+    "adjective": "Adjective",
+    "time": "Time",
+    "place": "Place",
+    "gesture": "Gesture"
   },
   "routes": {
-    "channels": "Channels",
-    "collections": "Collections",
-    "programmes": "Programmes"
+    "smells": "Search",
+    "smell-sources": "Smell sources",
+    "odour-carriers": "Odour carriers",
+    "fragrant-spaces": "Fragrant Spaces"
   },
   "filters": {
-    "serviceDescription": "Service",
-    "genre": "Genre",
-    "theme": "Theme",
-    "language": "Language",
-    "with-video": "With video",
-    "with-segments": "With segments"
+    "source": "Source",
+    "carrier": "Carrier",
+    "adjective": "Adjective",
+    "time": "Time",
+    "place": "Place",
+    "gesture": "Gesture"
   }
 }

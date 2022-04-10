@@ -111,18 +111,18 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Columns>
           <Primary>
             <Element>
-              <Element>
+              {/* <Element>
                 Textual resource
-              </Element>
-              <Element>
+              </Element> */}
+              {/* <Element>
                 Report on Public Health
               </Element>
               <Element>
                 1713 - Ministry of Public Education - London, UK
-              </Element>
+              </Element> */}
             </Element>
 
-            <Element marginBottom={24}>
+            {/* <Element marginBottom={24}>
               <Separator />
               <Element>
                 Excerpt 1
@@ -132,13 +132,13 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
               <Element>
                 Excerpt 2
               </Element>
-            </Element>
+            </Element> */}
 
-            <Element marginBottom={24}>
+            {/* <Element marginBottom={24}>
               <Description>
                 But Flush wandered off into the streets of Florence to enjoy the rapture of <b>smell</b>. He threaded his path through main streets, through squares and alleys, by <b>smell</b>. He <b>nosed</b> his way from <b>smell</b> to <b>smell</b> ; the rough, the smooth, the dark, the golden.
               </Description>
-            </Element>
+            </Element> */}
 
             <Element marginBottom={24}>
               <Title>{pageTitle}</Title>

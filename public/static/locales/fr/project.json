@@ -8,29 +8,9 @@
   },
   "metadata": {
     "@id": "Permalien",
-    "subject": "Sujet",
-    "episodeNumber": "Numéro d'épisode",
-    "genre": "Genre",
-    "theme": "Thème",
-    "description": "Description",
-    "language": "Langue",
-    "publisher": "Éditeur",
-    "annotation": "Annotations",
-    "keyword": "Mots-clés",
-    "contributor": "Contributeurs",
-    "publicationStartDateTime": "Date de publication"
   },
   "routes": {
-    "channels": "Chaînes",
-    "collections": "Collections",
-    "programmes": "Programmes"
   },
   "filters": {
-    "serviceDescription": "Service",
-    "genre": "Genre",
-    "theme": "Thème",
-    "language": "Langue",
-    "with-video": "Avec vidéo",
-    "with-segments": "Avec segments"
   }
 }
