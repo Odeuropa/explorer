@@ -181,7 +181,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, inList = false, error, debugSparqlQuery = null } = await (
+  const { result = null, inList = false, debugSparqlQuery = null } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
       headers:
         req && req.headers

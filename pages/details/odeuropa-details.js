@@ -57,15 +57,6 @@ const Title = styled.h1`
   word-break: break-word;
 `;
 
-const Description = styled.div`
-  white-space: pre-line;
-`;
-
-const Separator = styled.div`
-  border-bottom: 1px solid silver;
-  margin: 1em 0;
-`;
-
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
