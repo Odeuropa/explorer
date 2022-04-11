@@ -1,3 +1,28 @@
+const escapeAll = /["\\\t\n\r\b\f\u0000-\u0019]|[\ud800-\udbff][\udc00-\udfff]/g;
+const escapedCharacters = {
+  '\\': '\\\\', '"': '\\"', '\t': '\\t',
+  '\n': '\\n', '\r': '\\r', '\b': '\\b', '\f': '\\f',
+};
+
+// Replaces a character by its escaped version
+function characterReplacer(character) {
+  // Replace a single character by its escaped version
+  let result = escapedCharacters[character];
+  if (result === undefined) {
+    // Replace a single character with its 4-bit unicode escape sequence
+    if (character.length === 1) {
+      result = character.charCodeAt(0).toString(16);
+      result = '\\u0000'.substr(0, 6 - result.length) + result;
+    }
+    // Replace a surrogate pair with its 8-bit unicode escape sequence
+    else {
+      result = ((character.charCodeAt(0) - 0xD800) * 0x400 + character.charCodeAt(1) + 0x2400).toString(16);
+      result = '\\U00000000'.substr(0, 10 - result.length) + result;
+    }
+  }
+  return result;
+}
+
 module.exports = {
   view: 'browse',
   showInNavbar: true,
@@ -12,11 +37,13 @@ module.exports = {
     route: 'smells',
   },
   textSearchFunc: (q) => {
-    const quotedValue = JSON.stringify(q);
+    const escapedValue = q.replace(escapeAll, characterReplacer);
     return [
       `
       {
-        # TODO: search query (using lucene?)
+        ?search a luc-index:search-copy ;
+        luc:query "source_label:${escapedValue}" ;
+        luc:entities ?id .
       }
       `
     ]

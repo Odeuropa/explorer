@@ -21,32 +21,6 @@ module.exports = {
   search: {
     route: 'smells',
     allowTextSearch: true,
-    textSearchQuery: {
-      '@graph': [
-        {
-          '@id': '?id',
-          '@type': '?rdfType',
-          label: '?label',
-        },
-      ],
-      $where: [
-        '?id a ?rdfType',
-        '?id ?labelType ?label',
-      ],
-      $values: {
-        '?rdfType': [
-          'ebucore:PublicationChannel',
-          'ebucore:Collection',
-          'ebucore:TVProgramme',
-          'ebucore:RadioProgramme'
-        ],
-        '?labelType': [
-          'ebucore:title',
-          'ebucore:publicationChannelName'
-        ]
-      },
-      $langTag: 'hide',
-    },
     allowImageSearch: false,
     placeholderImage: '/images/placeholder.jpg',
     languages: {
@@ -62,9 +36,11 @@ module.exports = {
       'crmsci': 'http://www.ics.forth.gr/isl/CRMsci/',
       'dc': 'http://purl.org/dc/elements/1.1/',
       'gn': 'http://www.geonames.org/ontology#',
+      'luc-index': 'http://www.ontotext.com/connectors/lucene/instance#',
+      'luc': 'http://www.ontotext.com/connectors/lucene#',
       'od': 'http://data.odeuropa.eu/ontology/',
-      'reo': 'https://read-it.acc.hum.uu.nl/ontology#',
       'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+      'reo': 'https://read-it.acc.hum.uu.nl/ontology#',
       'reo': 'https://read-it.acc.hum.uu.nl/ontology#',
       'schema': 'http://schema.org/',
       'skos': 'http://www.w3.org/2004/02/skos/core#',
