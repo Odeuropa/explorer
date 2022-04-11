@@ -134,6 +134,79 @@ module.exports = {
   }),
   filters: [
     {
+      id: 'time',
+      isMulti: true,
+      isSortable: true,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?timeLabel',
+            label: '?timeLabel',
+          },
+        ],
+        $where: [
+          `
+          {
+            SELECT DISTINCT ?time WHERE {
+              ?id a od:L11_Smell .
+              ?emission od:F1_generated ?id .
+              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+              ?emission time:hasTime ?time .
+            }
+          }
+          ?time rdfs:label ?timeLabel .
+          FILTER(LANG(?timeLabel) = "${language}" || LANG(?timeLabel) = "")
+          `
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?emission time:hasTime ?time',
+        '?time rdfs:label ?timeLabel',
+      ],
+      filterFunc: (values) => {
+        return [values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || ')];
+      },
+    },
+    {
+      id: 'place',
+      isMulti: true,
+      isSortable: true,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?placeLabel',
+            label: '?placeLabel',
+          },
+        ],
+        $where: [
+          `
+          {
+            SELECT DISTINCT ?place WHERE {
+              ?id a od:L11_Smell .
+              ?emission od:F1_generated ?id .
+              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+
+              ?experience od:F2_perceived ?id .
+              ?experience crm:P7_took_place_at ?place .
+            }
+          }
+          ?place rdfs:label ?placeLabel .
+          FILTER(LANG(?placeLabel) = "${language}" || LANG(?placeLabel) = "")
+          `
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?experience od:F2_perceived ?id',
+        '?experience crm:P7_took_place_at ?place',
+        '?place rdfs:label ?placeLabel',
+      ],
+      filterFunc: (values) => {
+        return [values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || ')];
+      },
+    },
+    {
       id: 'source',
       isMulti: true,
       isSortable: true,
@@ -159,7 +232,6 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
-        '?emission od:F1_generated ?id',
         '?emission od:F3_had_source / crm:P137_exemplifies ?source',
         '?source skos:prefLabel ?sourceLabel'
       ],
@@ -195,7 +267,6 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
-        '?emission od:F1_generated ?id',
         '?emission od:F4_had_carrier ?carrier',
         '?carrier rdfs:label ?carrierLabel',
       ],
@@ -232,7 +303,6 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
-        '?experience od:F2_perceived ?id',
         '?experience od:F5_involved_gesture ?gesture',
         '?gesture rdfs:label ?gestureLabel',
       ],
