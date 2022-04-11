@@ -21,6 +21,10 @@
     "odour-carriers": "Odour carriers",
     "fragrant-spaces": "Fragrant Spaces"
   },
+  "routes-descriptions": {
+    "smell-sources": "Objects and substances which are recognised to emit an odour",
+    "odour-carriers": "Objects and substances which are recognised to carry an odour"
+  },
   "filters": {
     "source": "Source",
     "carrier": "Carrier",

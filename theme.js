@@ -4,14 +4,14 @@ const theme = {
       font-family: 'Futura Std Book';
       font-style: normal;
       font-weight: normal;
-      src: local('Futura Std Book'), url('fonts/FuturaStdBook.woff') format('woff');
+      src: local('Futura Std Book'), url('/fonts/FuturaStdBook.woff') format('woff');
     }
 
     @font-face {
       font-family: 'Garamond';
       font-style: normal;
       font-weight: normal;
-      src: local('Garamond'), url('fonts/Garamond.woff') format('woff');
+      src: local('Garamond'), url('/fonts/Garamond.woff') format('woff');
     }
   `,
   fontFamily: {

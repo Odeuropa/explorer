@@ -142,7 +142,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                 query.type.substr(0, 1).toUpperCase() + query.type.substr(1)
               )}
             </h1>
-            <p>Objects and substances which are recognised to emit an odour</p>
+            <p>{t(`project:routes-descriptions.${query.type}`, '')}</p>
           </VocabularyTitle>
         </Hero>
         <Content>
