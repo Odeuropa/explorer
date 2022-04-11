@@ -41,7 +41,7 @@ module.exports = {
     return [
       `
       {
-        ?search a luc-index:search-copy ;
+        ?search a luc-index:search ;
         luc:query "source_label:${escapedValue}" ;
         luc:entities ?id .
       }
