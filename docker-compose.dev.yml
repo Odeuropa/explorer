@@ -24,6 +24,8 @@ services:
       - ./public/images/tea.jpg:/usr/src/app/public/images/tea.jpg
       - ./public/images/perfume.jpg:/usr/src/app/public/images/perfume.jpg
       - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
+      - ./public/images/pages/odour-carriers.jpg:/usr/src/app/public/images/pages/odour-carriers.jpg
+      - ./public/images/pages/fragrant-spaces.jpg:/usr/src/app/public/images/pages/fragrant-spaces.jpg
       - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
       - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
