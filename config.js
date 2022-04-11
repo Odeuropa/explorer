@@ -48,7 +48,8 @@ module.exports = {
       'time': 'http://www.w3.org/2006/time#',
       'voc': 'http://data.odeuropa.eu/vocabulary/',
       'xsd': 'http://www.w3.org/2001/XMLSchema#',
-    }
+    },
+    permalinkUrl: (uri) => `http://data.odeuropa.eu/resource?uri=${uri}`,
   },
   routes: {
     'smells': smells,

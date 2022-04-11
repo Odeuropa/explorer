@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import NextAuth from 'next-auth/client';
@@ -18,10 +18,9 @@ import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import GraphLink from '@components/GraphLink';
-import MetadataList from '@components/MetadataList';
 import SaveButton from '@components/SaveButton';
 import breakpoints from '@styles/breakpoints';
-import { getEntityMainLabel } from '@helpers/explorer';
+import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
 
@@ -50,11 +49,47 @@ const Primary = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h1`
-  border-bottom: 3px solid ${({ theme }) => theme.colors.primary};
-  font-size: 3rem;
-  line-height: 1.25;
-  word-break: break-word;
+const Separator = styled.div`
+  border-bottom: 1px solid lightgray;
+  margin: 1.5rem 0;
+`;
+
+const Panel = styled.div`
+  flex: 1;
+  background-color: #F5F5F5;
+  padding: 1rem 2rem;
+
+  &:not(:last-child) {
+    margin-right: 1em;
+  }
+`;
+
+Panel.Title = styled.div`
+  color: #B9D59B;
+  font-size: 1.4rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+Panel.Body = styled.div``;
+
+Panel.Row = styled.div`
+  display: flex;
+`;
+
+Panel.Label = styled.div`
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  width: 80px;
+  margin-right: 1rem;
+  padding-top: 0.25rem;
+  text-transform: uppercase;
+`;
+
+Panel.Value = styled.div`
+  font-size: 1.2rem;
 `;
 
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
@@ -94,6 +129,60 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     setIsItemSaved(status);
   };
 
+  const renderTextualObject = (objects) => {
+    if (!Array.isArray(objects) || objects.length === 0) return null;
+
+    const object = objects[0];
+    if (!object) return null;
+
+    const subtitles = [];
+    if (typeof object.date === 'string') {
+      subtitles.push(<>{object.date}</>);
+    }
+    if (typeof object.author?.label === 'string') {
+      subtitles.push(<>{typeof object.author.sameAs === 'string' ? (<a href={object.author.sameAs} target="_blank" rel="noopener noreferrer">{object.author.label}</a>) : (<>{object.author.label}</>)}</>);
+    }
+    if (typeof object.place === 'string') {
+      subtitles.push(<>{object.place}</>);
+    }
+
+    return (
+      <Element>
+        <Element style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}>
+          Textual resource
+        </Element>
+        <Element style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}>
+          {object.label}
+        </Element>
+        <Element style={{ fontSize: '2rem', color: 'black' }}>
+          {subtitles.map((subtitle, i) => (
+            <Fragment key={subtitle}>
+              {subtitle}
+              {i > 0 && ', '}
+            </Fragment>
+          ))}
+        </Element>
+      </Element>
+    );
+  }
+
+  const renderExcerpts = () => (<em>Excerpts are temporarily unavailable</em>);
+
+  const renderPanelRow = (label, value) => {
+    if (typeof value === 'undefined' || value === null) {
+      return null;
+    }
+
+    const renderedValue = Array.isArray(value) ? value.join(', ') : value;
+
+    return (
+      <Panel.Row>
+        <Panel.Label>{label}</Panel.Label>
+        <Panel.Value>{renderedValue}</Panel.Value>
+      </Panel.Row>
+    )
+  }
+
   return (
     <Layout>
       <PageTitle title={`${pageTitle}`} />
@@ -102,42 +191,12 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Columns>
           <Primary>
             <Element>
-              {/* <Element>
-                Textual resource
-              </Element> */}
-              {/* <Element>
-                Report on Public Health
-              </Element>
-              <Element>
-                1713 - Ministry of Public Education - London, UK
-              </Element> */}
-            </Element>
+              {renderTextualObject(result.textualObject)}
 
-            {/* <Element marginBottom={24}>
-              <Separator />
-              <Element>
-                Excerpt 1
-              </Element>
-
-              <Separator />
-              <Element>
-                Excerpt 2
-              </Element>
-            </Element> */}
-
-            {/* <Element marginBottom={24}>
-              <Description>
-                But Flush wandered off into the streets of Florence to enjoy the rapture of <b>smell</b>. He threaded his path through main streets, through squares and alleys, by <b>smell</b>. He <b>nosed</b> his way from <b>smell</b> to <b>smell</b> ; the rough, the smooth, the dark, the golden.
-              </Description>
-            </Element> */}
-
-            <Element marginBottom={24}>
-              <Title>{pageTitle}</Title>
               <Element
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                marginY={12}
               >
                 {result.sameAs && (
                   <small>
@@ -151,7 +210,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 {route.details.showPermalink && (
                   <small>
                     (
-                    <a href={result['@id']} target="_blank" rel="noopener noreferrer">
+                    <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
                       {t('common:buttons.permalink')}
                     </a>
                     )
@@ -166,28 +225,38 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                   />
                 )}
               </Element>
+
+              <Element marginBottom={12} display="flex">
+                <GraphLink uri={result['@graph']} icon label />
+              </Element>
             </Element>
 
-            <Element marginBottom={12} display="flex">
-              <GraphLink uri={result['@graph']} icon label />
-            </Element>
+            <Separator />
 
             <Element marginBottom={24}>
-              <MetadataList metadata={result} query={query} route={route} />
+              {renderExcerpts()}
             </Element>
 
-            {/* {result.description && (
-              <>
-                <h4>Description</h4>
-                <Description
-                  dangerouslySetInnerHTML={{
-                    __html: Array.isArray(result.description)
-                      ? result.description.join('\n\n')
-                      : result.description,
-                  }}
-                />
-              </>
-            )} */}
+            <Element marginBottom={24} display="flex">
+              <Panel>
+                <Panel.Title>Smell Emission</Panel.Title>
+                <Panel.Body>
+                  {renderPanelRow('Source', result.source)}
+                  {renderPanelRow('Carrier', result.carrier)}
+                  {renderPanelRow('Date', result.time)}
+                  {renderPanelRow('Place', result.place)}
+                </Panel.Body>
+              </Panel>
+
+              <Panel>
+                <Panel.Title>Olfactory Experience</Panel.Title>
+                <Panel.Body>
+                  {renderPanelRow('Actor', result.actor)}
+                  {renderPanelRow('Gesture', result.gesture)}
+                  {renderPanelRow('Defined as', result.adjective)}
+                </Panel.Body>
+              </Panel>
+            </Element>
 
             <Debug>
               <Metadata label="HTTP Parameters">

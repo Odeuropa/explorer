@@ -32,8 +32,8 @@ module.exports = {
   filterByGraph: false,
   details: {
     view: 'odeuropa-details',
-    showPermalink: false,
-    excludedMetadata: [],
+    showPermalink: true,
+    excludedMetadata: ['textualObject'],
     route: 'smells',
   },
   textSearchFunc: (q) => {
@@ -72,6 +72,18 @@ module.exports = {
           adjective: '?adjective',
           time: '?timeLabel',
           place: '?placeLabel',
+          textualObject: {
+            '@id': '?textualObject',
+            label: '?textualObjectLabel',
+            author: {
+              '@id': '?textualObjectAuthor',
+              label: '?textualObjectAuthorLabel',
+              sameAs: '?textualObjectAuthorSameAs',
+            },
+            date: '?textualObjectDate',
+            genre: '?textualObjectGenre',
+            language: '?textualObjectLanguage',
+          },
         }
       ],
       $where: [
@@ -80,6 +92,46 @@ module.exports = {
         ?emission od:F1_generated ?id .
         ?emission od:F3_had_source / crm:P137_exemplifies ?source .
 
+        {
+          OPTIONAL {
+            ?textualObject crm:P67_refers_to ?id .
+            {
+              OPTIONAL {
+                ?textualObject rdfs:label ?textualObjectLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?textualObject <https://schema.org/author> ?textualObjectAuthor .
+                {
+                  OPTIONAL {
+                    ?textualObjectAuthor rdfs:label ?textualObjectAuthorLabel .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?textualObjectAuthor owl:sameAs ?textualObjectAuthorSameAs .
+                  }
+                }
+              }
+            }
+            UNION
+            {
+              ?textualObject <https://schema.org/dateCreated> / rdfs:label ?textualObjectDate .
+            }
+            UNION
+            {
+              ?textualObject <https://schema.org/genre> / rdfs:label ?textualObjectGenre .
+            }
+            UNION
+            {
+              ?textualObject <https://schema.org/inLanguage> ?textualObjectLanguage .
+            }
+          }
+        }
+        UNION
         {
           OPTIONAL {
             ?source skos:prefLabel ?sourceLabel .
