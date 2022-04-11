@@ -26,7 +26,7 @@ import config from '~/config';
 const Results = styled.div`
   --visible-cols: 4;
   --col-gap: 20px;
-  --col-hint: 0px;
+  --col-hint: 20px;
   --scrollbar-padding: 20px;
   --col-size: calc((100% / var(--visible-cols)) - var(--col-gap) - var(--col-hint));
 
