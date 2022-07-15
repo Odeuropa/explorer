@@ -30,7 +30,7 @@ module.exports = {
     defaultLanguage: 'en',
   },
   api: {
-    endpoint: 'http://data.odeuropa.eu/repositories/odeuropa',
+    endpoint: 'https://data.odeuropa.eu/repositories/odeuropa',
     prefixes: {
       'crm': 'http://erlangen-crm.org/current/',
       'crmsci': 'http://www.ics.forth.gr/isl/CRMsci/',
@@ -49,7 +49,7 @@ module.exports = {
       'voc': 'http://data.odeuropa.eu/vocabulary/',
       'xsd': 'http://www.w3.org/2001/XMLSchema#',
     },
-    permalinkUrl: (uri) => `http://data.odeuropa.eu/resource?uri=${uri}`,
+    permalinkUrl: (uri) => `https://data.odeuropa.eu/resource?uri=${uri}`,
   },
   routes: {
     'smells': smells,
