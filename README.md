@@ -21,13 +21,13 @@ cd explorer
 - Start in development mode:
 
 ```bash
-docker-composer -f docker-compose.yml -f docker-compose.dev.yml up
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
 - Start in production mode:
 
 ```bash
-docker-composer -f docker-compose.yml -f docker-compose.prod.yml up
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
 ```
 
 ## License
