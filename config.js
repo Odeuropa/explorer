@@ -31,6 +31,9 @@ module.exports = {
   },
   api: {
     endpoint: 'https://data.odeuropa.eu/repositories/odeuropa',
+    params: {
+      sameAs: false,
+    },
     prefixes: {
       'crm': 'http://erlangen-crm.org/current/',
       'crmsci': 'http://www.ics.forth.gr/isl/CRMsci/',
