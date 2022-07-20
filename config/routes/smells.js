@@ -27,7 +27,7 @@ module.exports = {
   view: 'browse',
   showInNavbar: true,
   showInHome: false,
-  uriBase: 'http://data.odeuropa.eu/Smell',
+  uriBase: 'http://data.odeuropa.eu/smell',
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
   filterByGraph: false,
   details: {
@@ -176,7 +176,7 @@ module.exports = {
         {
           OPTIONAL {
             ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned ?adjective .
+            ?assignment crm:P141_assigned/rdfs:label ?adjective .
             ?assignment crm:P140_assigned_attribute_to ?id .
           }
         }

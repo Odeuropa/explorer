@@ -55,7 +55,7 @@ module.exports = {
         {
           OPTIONAL {
             ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned ?adjective .
+            ?assignment crm:P141_assigned/rdfs:label ?adjective .
             ?assignment crm:P140_assigned_attribute_to ?smell .
           }
         }
@@ -113,7 +113,7 @@ module.exports = {
             {
               OPTIONAL {
                 ?item_assignment a crm:E13_Attribute_Assignment .
-                ?item_assignment crm:P141_assigned ?item_adjective .
+                ?item_assignment crm:P141_assigned/rdfs:label ?item_adjective .
                 ?item_assignment crm:P140_assigned_attribute_to ?smell .
               }
             }
