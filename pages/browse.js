@@ -348,7 +348,7 @@ const BrowsePage = ({ initialData }) => {
   }));
 
   const renderResults = (results) => results.map((result) => (
-    <OdeuropaCard item={result} route={route} type={route.details.route} />
+    <OdeuropaCard key={result['@id']} item={result} route={route} type={route.details.route} />
   ));
 
   const onScrollToPage = (pageIndex) => {
