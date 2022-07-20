@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 
+import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
 
 const Container = styled.div`
@@ -102,13 +104,15 @@ const renderCardRow = (label, value) => {
 }
 
 const OdeuropaCard = ({ item, route, type, ...props }) => {
+  const { i18n } = useTranslation();
+
   if (!item || !item['@id']) return null;
 
   return (
     <Container {...props}>
       <Header>
         <Title>
-          {item.label}
+          {getEntityMainLabel(item, { route, language: i18n.language })}
         </Title>
         <Date>
           {item.time}
