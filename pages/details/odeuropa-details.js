@@ -166,7 +166,12 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     );
   }
 
-  const renderExcerpts = () => (<em>Excerpts are temporarily unavailable</em>);
+  const renderExcerpts = () => (
+    <Element style={{ display: 'flex', alignItems: 'center' }}>
+      <Element style={{ fontSize: '8rem', lineHeight: '8rem', marginRight: '2rem', alignSelf: 'flex-start' }}>‟</Element>
+      <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>{result.excerpt}</Element>
+    </Element>
+  );
 
   const renderPanelRow = (label, value) => {
     if (typeof value === 'undefined' || value === null) {

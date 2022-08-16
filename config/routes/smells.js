@@ -70,6 +70,7 @@ module.exports = {
           gesture: '?gestureLabel',
           source: '?sourceLabel',
           adjective: '?adjective',
+          excerpt: '?excerpt',
           time: '?timeLabel',
           place: '?placeLabel',
           textualObject: {
@@ -178,6 +179,14 @@ module.exports = {
             ?assignment a crm:E13_Attribute_Assignment .
             ?assignment crm:P141_assigned/rdfs:label ?adjective .
             ?assignment crm:P140_assigned_attribute_to ?id .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?fragment a crm:E33_Linguistic_Object .
+            ?fragment crm:P67_refers_to ?id .
+            ?fragment rdf:value ?excerpt .
           }
         }
         `
