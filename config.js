@@ -60,7 +60,17 @@ module.exports = {
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
   },
-  graphs: {},
+  graphs: {
+    'http://data.odeuropa.eu/text-annotation': {
+      label: 'Odeuropa Benchmark',
+    },
+    'http://data.odeuropa.eu/royal-society-corpus': {
+      label: 'Royal Society Corpus',
+    },
+    'http://data.odeuropa.eu/old-bailey-corpus': {
+      label: 'Old Bailey Corpus',
+    },
+  },
   vocabularies: {},
   plugins: {}
 };

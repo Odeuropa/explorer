@@ -29,7 +29,7 @@ module.exports = {
   showInHome: false,
   uriBase: 'http://data.odeuropa.eu/smell',
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
-  filterByGraph: false,
+  filterByGraph: true,
   details: {
     view: 'odeuropa-details',
     showPermalink: true,
