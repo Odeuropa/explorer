@@ -61,20 +61,20 @@ module.exports = {
     'fragrant-spaces': fragrantSpaces,
   },
   graphs: {
-    'http://data.odeuropa.eu/text-annotation': {
-      label: 'Odeuropa Benchmark',
-    },
-    'http://data.odeuropa.eu/royal-society-corpus': {
-      label: 'Royal Society Corpus',
-    },
-    'http://data.odeuropa.eu/old-bailey-corpus': {
-      label: 'Old Bailey Corpus',
-    },
     'http://data.odeuropa.eu/eebo': {
       label: 'EEBO',
     },
     'http://data.odeuropa.eu/gutenberg': {
       label: 'Gutenberg',
+    },
+    'http://data.odeuropa.eu/text-annotation': {
+      label: 'Odeuropa Benchmark',
+    },
+    'http://data.odeuropa.eu/old-bailey-corpus': {
+      label: 'Old Bailey Corpus',
+    },
+    'http://data.odeuropa.eu/royal-society-corpus': {
+      label: 'Royal Society Corpus',
     },
   },
   vocabularies: {},
