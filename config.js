@@ -70,6 +70,12 @@ module.exports = {
     'http://data.odeuropa.eu/old-bailey-corpus': {
       label: 'Old Bailey Corpus',
     },
+    'http://data.odeuropa.eu/eebo': {
+      label: 'EEBO',
+    },
+    'http://data.odeuropa.eu/gutenberg': {
+      label: 'Gutenberg',
+    },
   },
   vocabularies: {},
   plugins: {}
