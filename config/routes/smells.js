@@ -51,7 +51,6 @@ module.exports = {
   baseWhere: [
     'GRAPH ?g { ?id a od:L11_Smell }',
     '?emission od:F1_generated ?id',
-    '?emission od:F3_had_source / crm:P137_exemplifies ?source'
   ],
   // metadata: {
   //   publicationStartDateTime: (value) => {
@@ -65,7 +64,7 @@ module.exports = {
           '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
           '@id': '?id',
           '@graph': '?g',
-          label: '?sourceLabel',
+          label: '?label',
           carrier: '?carrierLabel',
           gesture: '?gestureLabel',
           source: '?sourceLabel',
@@ -91,7 +90,7 @@ module.exports = {
         `
         GRAPH ?g { ?id a od:L11_Smell . }
         ?emission od:F1_generated ?id .
-        ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+        ?id rdfs:label ?label .
 
         {
           OPTIONAL {
@@ -135,8 +134,13 @@ module.exports = {
         UNION
         {
           OPTIONAL {
-            ?source skos:prefLabel ?sourceLabel .
-            FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+            ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+            {
+              OPTIONAL {
+                ?source skos:prefLabel ?sourceLabel .
+                FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+              }
+            }
           }
         }
         UNION
