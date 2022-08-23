@@ -59,35 +59,35 @@ module.exports = {
   // },
   query: ({ language }) => ({
     '@context': 'http://schema.org/',
-      '@graph': [
-        {
-          '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
-          '@id': '?id',
-          '@graph': '?g',
-          label: '?label',
-          carrier: '?carrierLabel',
-          gesture: '?gestureLabel',
-          source: '?sourceLabel',
-          adjective: '?adjective',
-          excerpt: '?excerpt',
-          time: '?timeLabel',
-          place: '?placeLabel',
-          textualObject: {
-            '@id': '?textualObject',
-            label: '?textualObjectLabel',
-            author: {
-              '@id': '?textualObjectAuthor',
-              label: '?textualObjectAuthorLabel',
-              sameAs: '?textualObjectAuthorSameAs',
-            },
-            date: '?textualObjectDate',
-            genre: '?textualObjectGenre',
-            language: '?textualObjectLanguage',
+    '@graph': [
+      {
+        '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
+        '@id': '?id',
+        '@graph': '?g',
+        label: '?label',
+        carrier: '?carrierLabel',
+        gesture: '?gestureLabel',
+        source: '?sourceLabel',
+        adjective: '?adjective',
+        excerpt: '?excerpt',
+        time: '?timeLabel',
+        place: '?placeLabel',
+        textualObject: {
+          '@id': '?textualObject',
+          label: '?textualObjectLabel',
+          author: {
+            '@id': '?textualObjectAuthor',
+            label: '?textualObjectAuthorLabel',
+            sameAs: '?textualObjectAuthorSameAs',
           },
-        }
-      ],
-      $where: [
-        `
+          date: '?textualObjectDate',
+          genre: '?textualObjectGenre',
+          language: '?textualObjectLanguage',
+        },
+      }
+    ],
+    $where: [
+      `
         GRAPH ?g { ?id a od:L11_Smell . }
         ?emission od:F1_generated ?id .
         ?id rdfs:label ?label .
@@ -194,8 +194,8 @@ module.exports = {
           }
         }
         `
-      ],
-      $langTag: 'hide',
+    ],
+    $langTag: 'hide',
   }),
   filters: [
     {
@@ -368,6 +368,7 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
+        '?experience od:F2_perceived ?smell',
         '?experience od:F5_involved_gesture ?gesture',
         '?gesture rdfs:label ?gestureLabel',
       ],
