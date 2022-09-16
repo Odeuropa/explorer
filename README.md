@@ -11,11 +11,11 @@ Repository for Odeuropa Explorer with configuration files for [D2KLab/explorer](
 
 ## How to run
 
-- Download this repository:
+- Download this repository, including its submodules:
 
 ```bash
-git clone https://github.com/Odeuropa/explorer
-cd explorer
+git clone --recurse-submodules https://github.com/Odeuropa/explorer
+cd explorer/
 ```
 
 - Start in development mode:
