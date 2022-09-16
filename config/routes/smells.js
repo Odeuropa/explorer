@@ -52,11 +52,6 @@ module.exports = {
     'GRAPH ?g { ?id a od:L11_Smell }',
     '?emission od:F1_generated ?id',
   ],
-  // metadata: {
-  //   publicationStartDateTime: (value) => {
-  //     return new Date(value).toLocaleDateString();
-  //   },
-  // },
   query: ({ language }) => ({
     '@context': 'http://schema.org/',
     '@graph': [
