@@ -376,5 +376,31 @@ module.exports = {
         return [values.map((val) => `STR(?gestureLabel) = ${JSON.stringify(val)}`).join(' || ')];
       },
     },
+    {
+      id: 'language',
+      isMulti: true,
+      isSortable: true,
+      query: () => ({
+        '@graph': [
+          {
+            '@id': '?language',
+            label: '?language',
+          },
+        ],
+        $where: [
+          `
+          ?source schema:inLanguage ?language .
+          `
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?textualObject crm:P67_refers_to ?id .',
+        '?textualObject schema:inLanguage ?language'
+      ],
+      filterFunc: (values) => {
+        return [values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || ')];
+      },
+    },
   ],
 };
