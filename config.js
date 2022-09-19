@@ -2,6 +2,7 @@ const smells = require('./config/routes/smells');
 const smellSources = require('./config/routes/smell-sources');
 const odourCarriers = require('./config/routes/odour-carriers');
 const fragrantSpaces = require('./config/routes/fragrant-spaces');
+const visuals = require('./config/routes/visuals');
 
 module.exports = {
   debug: typeof process !== 'undefined' && process.env.NODE_ENV === 'development',
@@ -59,6 +60,7 @@ module.exports = {
     'smell-sources': smellSources,
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
+    'visuals': visuals,
   },
   graphs: {
     'http://data.odeuropa.eu/eebo': {

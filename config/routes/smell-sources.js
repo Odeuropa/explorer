@@ -26,6 +26,11 @@ module.exports = {
             adjective: '?item_adjective',
             time: '?item_timeLabel',
             place: '?item_placeLabel',
+          },
+          images: {
+            '@id': '?image',
+            label: '?imageLabel',
+            image: '?imageUrl'
           }
         },
       ],
@@ -61,7 +66,18 @@ module.exports = {
         }
         UNION
         {
-          # Items
+          # Visual Items
+          OPTIONAL {
+            ?object crm:P137_exemplifies ?id .
+            ?image crm:P138_represents ?object .
+            ?image schema:image ?imageUrl .
+            FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+            ?image rdfs:label ?imageLabel .
+          }
+        }
+        UNION
+        {
+          # Textual Items
           OPTIONAL {
             ?item a crm:E33_Linguistic_Object .
             ?item crm:P67_refers_to ?smell .
@@ -121,7 +137,6 @@ module.exports = {
         }
         `
       ],
-      $orderby: 'ASC(?sourceLabel)',
       $langTag: 'hide',
     })
   },

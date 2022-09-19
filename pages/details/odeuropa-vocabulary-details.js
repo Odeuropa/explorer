@@ -160,6 +160,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           </Element>
         )}
 
+        {result.images?.length > 0 && (
+          <Element>
+            <Element style={{ padding: '1em', color: 'gray' }}>
+              <h2>In images ({result.images.length} occurrences)</h2>
+            </Element>
+            <Results>
+              {result.images.map(item => (
+                <Result key={item['@id']} style={{ margin: '0 1em' }}>
+                  <OdeuropaCard item={item} route={config.routes["visuals"]} type={"visuals"} />
+                </Result>
+              ))}
+            </Results>
+          </Element>
+        )}
+
         <Debug>
           <Metadata label="HTTP Parameters">
             <pre>{JSON.stringify(query, null, 2)}</pre>
