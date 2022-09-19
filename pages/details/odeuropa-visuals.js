@@ -129,21 +129,6 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
     setIsItemSaved(status);
   };
 
-  const renderPanelRow = (label, value) => {
-    if (typeof value === 'undefined' || value === null) {
-      return null;
-    }
-
-    const renderedValue = Array.isArray(value) ? value.join(', ') : value;
-
-    return (
-      <Panel.Row>
-        <Panel.Label>{label}</Panel.Label>
-        <Panel.Value>{renderedValue}</Panel.Value>
-      </Panel.Row>
-    )
-  }
-
   return (
     <Layout>
       <PageTitle title={`${pageTitle}`} />
@@ -199,7 +184,7 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
             </Element>
 
             <Element>
-              <img src={result.image} />
+              <img src={result.image} alt="" />
             </Element>
 
             <Separator />

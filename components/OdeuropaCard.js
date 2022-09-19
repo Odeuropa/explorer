@@ -124,7 +124,7 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
       </Header>
       <Body>
         {item.image && (
-          <div style={{ width: '100%', height: 300, backgroundImage: `url(${item.image})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover' }}></div>
+          <div style={{ width: '100%', height: 300, backgroundImage: `url(${item.image})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover' }} />
         )}
         {renderCardRow('Source', item.source)}
         {renderCardRow('Carrier', item.carrier)}
