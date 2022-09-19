@@ -108,11 +108,13 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
 
   if (!item || !item['@id']) return null;
 
+  const mainLabel = getEntityMainLabel(item, { route, language: i18n.language })
+
   return (
     <Container {...props}>
       <Header>
-        <Title>
-          {getEntityMainLabel(item, { route, language: i18n.language })}
+        <Title title={mainLabel}>
+          {mainLabel}
         </Title>
         {item.time && (
           <Date>

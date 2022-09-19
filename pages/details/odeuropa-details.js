@@ -152,7 +152,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
           Textual resource
         </Element>
         <Element style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}>
-          {object.label}
+          {object.label.substr(0, 50-1) + (object.label.length > 50 ? '…' : '')}
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
@@ -241,6 +241,12 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
             <Element marginBottom={24}>
               {renderExcerpts()}
             </Element>
+
+            {result?.textualObject?.[0]?.label && (
+              <Element marginBottom={24}>
+                {renderPanelRow('Full title', result.textualObject[0].label)}
+              </Element>
+            )}
 
             <Element marginBottom={24} display="flex">
               <Panel>
