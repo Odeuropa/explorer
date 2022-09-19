@@ -61,7 +61,6 @@ module.exports = {
         '@graph': '?g',
         label: '?label',
         carrier: '?carrierLabel',
-        gesture: '?gestureLabel',
         source: '?sourceLabel',
         adjective: '?adjective',
         excerpt: '?excerpt',
@@ -156,14 +155,6 @@ module.exports = {
         {
           OPTIONAL {
             ?experience od:F2_perceived ?id .
-            {
-              OPTIONAL {
-                ?experience od:F5_involved_gesture ?gesture .
-                ?gesture rdfs:label ?gestureLabel .
-                FILTER(LANG(?gestureLabel) = "${language}" || LANG(?gestureLabel) = "")
-              }
-            }
-            UNION
             {
               OPTIONAL {
                 ?experience crm:P7_took_place_at ?place .
@@ -332,43 +323,6 @@ module.exports = {
       ],
       filterFunc: (values) => {
         return [values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || ')];
-      },
-    },
-    {
-      id: 'gesture',
-      isMulti: true,
-      isSortable: true,
-      query: ({ language }) => ({
-        '@graph': [
-          {
-            '@id': '?gestureLabel',
-            label: '?gestureLabel',
-          },
-        ],
-        $where: [
-          `
-          {
-            SELECT DISTINCT ?gesture WHERE {
-              ?experience od:F2_perceived ?smell .
-              ?emission od:F1_generated ?smell .
-              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-
-              ?experience od:F5_involved_gesture ?gesture .
-            }
-          }
-          ?gesture rdfs:label ?gestureLabel .
-          FILTER(LANG(?gestureLabel) = "${language}" || LANG(?gestureLabel) = "")
-          `
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: () => [
-        '?experience od:F2_perceived ?smell',
-        '?experience od:F5_involved_gesture ?gesture',
-        '?gesture rdfs:label ?gestureLabel',
-      ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?gestureLabel) = ${JSON.stringify(val)}`).join(' || ')];
       },
     },
     {
