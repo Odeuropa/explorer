@@ -114,9 +114,11 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
         <Title>
           {getEntityMainLabel(item, { route, language: i18n.language })}
         </Title>
-        <Date>
-          {item.time}
-        </Date>
+        {item.time && (
+          <Date>
+            {item.time}
+          </Date>
+        )}
       </Header>
       <Body>
         {renderCardRow('Source', item.source)}
