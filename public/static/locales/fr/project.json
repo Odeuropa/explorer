@@ -7,10 +7,31 @@
     "text": "Ce démonstrateur a été développé dans le cadre du projet de recherche <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, fondé par la Commission européenne dans le cadre du programme H2020."
   },
   "metadata": {
-    "@id": "Permalien"
+    "@id": "Permalien",
+    "source": "Source",
+    "carrier": "Porteur",
+    "adjective": "Adjectif",
+    "time": "Temps",
+    "place": "Lieux",
+    "gesture": "Geste"
   },
   "routes": {
+    "smells": "Recherche",
+    "smell-sources": "Sources d'odeurs",
+    "odour-carriers": "Porteurs d'odeurs",
+    "fragrant-spaces": "Espaces parfumés"
+  },
+  "routes-descriptions": {
+    "smell-sources": "Objets et substances reconnus comme dégageant une odeur",
+    "odour-carriers": "Objets et substances reconnus comme porteurs d'une odeur"
   },
   "filters": {
+    "source": "Source",
+    "carrier": "Porteur",
+    "adjective": "Adjectif",
+    "time": "Temps",
+    "place": "Lieux",
+    "gesture": "Geste",
+    "language": "Langue"
   }
 }
