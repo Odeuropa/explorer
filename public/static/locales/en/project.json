@@ -31,6 +31,7 @@
     "adjective": "Adjective",
     "time": "Time",
     "place": "Place",
-    "gesture": "Gesture"
+    "gesture": "Gesture",
+    "language": "Language"
   }
 }
