@@ -119,7 +119,7 @@ const getHighlightedText = (text, highlight) => {
   const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
     <span>{parts.map((part, i) => (
-      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold' } : {}}>{part}</span>
+      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', backgroundColor: '#F2BB05', padding: '0.1em' } : {}}>{part}</span>
     ))}</span>
   );
 };
