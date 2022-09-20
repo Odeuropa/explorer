@@ -32,7 +32,7 @@ services:
       - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
       - ./pages/index.js:/usr/src/app/src/pages/index.js
       - ./pages/browse.js:/usr/src/app/src/pages/browse.js
-      - ./pages/details/odeuropa-details.js:/usr/src/app/src/pages/details/odeuropa-details.js
+      - ./pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
       - ./pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
       - ./pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
       - ./pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js

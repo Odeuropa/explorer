@@ -6,7 +6,7 @@ module.exports = {
     view: 'odeuropa-vocabulary-details',
     showPermalink: false,
     excludedMetadata: [],
-    route: 'smells',
+    route: 'texts',
     query: ({ language }) => ({
       '@graph': [
         {

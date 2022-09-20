@@ -31,10 +31,10 @@ module.exports = {
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
   filterByGraph: true,
   details: {
-    view: 'odeuropa-details',
+    view: 'odeuropa-texts',
     showPermalink: true,
     excludedMetadata: ['textualObject'],
-    route: 'smells',
+    route: 'texts',
   },
   textSearchFunc: (q) => {
     const escapedValue = q.replace(escapeAll, characterReplacer);
@@ -50,7 +50,6 @@ module.exports = {
   },
   baseWhere: [
     'GRAPH ?g { ?id a od:L11_Smell }',
-    '?emission od:F1_generated ?id',
   ],
   query: ({ language }) => ({
     '@context': 'http://schema.org/',
@@ -60,79 +59,73 @@ module.exports = {
         '@id': '?id',
         '@graph': '?g',
         label: '?label',
-        carrier: '?carrierLabel',
-        source: '?sourceLabel',
-        adjective: '?adjective',
-        excerpt: '?excerpt',
-        time: '?timeLabel',
-        place: '?placeLabel',
-        textualObject: {
-          '@id': '?textualObject',
-          label: '?textualObjectLabel',
-          author: {
-            '@id': '?textualObjectAuthor',
-            label: '?textualObjectAuthorLabel',
-            sameAs: '?textualObjectAuthorSameAs',
+        relevantFragment: '?relevantFragment',
+        source: {
+          '@id': '?source',
+          label: '?sourceLabel',
+          fragments: {
+            '@id': '?fragment',
+            'value': '?fragmentValue',
           },
-          date: '?textualObjectDate',
-          genre: '?textualObjectGenre',
-          language: '?textualObjectLanguage',
+          author: {
+            '@id': '?sourceAuthor',
+            label: '?sourceAuthorLabel',
+            sameAs: '?sourceAuthorSameAs',
+          },
+          date: '?sourceDate',
+          genre: '?sourceGenre',
+          language: '?sourceLanguage',
         },
+        smellSource: {
+          '@id': '?smellSource',
+          label: '?smellSourceLabel',
+        },
+        carrier: {
+          '@id': '?carrier',
+          label: '?carrierLabel',
+        },
+        time: {
+          '@id': '?time',
+          label: '?timeLabel',
+        },
+        place: {
+          '@id': '?place',
+          label: '?placeLabel',
+        },
+        adjective: '?adjective',
       }
     ],
     $where: [
       `
         GRAPH ?g { ?id a od:L11_Smell . }
-        ?emission od:F1_generated ?id .
         ?id rdfs:label ?label .
+        ?source crm:P67_refers_to ?id .
+        ?source crm:P165_incorporates ?fragment .
+        ?fragment rdf:value ?fragmentValue .
 
         {
           OPTIONAL {
-            ?textualObject crm:P67_refers_to ?id .
-            {
-              OPTIONAL {
-                ?textualObject rdfs:label ?textualObjectLabel .
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?textualObject <https://schema.org/author> ?textualObjectAuthor .
-                {
-                  OPTIONAL {
-                    ?textualObjectAuthor rdfs:label ?textualObjectAuthorLabel .
-                  }
-                }
-                UNION
-                {
-                  OPTIONAL {
-                    ?textualObjectAuthor owl:sameAs ?textualObjectAuthorSameAs .
-                  }
-                }
-              }
-            }
-            UNION
-            {
-              ?textualObject <https://schema.org/dateCreated> / rdfs:label ?textualObjectDate .
-            }
-            UNION
-            {
-              ?textualObject <https://schema.org/genre> / rdfs:label ?textualObjectGenre .
-            }
-            UNION
-            {
-              ?textualObject <https://schema.org/inLanguage> ?textualObjectLanguage .
-            }
+            ?relevantFragment crm:P67_refers_to ?id .
+            FILTER(?relevantFragment != ?source)
           }
         }
         UNION
         {
+          ?source rdfs:label ?sourceLabel .
+        }
+        UNION
+        {
           OPTIONAL {
-            ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+            ?source schema:author ?sourceAuthor .
             {
               OPTIONAL {
-                ?source skos:prefLabel ?sourceLabel .
-                FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+                ?sourceAuthor rdfs:label ?sourceAuthorLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
               }
             }
           }
@@ -140,15 +133,46 @@ module.exports = {
         UNION
         {
           OPTIONAL {
-            ?emission od:F4_had_carrier ?carrier .
-            ?carrier rdfs:label ?carrierLabel .
+            ?source schema:dateCreated / rdfs:label ?sourceDate .
           }
         }
         UNION
         {
           OPTIONAL {
-            ?emission time:hasTime ?time .
-            ?time rdfs:label ?timeLabel .
+            ?source schema:genre / rdfs:label ?sourceGenre .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:inLanguage ?sourceLanguage .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?emission od:F1_generated ?id .
+            {
+              OPTIONAL {
+                ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
+                ?smellSource skos:prefLabel ?smellSourceLabel .
+                FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?emission od:F4_had_carrier ?carrier .
+                ?carrier rdfs:label ?carrierLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?emission time:hasTime ?time .
+                ?time rdfs:label ?timeLabel .
+              }
+            }
           }
         }
         UNION
@@ -171,14 +195,7 @@ module.exports = {
             ?assignment crm:P140_assigned_attribute_to ?id .
           }
         }
-        UNION
-        {
-          OPTIONAL {
-            ?fragment a crm:E33_Linguistic_Object .
-            ?fragment crm:P67_refers_to ?id .
-            ?fragment rdf:value ?excerpt .
-          }
-        }
+        #
         `
     ],
     $langTag: 'hide',
