@@ -98,6 +98,7 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   const { query } = router;
   const [session] = NextAuth.useSession();
   const route = config.routes[query.type];
+  const [isItemSaved, setIsItemSaved] = useState(inList);
 
   if (!result) {
     return (
@@ -124,7 +125,6 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
 
   const pageTitle = getEntityMainLabel(result, { route, language: i18n.language });
 
-  const [isItemSaved, setIsItemSaved] = useState(inList);
   const onItemSaveChange = (status) => {
     setIsItemSaved(status);
   };
