@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 import NextAuth from 'next-auth/client';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -93,7 +93,15 @@ Panel.Value = styled.div`
   font-size: 1.2rem;
 `;
 
-const ExcerptContainer = styled.div`
+const ExcerptPreview = styled.span`
+  color: #333;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  opacity: 0;
+  padding: 0 12px;
 `;
 
 const ExcerptTitle = styled.div`
@@ -111,6 +119,14 @@ const ExcerptTitle = styled.div`
   }
 `;
 
+const ExcerptContainer = styled.div`
+  ${props => css`
+    ${ExcerptTitle}:hover ${ExcerptPreview} {
+      opacity: ${props.active ? 0 : 1};
+    }
+  `}
+`;
+
 const getHighlightedText = (text, highlight) => {
   if (typeof highlight === 'undefined' || highlight === null) {
     return <span>{text}</span>;
@@ -119,6 +135,7 @@ const getHighlightedText = (text, highlight) => {
   const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
     <span>{parts.map((part, i) => (
+      // eslint-disable-next-line react/no-array-index-key
       <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', backgroundColor: '#F2BB05', padding: '0.1em' } : {}}>{part}</span>
     ))}</span>
   );
@@ -134,9 +151,10 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const route = config.routes[query.type];
   const [isItemSaved, setIsItemSaved] = useState(inList);
   const [fragments, setFragments] = useState([]);
-  const [openedExcerpts, setOpenedExcerpts] = useState([result.relevantFragment]);
+  const [openedExcerpts, setOpenedExcerpts] = useState([]);
 
   useEffect(() => {
+    if (!result) return;
     if (result.relevantFragment) {
       setOpenedExcerpts([result.relevantFragment]);
     }
@@ -147,7 +165,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       return a['@id'] === result.relevantFragment ? -1 : 1;
     });
     setFragments(fragmentsList);
-  }, []);
+  }, [result]);
 
   if (!result) {
     return (
@@ -204,7 +222,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
-            <Fragment key={subtitle}>
+            <Fragment key={i}>
               {subtitle}
               {i > 0 && i < subtitles.length - 1 && ', '}
             </Fragment>
@@ -290,7 +308,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
             {fragments.map((fragment, i) => (
               <Element key={fragment['@id']} id={slugify(fragment['@id'])}>
-                <ExcerptContainer style={{ backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '' }}>
+                <ExcerptContainer active={openedExcerpts.includes(fragment['@id'])} style={{ backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '' }}>
                   <ExcerptTitle onClick={() => {
                     setOpenedExcerpts(prev => prev.includes(fragment['@id']) ? prev.filter(x => x !== fragment['@id']) : [...prev, fragment['@id']]);
                   }}>
@@ -300,7 +318,10 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                     }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z"/></svg>
                     </a>
-                    <span style={{ marginLeft: '12px', flex: 1 }}>Excerpt {i + 1}</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                      <span style={{ marginLeft: 12, marginRight: 12 }}>Excerpt {i + 1}</span>
+                      <ExcerptPreview>{getHighlightedText(fragment.value, fragment['@id'] === result.relevantFragment ? mainLabel : null)}</ExcerptPreview>
+                    </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ fill: '#333', transform: openedExcerpts.includes(fragment['@id']) ? 'rotate(0deg)' : 'rotate(180deg)' }}><path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z"/></svg>
                   </ExcerptTitle>
                   {openedExcerpts.includes(fragment['@id']) && renderExcerpt(fragment.value, fragment['@id'] === result.relevantFragment ? mainLabel : null)}
