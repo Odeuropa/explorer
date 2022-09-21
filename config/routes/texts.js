@@ -63,6 +63,7 @@ module.exports = {
         source: {
           '@id': '?source',
           label: '?sourceLabel',
+          url: '?sourceUrl',
           fragments: {
             '@id': '?fragment',
             'value': '?fragmentValue',
@@ -73,7 +74,10 @@ module.exports = {
             sameAs: '?sourceAuthorSameAs',
           },
           date: '?sourceDate',
-          genre: '?sourceGenre',
+          genre: {
+            '@id': '?sourceGenre',
+            label: '?sourceGenreLabel',
+          },
           language: '?sourceLanguage',
         },
         smellSource: {
@@ -104,14 +108,20 @@ module.exports = {
         ?fragment rdf:value ?fragmentValue .
 
         {
+          ?source rdfs:label ?sourceLabel .
+        }
+        UNION
+        {
           OPTIONAL {
-            ?relevantFragment crm:P67_refers_to ?id .
-            FILTER(?relevantFragment != ?source)
+            ?source schema:url ?sourceUrl .
           }
         }
         UNION
         {
-          ?source rdfs:label ?sourceLabel .
+          OPTIONAL {
+            ?relevantFragment crm:P67_refers_to ?id .
+            FILTER(?relevantFragment != ?source)
+          }
         }
         UNION
         {
@@ -139,7 +149,8 @@ module.exports = {
         UNION
         {
           OPTIONAL {
-            ?source schema:genre / rdfs:label ?sourceGenre .
+            ?source schema:genre ?sourceGenre .
+            ?sourceGenre rdfs:label ?sourceGenreLabel .
           }
         }
         UNION
@@ -195,7 +206,6 @@ module.exports = {
             ?assignment crm:P140_assigned_attribute_to ?id .
           }
         }
-        #
         `
     ],
     $langTag: 'hide',
