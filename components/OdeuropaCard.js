@@ -119,7 +119,7 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
         </Title>
         {item.time && (
           <Date>
-            {item.time}
+            {item.time.label}
           </Date>
         )}
       </Header>
