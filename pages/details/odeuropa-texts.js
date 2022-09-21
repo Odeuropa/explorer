@@ -307,6 +307,29 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
             <Separator />
 
+            <Element marginBottom={24} display="flex">
+              <Panel>
+                <Panel.Title>Smell Emission</Panel.Title>
+                <Panel.Body>
+                  {renderPanelRow('Source', result.smellSource)}
+                  {renderPanelRow('Carrier', result.carrier)}
+                  {renderPanelRow('Date', result.time)}
+                  {renderPanelRow('Place', result.place)}
+                </Panel.Body>
+              </Panel>
+
+              <Panel>
+                <Panel.Title>Olfactory Experience</Panel.Title>
+                <Panel.Body>
+                  {renderPanelRow('Actor', result.actor)}
+                  {renderPanelRow('Gesture', result.gesture)}
+                  {renderPanelRow('Defined as', result.adjective)}
+                </Panel.Body>
+              </Panel>
+            </Element>
+
+            <Separator />
+
             {fragments.map((fragment, i) => (
               <Element key={fragment['@id']} id={slugify(fragment['@id'])}>
                 <ExcerptContainer active={openedExcerpts.includes(fragment['@id'])} style={{ backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '' }}>
@@ -330,27 +353,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 <Separator />
               </Element>
             ))}
-
-            {/* <Element marginBottom={24} display="flex">
-              <Panel>
-                <Panel.Title>Smell Emission</Panel.Title>
-                <Panel.Body>
-                  {renderPanelRow('Source', result.source)}
-                  {renderPanelRow('Carrier', result.carrier)}
-                  {renderPanelRow('Date', result.time)}
-                  {renderPanelRow('Place', result.place)}
-                </Panel.Body>
-              </Panel>
-
-              <Panel>
-                <Panel.Title>Olfactory Experience</Panel.Title>
-                <Panel.Body>
-                  {renderPanelRow('Actor', result.actor)}
-                  {renderPanelRow('Gesture', result.gesture)}
-                  {renderPanelRow('Defined as', result.adjective)}
-                </Panel.Body>
-              </Panel>
-            </Element> */}
 
             <Debug>
               <Metadata label="HTTP Parameters">
