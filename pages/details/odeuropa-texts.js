@@ -244,7 +244,8 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       return null;
     }
 
-    const renderedValue = Array.isArray(value) ? value.join(', ') : value;
+    const values = [].concat(value).filter(x => x);
+    const renderedValue = values.map(v => typeof v === 'object' ? v.label : v).join(', ');
 
     return (
       <Panel.Row>
