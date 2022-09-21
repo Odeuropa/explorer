@@ -271,24 +271,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 alignItems="center"
                 justifyContent="space-between"
               >
-                {result.sameAs && (
-                  <small>
-                    (
-                      <a href={result.sameAs} target="_blank" rel="noopener noreferrer">
-                        {t('common:buttons.original')}
-                      </a>
-                    )
-                  </small>
-                )}
-                {route.details.showPermalink && (
-                  <small>
-                    (
-                    <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
-                      {t('common:buttons.permalink')}
-                    </a>
-                    )
-                  </small>
-                )}
                 {session && (
                   <SaveButton
                     type={query.type}
@@ -300,7 +282,19 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
               </Element>
 
               <Element marginBottom={12} display="flex">
-                <GraphLink uri={result['@graph']} icon label />
+                <GraphLink uri={result['@graph']} icon label />{' '}
+                {route.details.showPermalink && (
+                  <small>
+                    (
+                    <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
+                      {t('common:buttons.permalink')}
+                    </a>
+                    )
+                  </small>
+                )}
+                <small style={{ marginLeft: 'auto', paddingLeft: 12 }}>
+                  {t('project:buttons.source')} <a href={result.source?.url} target="_blank" rel="noopener noreferrer">{result.source?.url}</a>
+                </small>
               </Element>
             </Element>
 
