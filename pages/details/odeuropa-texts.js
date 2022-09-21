@@ -222,6 +222,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
+            // eslint-disable-next-line react/no-array-index-key
             <Fragment key={i}>
               {subtitle}
               {i > 0 && i < subtitles.length - 1 && ', '}

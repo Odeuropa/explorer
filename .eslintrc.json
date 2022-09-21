@@ -1,25 +1,37 @@
 {
   "parser": "@babel/eslint-parser",
   "env": {
-    "browser": true
+    "browser": true,
+    "es2021": true
   },
-  "extends": ["next", "prettier"],
-  "plugins": ["import", "prettier"],
+  "extends": ["plugin:react/recommended", "airbnb", "prettier"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "prettier"],
   "settings": {
     "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules", "node_modules/exploratory-search/node_modules"]
+      },
       "babel-module": {
-        "root": ["."],
+        "root": ["./node_modules/exploratory-search", "."],
         "alias": {
-          "@components": "./src/components",
-          "@helpers": "./src/helpers",
-          "@pages": "./src/pages",
-          "@styles": "./src/styles",
-          "~": "."
+          "@components": ["./node_modules/exploratory-search/src/components", "./components"],
+          "@helpers": ["./node_modules/exploratory-search/src/helpers", "./helpers"],
+          "@pages": ["./node_modules/exploratory-search/src/pages", "./pages"],
+          "@styles": ["./node_modules/exploratory-search/src/styles", "./styles"],
+          "~": ["./node_modules/exploratory-search", "."]
         }
       }
     }
   },
   "rules": {
+    "react/no-danger": 0,
     "react/react-in-jsx-scope": 0,
     "react/prop-types": 0,
     "react/jsx-filename-extension": 0,

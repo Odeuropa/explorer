@@ -4,13 +4,13 @@
     [
       "module-resolver",
       {
-        "root": ["."],
+        "root": ["./node_modules/exploratory-search", "."],
         "alias": {
-          "@components": "./src/components",
-          "@helpers": "./src/helpers",
-          "@pages": "./src/pages",
-          "@styles": "./src/styles",
-          "~": "."
+          "@components": ["./node_modules/exploratory-search/src/components", "./components"],
+          "@helpers": ["./node_modules/exploratory-search/src/helpers", "./helpers"],
+          "@pages": ["./node_modules/exploratory-search/src/pages", "./pages"],
+          "@styles": ["./node_modules/exploratory-search/src/styles", "./styles"],
+          "~": ["./node_modules/exploratory-search", "."]
         }
       }
     ],
