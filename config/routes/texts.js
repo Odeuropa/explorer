@@ -242,9 +242,7 @@ module.exports = {
         '?emission time:hasTime ?time',
         '?time rdfs:label ?timeLabel',
       ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || ')];
-      },
+      filterFunc: (values) => [values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || ')],
     },
     {
       id: 'place',
@@ -280,9 +278,7 @@ module.exports = {
         '?experience crm:P7_took_place_at ?place',
         '?place rdfs:label ?placeLabel',
       ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || ')];
-      },
+      filterFunc: (values) => [values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || ')],
     },
     {
       id: 'source',
@@ -313,9 +309,7 @@ module.exports = {
         '?emission od:F3_had_source / crm:P137_exemplifies ?source',
         '?source skos:prefLabel ?sourceLabel'
       ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?sourceLabel) = ${JSON.stringify(val)}`).join(' || ')];
-      },
+      filterFunc: (values) => [values.map((val) => `STR(?sourceLabel) = ${JSON.stringify(val)}`).join(' || ')],
     },
     {
       id: 'carrier',
@@ -348,9 +342,7 @@ module.exports = {
         '?emission od:F4_had_carrier ?carrier',
         '?carrier rdfs:label ?carrierLabel',
       ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || ')];
-      },
+      filterFunc: (values) => [values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || ')],
     },
     {
       id: 'language',
@@ -374,9 +366,7 @@ module.exports = {
         '?textualObject crm:P67_refers_to ?id .',
         '?textualObject schema:inLanguage ?language'
       ],
-      filterFunc: (values) => {
-        return [values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || ')];
-      },
+      filterFunc: (values) => [values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || ')],
     },
   ],
 };
