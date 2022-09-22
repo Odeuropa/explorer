@@ -5,6 +5,13 @@ services:
       - '4833:3000'
     environment:
       - NODE_ENV=production
+    volumes:
+      - ./src:/custom/src
+      - ./public:/custom/public
+      - ./config:/custom/config
+      - ./config.js:/custom/config.js
+      - ./theme.js:/custom/theme.js
+    command: sh -c "cp -r /custom/* /usr/src/app/ && npm run build && npm start"
     restart: unless-stopped
   mongo:
     restart: unless-stopped
