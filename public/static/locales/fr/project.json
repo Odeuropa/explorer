@@ -16,7 +16,7 @@
     "gesture": "Geste"
   },
   "routes": {
-    "smells": "Recherche",
+    "texts": "Recherche",
     "smell-sources": "Sources d'odeurs",
     "odour-carriers": "Porteurs d'odeurs",
     "fragrant-spaces": "Espaces parfumés"
