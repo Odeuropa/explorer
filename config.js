@@ -46,7 +46,6 @@ module.exports = {
       'olfactory-objects': 'http://data.odeuropa.eu/vocabulary/olfactory-objects/',
       'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
       'reo': 'https://read-it.acc.hum.uu.nl/ontology#',
-      'reo': 'https://read-it.acc.hum.uu.nl/ontology#',
       'schema': 'https://schema.org/',
       'skos': 'http://www.w3.org/2004/02/skos/core#',
       'time': 'http://www.w3.org/2006/time#',
