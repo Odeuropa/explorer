@@ -30,13 +30,13 @@ services:
       - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
       - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
-      - ./pages/index.js:/usr/src/app/src/pages/index.js
-      - ./pages/browse.js:/usr/src/app/src/pages/browse.js
-      - ./pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
-      - ./pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
-      - ./pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
-      - ./pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
-      - ./components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
+      - ./src/pages/index.js:/usr/src/app/src/pages/index.js
+      - ./src/pages/browse.js:/usr/src/app/src/pages/browse.js
+      - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
+      - ./src/pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
+      - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
+      - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
+      - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
     environment:
       - NODE_ENV=development
       - PORT=3001
