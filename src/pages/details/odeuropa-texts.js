@@ -292,9 +292,11 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                     )
                   </small>
                 )}
-                <small style={{ marginLeft: 'auto', paddingLeft: 12 }}>
-                  {t('project:buttons.source')} <a href={result.source?.url} target="_blank" rel="noopener noreferrer">{result.source?.url}</a>
-                </small>
+                {result.source?.url && (
+                  <small style={{ marginLeft: 'auto', paddingLeft: 12 }}>
+                    {t('project:buttons.source')} <a href={result.source?.url} target="_blank" rel="noopener noreferrer">{result.source?.url}</a>
+                  </small>
+                )}
               </Element>
             </Element>
 
