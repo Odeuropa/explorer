@@ -14,7 +14,8 @@ module.exports = {
         {
           '@id': '?id',
           label: '?label',
-          image: '?imageUrl'
+          image: '?imageUrl',
+          genre: '?genre',
         },
       ],
       $where: [
@@ -27,6 +28,10 @@ module.exports = {
         {
           ?id schema:image ?imageUrl .
           FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+        }
+        UNION
+        {
+          ?id schema:genre ?genre .
         }
         `
       ],

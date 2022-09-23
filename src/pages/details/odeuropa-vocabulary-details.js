@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -13,12 +14,13 @@ import Footer from '@components/Footer';
 import Layout from '@components/Layout';
 import Body from '@components/Body';
 import Element from '@components/Element';
+import Spinner from '@components/Spinner';
 import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
-import { slugify, uriToId } from '@helpers/utils';
+import { absoluteUrl, slugify, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
@@ -58,9 +60,11 @@ const Result = styled.div`
 
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
-  const router = useRouter();
-  const { query } = router;
+  const { req, query } = useRouter();
   const route = config.routes[query.type];
+  const [wordCloud, setWordCloud] = useState();
+  const [texts, setTexts] = useState();
+  const [visuals, setVisuals] = useState();
 
   if (!result) {
     return (
@@ -85,15 +89,36 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     );
   }
 
+  useEffect(() => {
+    const q = {
+      id: result['@id'],
+      type: query.type,
+      locale: i18n.langauge,
+    }
+    const qs = queryString.stringify(q);
+
+    (async () => {
+      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-wordcloud?${qs}`)).json();
+      setWordCloud(results.error ? null : results.map(word => ({
+        value: word,
+        count: Math.random()
+      })));
+    })();
+
+    (async () => {
+      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)).json();
+      setTexts(results.error ? null : results);
+    })();
+
+    (async () => {
+      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)).json();
+      setVisuals(results.error ? null : results);
+    })();
+  }, [result]);
+
   const pageTitle = getEntityMainLabel(result, { route, language: i18n.language });
 
   const related = (Array.isArray(result.related) ? result.related : [result.related]).filter(x => x)
-
-  const adjectives = (Array.isArray(result.adjective) ? result.adjective : [result.adjective]).filter(x => x)
-  const tags = adjectives.map(adj => ({
-    value: adj,
-    count: Math.random()
-  }))
 
   const cardRoute = config.routes[route.details.route]
 
@@ -138,41 +163,62 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         </Element>
 
         <Element style={{ padding: '1em', width: 350, textAlign: 'center' }}>
-          <TagCloud
-            minSize={8}
-            maxSize={35}
-            tags={tags}
-          />
+          {typeof wordCloud === 'undefined' && (
+            <Element display="flex" alignItems="center">
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              Loading word cloud...
+            </Element>
+          )}
+          {wordCloud === null && <span style={{ color: 'red' }}>Word cloud could not be loaded at that moment</span>}
+          {wordCloud && (
+            <TagCloud
+              minSize={8}
+              maxSize={35}
+              tags={wordCloud}
+            />
+          )}
         </Element>
 
-        {result.items?.length > 0 && (
-          <Element>
-            <Element style={{ padding: '1em', color: 'gray' }}>
-              <h2>In texts ({result.items.length} occurrences)</h2>
+        <Element style={{ padding: '1em', color: 'gray' }}>
+          {typeof texts === 'undefined' && (
+            <Element display="flex" alignItems="center">
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              Loading textual occurrences...
             </Element>
-            <Results>
-              {result.items.map(item => (
-                <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                  <OdeuropaCard item={item} route={cardRoute} type={route.details.route} />
-                </Result>
-              ))}
-            </Results>
-          </Element>
+          )}
+          {texts === null && <span style={{ color: 'red' }}>Textual occurrences could not be loaded at that moment</span>}
+          {texts && <h2>In texts ({texts.length} occurrences)</h2>}
+        </Element>
+
+        {texts && (
+          <Results>
+            {texts.map(item => (
+              <Result key={item['@id']} style={{ margin: '0 1em' }}>
+                <OdeuropaCard item={item} route={cardRoute} type={route.details.route} />
+              </Result>
+            ))}
+          </Results>
         )}
 
-        {result.images?.length > 0 && (
-          <Element>
-            <Element style={{ padding: '1em', color: 'gray' }}>
-              <h2>In images ({result.images.length} occurrences)</h2>
+        <Element style={{ padding: '1em', color: 'gray' }}>
+          {typeof visuals === 'undefined' && (
+            <Element display="flex" alignItems="center">
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              Loading visual occurrences...
             </Element>
-            <Results>
-              {result.images.map(item => (
-                <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                  <OdeuropaCard item={item} route={config.routes.visuals} type="visuals" />
-                </Result>
-              ))}
-            </Results>
-          </Element>
+          )}
+          {visuals === null && <span style={{ color: 'red' }}>Visual occurrences could not be loaded at that moment</span>}
+          {visuals && <h2>In images ({visuals.length} occurrences)</h2>}
+        </Element>
+
+        {visuals && (
+          <Results>
+            {visuals.map(item => (
+              <Result key={item['@id']} style={{ margin: '0 1em' }}>
+                <OdeuropaCard item={item} route={config.routes.visuals} type="visuals" />
+              </Result>
+            ))}
+          </Results>
         )}
 
         <Debug>
@@ -206,6 +252,7 @@ export async function getServerSideProps({ req, res, query, locale }) {
           : undefined,
     })
   ).json();
+
 
   if (!result && res) {
     res.statusCode = 404;

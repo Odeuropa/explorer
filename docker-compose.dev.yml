@@ -36,6 +36,9 @@ services:
       - ./src/pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
       - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
       - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
+      - ./src/pages/api/odeuropa/vocabulary-wordcloud.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-wordcloud.js
+      - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js
+      - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
     environment:
       - NODE_ENV=development
