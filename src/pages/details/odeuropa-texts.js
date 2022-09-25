@@ -218,7 +218,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
           Textual resource
         </Element>
         <Element style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}>
-          {source.label.substr(0, MAX_TITLE_LENGTH - 1) + (source.label.length > MAX_TITLE_LENGTH ? '…' : '')}
+          {source.label && source.label.substr(0, MAX_TITLE_LENGTH - 1) + (source.label.length > MAX_TITLE_LENGTH ? '…' : '')}
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
