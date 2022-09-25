@@ -239,6 +239,7 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
+        '?emission od:F1_generated ?id',
         '?emission time:hasTime ?time',
         '?time rdfs:label ?timeLabel',
       ],
@@ -306,6 +307,7 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
+        '?emission od:F1_generated ?id',
         '?emission od:F3_had_source / crm:P137_exemplifies ?source',
         '?source skos:prefLabel ?sourceLabel'
       ],
@@ -339,6 +341,7 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
+        '?emission od:F1_generated ?id',
         '?emission od:F4_had_carrier ?carrier',
         '?carrier rdfs:label ?carrierLabel',
       ],
