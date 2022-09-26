@@ -319,6 +319,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 <Panel.Title>Olfactory Experience</Panel.Title>
                 <Panel.Body>
                   {renderPanelRow('Actor', result.actor)}
+                  {renderPanelRow('Emotion', result.emotion)}
                   {renderPanelRow('Defined as', result.adjective)}
                 </Panel.Body>
               </Panel>
