@@ -246,14 +246,22 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     }
 
     const values = [].concat(value).filter(x => x);
-    const renderedValue = values.map(v => typeof v === 'object' ? v.label : v).join(', ');
+    const renderedValue = values.map(v => {
+      if (typeof v === 'object') {
+        if (v.type) {
+          return <>{v.label} <small>({v.type})</small></>;
+        }
+        return v.label;
+      }
+      return v;
+    }).reduce((prev, curr) => [prev, ', ', curr]);
 
     return (
       <Panel.Row>
         <Panel.Label>{label}</Panel.Label>
         <Panel.Value>{renderedValue}</Panel.Value>
       </Panel.Row>
-    )
+    );
   }
 
   return (
