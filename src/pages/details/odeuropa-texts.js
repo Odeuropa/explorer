@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
-import NextAuth from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
 import 'react-image-lightbox/style.css';
@@ -147,7 +147,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
   const { query } = router;
-  const [session] = NextAuth.useSession();
+  const { data: session } = useSession();
   const route = config.routes[query.type];
   const [isItemSaved, setIsItemSaved] = useState(inList);
   const [fragments, setFragments] = useState([]);
