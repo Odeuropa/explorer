@@ -132,12 +132,13 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
         {renderCardRow('Date', item.time)}
         {renderCardRow('Place', item.place)}
 
-        {(item.actor || item.gesture || item.adjective) && (
+        {(item.actor || item.gesture || item.emotion || item.adjective) && (
           <Separator>Olfactory Experience</Separator>
         )}
 
         {renderCardRow('Actor', item.actor)}
         {renderCardRow('Gesture', item.gesture)}
+        {renderCardRow('Emotion', item.emotion)}
         {renderCardRow('Defined as', item.adjective)}
       </Body>
       <Footer>

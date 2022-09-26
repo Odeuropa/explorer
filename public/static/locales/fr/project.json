@@ -13,7 +13,8 @@
     "adjective": "Adjectif",
     "time": "Temps",
     "place": "Lieux",
-    "gesture": "Geste"
+    "gesture": "Geste",
+    "emotion": "Émotion"
   },
   "routes": {
     "texts": "Recherche",
@@ -32,6 +33,7 @@
     "time": "Temps",
     "place": "Lieux",
     "gesture": "Geste",
+    "emotion": "Émotion",
     "language": "Langue"
   },
   "buttons": {

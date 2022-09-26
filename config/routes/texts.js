@@ -97,6 +97,11 @@ module.exports = {
           label: '?placeLabel',
         },
         adjective: '?adjective',
+        emotion: {
+          '@id': '?emotion',
+          label: '?emotionLabel',
+          type: '?emotionType',
+        }
       }
     ],
     $where: [
@@ -194,6 +199,16 @@ module.exports = {
               OPTIONAL {
                 ?experience crm:P7_took_place_at ?place .
                 ?place rdfs:label ?placeLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?emotion reo:readP27 ?experience .
+                OPTIONAL {
+                  ?emotion rdfs:label ?emotionLabel .
+                  ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
+                }
               }
             }
           }
@@ -346,6 +361,34 @@ module.exports = {
         '?carrier rdfs:label ?carrierLabel',
       ],
       filterFunc: (values) => [values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || ')],
+    },
+    {
+      id: 'emotion',
+      isMulti: true,
+      isSortable: true,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?emotionType',
+            label: '?emotionTypeLabel',
+          },
+        ],
+        $where: [
+          `
+          ?emotion reo:readP27 ?experience .
+          ?emotion crm:P137_exemplifies ?emotionType .
+          ?emotionType skos:prefLabel ?emotionTypeLabel .
+          FILTER(LANG(?emotionTypeLabel) = "${language}" || LANG(?emotionTypeLabel) = "")
+          `
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?experience od:F2_perceived ?id',
+        '?emotion reo:readP27 ?experience',
+        '?emotion crm:P137_exemplifies ?emotionType',
+      ],
+      filterFunc: (values) => [values.map((val) => `?emotionType = <${val}>`).join(' || ')],
     },
     {
       id: 'language',
