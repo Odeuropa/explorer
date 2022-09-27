@@ -32,6 +32,14 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
 ```
 
+## How to clear redis cache
+
+Sometimes clearing the redis cache might be required if the Knowledge Graph has been recently updated. This can be done using the following command:
+
+```bash
+docker-compose exec redis redis-cli flushall
+```
+
 ## License
 
 Odeuropa Explorer is [Apache licensed](https://github.com/Odeuropa/explorer/blob/main/LICENSE).
