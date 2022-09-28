@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    container_name: odeuropa-explorer-web
+    container_name: odeuropa-explorer_web
     build: https://github.com/D2KLab/explorer.git
     depends_on:
       - mongo
@@ -9,12 +9,12 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
   mongo:
-    container_name: odeuropa-explorer-mongo
+    container_name: odeuropa-explorer_mongo
     image: mongo
     volumes:
       - mongo:/data/db
   imaginary:
-    container_name: odeuropa-explorer-imaginary
+    container_name: odeuropa-explorer_imaginary
     image: h2non/imaginary:latest
     volumes:
       - images:/mnt/data
@@ -24,7 +24,7 @@ services:
     ports:
       - '9000:9000'
   redis:
-    container_name: odeuropa-explorer-redis
+    container_name: odeuropa-explorer_redis
     image: redis
 volumes:
   mongo: {}
