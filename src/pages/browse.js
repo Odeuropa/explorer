@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
 import queryString from 'query-string';
-import { useSWRInfinite } from 'swr';
+import useSWRInfinite from 'swr/infinite';
 import ReactPaginate from 'react-paginate';
 
 import Header from '@components/Header';
@@ -170,7 +170,8 @@ const ResultPage = styled.h3`
 `;
 
 const BrowsePage = ({ initialData }) => {
-  const { req, query, pathname } = useRouter();
+  const router = useRouter();
+  const { req, query, pathname } = router;
   const { t } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -208,17 +209,18 @@ const BrowsePage = ({ initialData }) => {
   }
   totalPages = Math.ceil(totalResults / PAGE_SIZE);
 
-  if (typeof window !== 'undefined') {
-    const debouncedHandleResize = useDebounce(() => {
+  const debouncedHandleResize = useDebounce(() => {
+    if (typeof window !== 'undefined') {
       setSidebarCollapsed(window.innerWidth <= sizes.mobile);
-    }, 1000);
-    useEffect(() => {
-      window.addEventListener('resize', debouncedHandleResize);
-      return () => {
-        window.removeEventListener('resize', debouncedHandleResize);
-      };
-    });
-  }
+    }
+  }, 1000);
+
+  useEffect(() => {
+    window?.addEventListener('resize', debouncedHandleResize);
+    return () => {
+      window?.removeEventListener('resize', debouncedHandleResize);
+    };
+  });
 
   const onSearch = (fields) => {
     const newQuery = {
@@ -231,6 +233,7 @@ const BrowsePage = ({ initialData }) => {
     setInitialPage(1);
     delete newQuery.page;
 
+    setIsPageLoading(true);
     Router.push(
       {
         pathname,
@@ -243,6 +246,7 @@ const BrowsePage = ({ initialData }) => {
   const loadPage = (pageNumber) => {
     setSize(1);
     setInitialPage(pageNumber);
+    setIsPageLoading(true);
     return Router.replace(
       {
         pathname,
@@ -283,6 +287,7 @@ const BrowsePage = ({ initialData }) => {
     setInitialPage(1);
     delete newQuery.page;
 
+    setIsPageLoading(true);
     return Router.replace(
       {
         pathname,
@@ -306,6 +311,7 @@ const BrowsePage = ({ initialData }) => {
     setInitialPage(1);
     delete newQuery.page;
 
+    setIsPageLoading(true);
     return Router.replace(
       {
         pathname,
@@ -328,6 +334,20 @@ const BrowsePage = ({ initialData }) => {
   useEffect(() => {
     if (isOnScreen) loadMore();
   }, [isOnScreen]);
+
+  useEffect(() => {
+    const onDoneLoading = () => {
+      setIsPageLoading(false);
+    }
+
+    router.events.on('routeChangeComplete', onDoneLoading);
+    router.events.on('routeChangeError', onDoneLoading);
+
+    return () => {
+      router.events.off('routeChangeComplete', onDoneLoading);
+      router.events.off('routeChangeError', onDoneLoading);
+    };
+  }, []);
 
   const route = config.routes[query.type];
 
@@ -368,10 +388,6 @@ const BrowsePage = ({ initialData }) => {
   };
 
   const renderEmptyResults = () => <p>{t('search:labels.noResults')}</p>;
-
-  Router.events.on('routeChangeStart', () => setIsPageLoading(true));
-  Router.events.on('routeChangeComplete', () => setIsPageLoading(false));
-  Router.events.on('routeChangeError', () => setIsPageLoading(false));
 
   return (
     <Layout>
@@ -478,7 +494,7 @@ const BrowsePage = ({ initialData }) => {
                   breakClassName="break"
                   pageCount={totalPages}
                   initialPage={initialPage - 1}
-                  forcePage={currentPage - 1}
+                  forcePage={currentPage > 1 ? currentPage - 1 : undefined}
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={5}
                   onPageChange={onPageChange}
@@ -527,7 +543,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'search', 'project']),
+      ...await serverSideTranslations(locale, ['common', 'project', 'search']),
       initialData: {
         results: searchData.results,
         totalResults: searchData.totalResults,

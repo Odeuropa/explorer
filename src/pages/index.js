@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import styled, { css } from 'styled-components';
 import { SearchAlt2 } from '@styled-icons/boxicons-regular/SearchAlt2';
-import { Button as ReakitButton } from 'reakit';
+import { Button as ReakitButton } from 'ariakit';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
@@ -275,7 +275,7 @@ const HomePage = () => {
 
 export const getStaticProps = async ({ locale }) => ({
   props: {
-    ...await serverSideTranslations(locale, ['common', 'home']),
+    ...await serverSideTranslations(locale, ['common', 'home', 'project', 'search']),
   },
 });
 
