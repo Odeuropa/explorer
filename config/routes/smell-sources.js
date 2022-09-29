@@ -49,10 +49,10 @@ module.exports = {
             ?assignment crm:P140_assigned_attribute_to ?smell .
           }
         }
-        `
+        `,
       ],
       $langTag: 'hide',
-    })
+    }),
   },
   query: ({ language }) => ({
     $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning Wikidata entities
@@ -63,7 +63,7 @@ module.exports = {
         related: {
           '@id': '?related',
           label: '?relatedLabel',
-        }
+        },
       },
     ],
     $where: [
@@ -85,7 +85,7 @@ module.exports = {
           FILTER(LANG(?relatedLabel) = "${language}" || LANG(?relatedLabel) = "")
         }
       }
-      `
+      `,
     ],
     $orderby: 'ASC(?sourceLabel)',
     $langTag: 'hide',
@@ -95,7 +95,7 @@ module.exports = {
       query: () => ({
         '@graph': [
           {
-            'word': '?adjective',
+            word: '?adjective',
           },
         ],
         $where: [
@@ -113,11 +113,11 @@ module.exports = {
               ?assignment crm:P140_assigned_attribute_to ?smell .
             }
           }
-          `
+          `,
         ],
         $langTag: 'hide',
         $limit: 15,
-      })
+      }),
     },
     visuals: {
       query: () => ({
@@ -125,8 +125,8 @@ module.exports = {
           {
             '@id': '?image',
             label: '?imageLabel',
-            image: '?imageUrl'
-          }
+            image: '?imageUrl',
+          },
         ],
         $where: [
           `
@@ -146,10 +146,10 @@ module.exports = {
               ?image rdfs:label ?imageLabel .
             }
           }
-          `
+          `,
         ],
         $langTag: 'hide',
-      })
+      }),
     },
     texts: {
       query: ({ language }) => ({
@@ -163,7 +163,7 @@ module.exports = {
             adjective: '?item_adjective',
             time: '?item_timeLabel',
             place: '?item_placeLabel',
-          }
+          },
         ],
         $where: [
           `
@@ -232,10 +232,10 @@ module.exports = {
               }
             }
           }
-          `
+          `,
         ],
         $langTag: 'hide',
-      })
-    }
-  }
+      }),
+    },
+  },
 };

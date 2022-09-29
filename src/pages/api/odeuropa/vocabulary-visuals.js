@@ -14,7 +14,11 @@ export default withRequestValidation({
     return;
   }
 
-  const visualsQuery = JSON.parse(JSON.stringify(getQueryObject(route['odeuropa-vocabulary'].visuals.query, { language: query.locale })));
+  const visualsQuery = JSON.parse(
+    JSON.stringify(
+      getQueryObject(route['odeuropa-vocabulary'].visuals.query, { language: query.locale })
+    )
+  );
   visualsQuery.$filter = visualsQuery.$filter || [];
   visualsQuery.$filter.push(`?id = <${query.id}>`);
 

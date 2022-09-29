@@ -16,7 +16,7 @@ const Container = styled.div`
 const Header = styled.div`
   font-family: Garamond;
   font-weight: bold;
-  background-color: #B9D59B;
+  background-color: #b9d59b;
   padding: 0.25rem 0.75rem;
   text-transform: uppercase;
   display: flex;
@@ -62,9 +62,10 @@ const Separator = styled.div`
   --text-divider-gap: 0.5rem;
   text-transform: uppercase;
   font-size: 0.8rem;
-  color: #464C5A;
+  color: #464c5a;
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     height: 1px;
     background-color: silver;
@@ -81,7 +82,7 @@ const Separator = styled.div`
 `;
 
 const Footer = styled.div`
-  background-color: #B9D59B;
+  background-color: #b9d59b;
   text-align: center;
   padding: 0.5em 0.75em;
   text-transform: uppercase;
@@ -93,47 +94,56 @@ const renderCardRow = (label, value) => {
     return null;
   }
 
-  const values = [].concat(value).filter(x => x);
-    const renderedValue = values.map(v => {
-    if (typeof v === 'object') {
-      if (v.type) {
-        return <>{v.label} <small>({v.type})</small></>;
+  const values = [].concat(value).filter((x) => x);
+  const renderedValue = values
+    .map((v) => {
+      if (typeof v === 'object') {
+        if (v.type) {
+          return (
+            <>
+              {v.label} <small>({v.type})</small>
+            </>
+          );
+        }
+        return v.label;
       }
-      return v.label;
-    }
-    return v;
-  }).reduce((prev, curr) => [prev, ', ', curr]);
+      return v;
+    })
+    .reduce((prev, curr) => [prev, ', ', curr]);
 
   return (
     <Row>
       <Label>{label}</Label>
       <Value>{renderedValue}</Value>
     </Row>
-  )
-}
+  );
+};
 
 const OdeuropaCard = ({ item, route, type, ...props }) => {
   const { i18n } = useTranslation();
 
   if (!item || !item['@id']) return null;
 
-  const mainLabel = getEntityMainLabel(item, { route, language: i18n.language })
+  const mainLabel = getEntityMainLabel(item, { route, language: i18n.language });
 
   return (
     <Container {...props}>
       <Header>
-        <Title title={mainLabel}>
-          {mainLabel}
-        </Title>
-        {item.time && (
-          <Date>
-            {item.time.label}
-          </Date>
-        )}
+        <Title title={mainLabel}>{mainLabel}</Title>
+        {item.time && <Date>{item.time.label}</Date>}
       </Header>
       <Body>
         {item.image && (
-          <div style={{ width: '100%', height: 300, backgroundImage: `url(${item.image})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover' }} />
+          <div
+            style={{
+              width: '100%',
+              height: 300,
+              backgroundImage: `url(${item.image})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+            }}
+          />
         )}
         {renderCardRow('Source', item.smellSource)}
         {renderCardRow('Carrier', item.carrier)}
@@ -160,9 +170,7 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
           as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
           passHref
         >
-          <a>
-            See more
-          </a>
+          <a>See more</a>
         </Link>
       </Footer>
     </Container>

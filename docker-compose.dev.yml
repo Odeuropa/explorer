@@ -1,6 +1,9 @@
 version: '3'
 services:
   web:
+    build:
+      context: /Users/thibaultehrhart/Projects/D2KLab/explorer
+      dockerfile: ./Dockerfile
     command: npm run dev
     ports:
       - '3001:3001'

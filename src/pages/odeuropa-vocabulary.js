@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import 'intersection-observer';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -150,17 +150,18 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
             <Results>
               {results.map((result) => (
                 <Result key={result['@id']} id={result['@id']}>
-                  <Link href={`/details/${route.details.view}?id=${encodeURIComponent(
-                    uriToId(result['@id'], {
-                      base: route.uriBase,
-                    })
-                  )}&type=${query.type}`} passHref>
+                  <Link
+                    href={`/details/${route.details.view}?id=${encodeURIComponent(
+                      uriToId(result['@id'], {
+                        base: route.uriBase,
+                      })
+                    )}&type=${query.type}`}
+                    passHref
+                  >
                     <a>
                       <Item key={result['@id']} id={result['@id']}>
                         <ItemTitle>
-                          <h2>
-                            {result.label}
-                          </h2>
+                          <h2>{result.label}</h2>
                         </ItemTitle>
                         {result.description && <p>{result.description}</p>}
                       </Item>
@@ -217,7 +218,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'project']),
+      ...(await serverSideTranslations(locale, ['common', 'project'])),
       results,
       debugSparqlQuery,
     },

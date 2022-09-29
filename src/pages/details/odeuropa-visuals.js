@@ -56,7 +56,7 @@ const Separator = styled.div`
 
 const Panel = styled.div`
   flex: 1;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   padding: 1rem 2rem;
 
   &:not(:last-child) {
@@ -65,7 +65,7 @@ const Panel = styled.div`
 `;
 
 Panel.Title = styled.div`
-  color: #B9D59B;
+  color: #b9d59b;
   font-size: 1.4rem;
   font-weight: bold;
   white-space: nowrap;
@@ -118,7 +118,8 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
               <pre>{debugSparqlQuery}</pre>
             </Metadata>
           </Debug>
-        </NotFoundPage>;
+        </NotFoundPage>
+        ;
       </>
     );
   }
@@ -137,32 +138,46 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
         <Columns>
           <Primary>
             <Element>
-              <Element style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}>
+              <Element
+                style={{
+                  fontSize: '2rem',
+                  color: 'gray',
+                  fontWeight: 'bold',
+                  marginBottom: '1rem',
+                }}
+              >
                 Visual resource
               </Element>
 
-              <Element style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}>
+              <Element
+                style={{
+                  fontSize: '4rem',
+                  color: '#725cae',
+                  fontWeight: 'bold',
+                  lineHeight: '100%',
+                }}
+              >
                 {result.label}
               </Element>
 
-              <Element
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
+              <Element display="flex" alignItems="center" justifyContent="space-between">
                 {result.sameAs && (
                   <small>
                     (
-                      <a href={result.sameAs} target="_blank" rel="noopener noreferrer">
-                        {t('common:buttons.original')}
-                      </a>
+                    <a href={result.sameAs} target="_blank" rel="noopener noreferrer">
+                      {t('common:buttons.original')}
+                    </a>
                     )
                   </small>
                 )}
                 {route.details.showPermalink && (
                   <small>
                     (
-                    <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={generatePermalink(result['@id'])}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {t('common:buttons.permalink')}
                     </a>
                     )
@@ -212,7 +227,11 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, inList = false, debugSparqlQuery } = await (
+  const {
+    result = null,
+    inList = false,
+    debugSparqlQuery,
+  } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
       headers:
         req && req.headers
@@ -229,12 +248,12 @@ export async function getServerSideProps({ req, res, query, locale }) {
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'project']),
+      ...(await serverSideTranslations(locale, ['common', 'project'])),
       result,
       inList,
       debugSparqlQuery,
-    }
+    },
   };
-};
+}
 
 export default OdeuropaVisualPage;

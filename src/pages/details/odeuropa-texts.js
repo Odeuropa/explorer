@@ -57,7 +57,7 @@ const Separator = styled.div`
 
 const Panel = styled.div`
   flex: 1;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   padding: 1rem 2rem;
 
   &:not(:last-child) {
@@ -66,7 +66,7 @@ const Panel = styled.div`
 `;
 
 Panel.Title = styled.div`
-  color: #B9D59B;
+  color: #b9d59b;
   font-size: 1.4rem;
   font-weight: bold;
   white-space: nowrap;
@@ -120,7 +120,7 @@ const ExcerptTitle = styled.div`
 `;
 
 const ExcerptContainer = styled.div`
-  ${props => css`
+  ${(props) => css`
     ${ExcerptTitle}:hover ${ExcerptPreview} {
       opacity: ${props.active ? 0 : 1};
     }
@@ -134,10 +134,21 @@ const getHighlightedText = (text, highlight) => {
   // Split on highlight term and include term into parts, ignore case
   const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
-    <span>{parts.map((part, i) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', backgroundColor: '#F2BB05', padding: '0.1em' } : {}}>{part}</span>
-    ))}</span>
+    <span>
+      {parts.map((part, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <span
+          key={i}
+          style={
+            part.toLowerCase() === highlight.toLowerCase()
+              ? { fontWeight: 'bold', backgroundColor: '#F2BB05', padding: '0.1em' }
+              : {}
+          }
+        >
+          {part}
+        </span>
+      ))}
+    </span>
   );
 };
 
@@ -159,7 +170,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       setOpenedExcerpts([result.relevantFragment]);
     }
 
-    const fragmentsList = [].concat(result.source?.fragments).filter(x => x);
+    const fragmentsList = [].concat(result.source?.fragments).filter((x) => x);
     fragmentsList.sort((a, b) => {
       if (a['@id'] === b['@id']) return 0;
       return a['@id'] === result.relevantFragment ? -1 : 1;
@@ -185,7 +196,8 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
               <pre>{debugSparqlQuery}</pre>
             </Metadata>
           </Debug>
-        </NotFoundPage>;
+        </NotFoundPage>
+        ;
       </>
     );
   }
@@ -202,10 +214,20 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       subtitles.push(<>{result.date}</>);
     }
 
-    const authors = [].concat(source.author).filter(x => x);
-    authors.forEach(author => {
+    const authors = [].concat(source.author).filter((x) => x);
+    authors.forEach((author) => {
       if (author.label) {
-        subtitles.push(<>{typeof author.sameAs === 'string' ? (<a href={author.sameAs} target="_blank" rel="noopener noreferrer">{author.label}</a>) : (<>{author.label}</>)}</>);
+        subtitles.push(
+          <>
+            {typeof author.sameAs === 'string' ? (
+              <a href={author.sameAs} target="_blank" rel="noopener noreferrer">
+                {author.label}
+              </a>
+            ) : (
+              <>{author.label}</>
+            )}
+          </>
+        );
       }
     });
     if (typeof result.place?.label === 'string') {
@@ -214,11 +236,17 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
     return (
       <Element>
-        <Element style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}>
+        <Element
+          style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}
+        >
           Textual resource
         </Element>
-        <Element style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}>
-          {source.label && source.label.substr(0, MAX_TITLE_LENGTH - 1) + (source.label.length > MAX_TITLE_LENGTH ? '…' : '')}
+        <Element
+          style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}
+        >
+          {source.label &&
+            source.label.substr(0, MAX_TITLE_LENGTH - 1) +
+              (source.label.length > MAX_TITLE_LENGTH ? '…' : '')}
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
@@ -231,12 +259,26 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         </Element>
       </Element>
     );
-  }
+  };
 
   const renderExcerpt = (excerpt, highlight) => (
-    <Element style={{ display: 'flex', alignItems: 'center', paddingLeft: '1em', paddingRight: '1em' }}>
-      <Element style={{ fontSize: '8rem', lineHeight: '8rem', marginRight: '2rem', alignSelf: 'flex-start', userSelect: 'none' }}>‟</Element>
-      <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>{getHighlightedText(excerpt, highlight)}</Element>
+    <Element
+      style={{ display: 'flex', alignItems: 'center', paddingLeft: '1em', paddingRight: '1em' }}
+    >
+      <Element
+        style={{
+          fontSize: '8rem',
+          lineHeight: '8rem',
+          marginRight: '2rem',
+          alignSelf: 'flex-start',
+          userSelect: 'none',
+        }}
+      >
+        ‟
+      </Element>
+      <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>
+        {getHighlightedText(excerpt, highlight)}
+      </Element>
     </Element>
   );
 
@@ -245,16 +287,22 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       return null;
     }
 
-    const values = [].concat(value).filter(x => x);
-    const renderedValue = values.map(v => {
-      if (typeof v === 'object') {
-        if (v.type) {
-          return <>{v.label} <small>({v.type})</small></>;
+    const values = [].concat(value).filter((x) => x);
+    const renderedValue = values
+      .map((v) => {
+        if (typeof v === 'object') {
+          if (v.type) {
+            return (
+              <>
+                {v.label} <small>({v.type})</small>
+              </>
+            );
+          }
+          return v.label;
         }
-        return v.label;
-      }
-      return v;
-    }).reduce((prev, curr) => [prev, ', ', curr]);
+        return v;
+      })
+      .reduce((prev, curr) => [prev, ', ', curr]);
 
     return (
       <Panel.Row>
@@ -262,7 +310,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Panel.Value>{renderedValue}</Panel.Value>
       </Panel.Row>
     );
-  }
+  };
 
   return (
     <Layout>
@@ -274,11 +322,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
             <Element>
               {renderTextualObject(result.source)}
 
-              <Element
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
+              <Element display="flex" alignItems="center" justifyContent="space-between">
                 {session && (
                   <SaveButton
                     type={query.type}
@@ -294,7 +338,11 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 {route.details.showPermalink && (
                   <small>
                     (
-                    <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={generatePermalink(result['@id'])}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {t('common:buttons.permalink')}
                     </a>
                     )
@@ -302,13 +350,17 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                 )}
                 {result.source?.url && (
                   <small style={{ marginLeft: 'auto', paddingLeft: 12 }}>
-                    {t('project:buttons.source')} <a href={result.source?.url} target="_blank" rel="noopener noreferrer">{result.source?.url}</a>
+                    {t('project:buttons.source')}{' '}
+                    <a href={result.source?.url} target="_blank" rel="noopener noreferrer">
+                      {result.source?.url}
+                    </a>
                   </small>
                 )}
               </Element>
             </Element>
 
-            {result.source?.label?.length > MAX_TITLE_LENGTH && renderPanelRow('Full title', result.source.label)}
+            {result.source?.label?.length > MAX_TITLE_LENGTH &&
+              renderPanelRow('Full title', result.source.label)}
 
             <Separator />
 
@@ -337,23 +389,69 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
             {fragments.map((fragment, i) => (
               <Element key={fragment['@id']} id={slugify(fragment['@id'])}>
-                <ExcerptContainer active={openedExcerpts.includes(fragment['@id'])} style={{ backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '' }}>
-                  <ExcerptTitle onClick={() => {
-                    setOpenedExcerpts(prev => prev.includes(fragment['@id']) ? prev.filter(x => x !== fragment['@id']) : [...prev, fragment['@id']]);
-                  }}>
-                    <a href={`#${slugify(fragment['@id'])}`} onClick={(e) => {
-                      setOpenedExcerpts(prev => prev.includes(fragment['@id']) ? prev : [fragment['@id']]);
-                      e.stopPropagation();
-                    }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z"/></svg>
+                <ExcerptContainer
+                  active={openedExcerpts.includes(fragment['@id'])}
+                  style={{
+                    backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '',
+                  }}
+                >
+                  <ExcerptTitle
+                    onClick={() => {
+                      setOpenedExcerpts((prev) =>
+                        prev.includes(fragment['@id'])
+                          ? prev.filter((x) => x !== fragment['@id'])
+                          : [...prev, fragment['@id']]
+                      );
+                    }}
+                  >
+                    <a
+                      href={`#${slugify(fragment['@id'])}`}
+                      onClick={(e) => {
+                        setOpenedExcerpts((prev) =>
+                          prev.includes(fragment['@id']) ? prev : [fragment['@id']]
+                        );
+                        e.stopPropagation();
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z" />
+                      </svg>
                     </a>
                     <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
                       <span style={{ marginLeft: 12, marginRight: 12 }}>Excerpt {i + 1}</span>
-                      <ExcerptPreview>{getHighlightedText(fragment.value, fragment['@id'] === result.relevantFragment ? mainLabel : null)}</ExcerptPreview>
+                      <ExcerptPreview>
+                        {getHighlightedText(
+                          fragment.value,
+                          fragment['@id'] === result.relevantFragment ? mainLabel : null
+                        )}
+                      </ExcerptPreview>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ fill: '#333', transform: openedExcerpts.includes(fragment['@id']) ? 'rotate(0deg)' : 'rotate(180deg)' }}><path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z"/></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      style={{
+                        fill: '#333',
+                        transform: openedExcerpts.includes(fragment['@id'])
+                          ? 'rotate(0deg)'
+                          : 'rotate(180deg)',
+                      }}
+                    >
+                      <path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
+                    </svg>
                   </ExcerptTitle>
-                  {openedExcerpts.includes(fragment['@id']) && renderExcerpt(fragment.value, fragment['@id'] === result.relevantFragment ? mainLabel : null)}
+                  {openedExcerpts.includes(fragment['@id']) &&
+                    renderExcerpt(
+                      fragment.value,
+                      fragment['@id'] === result.relevantFragment ? mainLabel : null
+                    )}
                 </ExcerptContainer>
                 <Separator />
               </Element>
@@ -382,7 +480,11 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, inList = false, debugSparqlQuery } = await (
+  const {
+    result = null,
+    inList = false,
+    debugSparqlQuery,
+  } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
       headers:
         req && req.headers
@@ -399,12 +501,12 @@ export async function getServerSideProps({ req, res, query, locale }) {
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'project']),
+      ...(await serverSideTranslations(locale, ['common', 'project'])),
       result,
       inList,
       debugSparqlQuery,
-    }
+    },
   };
-};
+}
 
 export default OdeuropaDetailsPage;

@@ -44,7 +44,7 @@ const selectTheme = (theme) => ({
     primary25: '#ddd',
     ...mainTheme.select?.colors,
   },
-})
+});
 
 const StyledSelect = styled(Select)`
   min-width: 200px;
@@ -191,7 +191,12 @@ const BrowsePage = ({ initialData }) => {
   };
 
   const PAGE_SIZE = 20;
-  const { data = [initialData], error, size, setSize } = useSWRInfinite(getKey, fetcher, {
+  const {
+    data = [initialData],
+    error,
+    size,
+    setSize,
+  } = useSWRInfinite(getKey, fetcher, {
     persistSize: true,
   });
   const isLoadingInitialData = !data && !error;
@@ -338,7 +343,7 @@ const BrowsePage = ({ initialData }) => {
   useEffect(() => {
     const onDoneLoading = () => {
       setIsPageLoading(false);
-    }
+    };
 
     router.events.on('routeChangeComplete', onDoneLoading);
     router.events.on('routeChangeError', onDoneLoading);
@@ -367,9 +372,10 @@ const BrowsePage = ({ initialData }) => {
     value: display,
   }));
 
-  const renderResults = (results) => results.map((result) => (
-    <OdeuropaCard key={result['@id']} item={result} route={route} type={route.details.route} />
-  ));
+  const renderResults = (results) =>
+    results.map((result) => (
+      <OdeuropaCard key={result['@id']} item={result} route={route} type={route.details.route} />
+    ));
 
   const onScrollToPage = (pageIndex) => {
     if (initialPage + pageIndex !== query.page) {
@@ -543,7 +549,7 @@ export async function getServerSideProps({ query, locale }) {
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'project', 'search']),
+      ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
       initialData: {
         results: searchData.results,
         totalResults: searchData.totalResults,

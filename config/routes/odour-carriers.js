@@ -26,7 +26,7 @@ module.exports = {
             adjective: '?item_adjective',
             time: '?item_timeLabel',
             place: '?item_placeLabel',
-          }
+          },
         },
       ],
       $where: [
@@ -119,11 +119,11 @@ module.exports = {
             }
           }
         }
-        `
+        `,
       ],
       $orderby: 'ASC(?sourceLabel)',
       $langTag: 'hide',
-    })
+    }),
   },
   query: ({ language }) => ({
     '@graph': [
@@ -144,7 +144,7 @@ module.exports = {
         ?carrier skos:prefLabel ?carrierLabel .
         FILTER(LANG(?carrierLabel) = "${language}" || LANG(?carrierLabel) = "")
       }
-      `
+      `,
     ],
     $orderby: 'ASC(?carrierLabel)',
     $langTag: 'hide',

@@ -14,7 +14,11 @@ export default withRequestValidation({
     return;
   }
 
-  const wordCloudQuery = JSON.parse(JSON.stringify(getQueryObject(route['odeuropa-vocabulary'].wordCloud.query, { language: query.locale })));
+  const wordCloudQuery = JSON.parse(
+    JSON.stringify(
+      getQueryObject(route['odeuropa-vocabulary'].wordCloud.query, { language: query.locale })
+    )
+  );
   wordCloudQuery.$filter = wordCloudQuery.$filter || [];
   wordCloudQuery.$filter.push(`?id = <${query.id}>`);
 

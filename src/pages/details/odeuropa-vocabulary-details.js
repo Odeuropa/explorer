@@ -66,6 +66,45 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
 
+  useEffect(() => {
+    if (result) return;
+
+    const q = {
+      id: result['@id'],
+      type: query.type,
+      locale: i18n.langauge,
+    };
+    const qs = queryString.stringify(q);
+
+    (async () => {
+      const results = await (
+        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-wordcloud?${qs}`)
+      ).json();
+      setWordCloud(
+        results.error
+          ? null
+          : results.map((word) => ({
+              value: word,
+              count: Math.random(),
+            }))
+      );
+    })();
+
+    (async () => {
+      const results = await (
+        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)
+      ).json();
+      setTexts(results.error ? null : results);
+    })();
+
+    (async () => {
+      const results = await (
+        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)
+      ).json();
+      setVisuals(results.error ? null : results);
+    })();
+  }, [result]);
+
   if (!result) {
     return (
       <>
@@ -84,43 +123,19 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               <pre>{debugSparqlQuery}</pre>
             </Metadata>
           </Debug>
-        </NotFoundPage>;
+        </NotFoundPage>
+        ;
       </>
     );
   }
 
-  useEffect(() => {
-    const q = {
-      id: result['@id'],
-      type: query.type,
-      locale: i18n.langauge,
-    }
-    const qs = queryString.stringify(q);
-
-    (async () => {
-      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-wordcloud?${qs}`)).json();
-      setWordCloud(results.error ? null : results.map(word => ({
-        value: word,
-        count: Math.random()
-      })));
-    })();
-
-    (async () => {
-      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)).json();
-      setTexts(results.error ? null : results);
-    })();
-
-    (async () => {
-      const results = await (await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)).json();
-      setVisuals(results.error ? null : results);
-    })();
-  }, [result]);
-
   const pageTitle = getEntityMainLabel(result, { route, language: i18n.language });
 
-  const related = (Array.isArray(result.related) ? result.related : [result.related]).filter(x => x)
+  const related = (Array.isArray(result.related) ? result.related : [result.related]).filter(
+    (x) => x
+  );
 
-  const cardRoute = config.routes[route.details.route]
+  const cardRoute = config.routes[route.details.route];
 
   return (
     <Layout>
@@ -130,26 +145,68 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element>
           <div style={{ display: 'flex', padding: '1em' }}>
             <div style={{ marginRight: '2em' }}>
-              <img src={`/images/odeuropa-vocabularies/${query.type}/${slugify(result['@id'])}.jpg`} alt="" width="300" height="180" style={{ objectFit: 'cover' }} onLoad={(event) => { event.target.style.display = 'inline-block' }} onError={(event) => { event.target.style.display = 'none' }} />
+              <img
+                src={`/images/odeuropa-vocabularies/${query.type}/${slugify(result['@id'])}.jpg`}
+                alt=""
+                width="300"
+                height="180"
+                style={{ objectFit: 'cover' }}
+                onLoad={(event) => {
+                  event.target.style.display = 'inline-block';
+                }}
+                onError={(event) => {
+                  event.target.style.display = 'none';
+                }}
+              />
             </div>
 
-            <div style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div
+              style={{
+                flex: '1',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
               <div style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold' }}>Smell of</div>
-              <div style={{ fontSize: '5rem', color: '#725cae', fontWeight: 'bold', lineHeight: '4.5rem' }}>{result.label}</div>
+              <div
+                style={{
+                  fontSize: '5rem',
+                  color: '#725cae',
+                  fontWeight: 'bold',
+                  lineHeight: '4.5rem',
+                }}
+              >
+                {result.label}
+              </div>
             </div>
 
             {related.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 'auto', marginRight: '1em', marginTop: '2.5em', width: 300, textAlign: 'right' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginLeft: 'auto',
+                  marginRight: '1em',
+                  marginTop: '2.5em',
+                  width: 300,
+                  textAlign: 'right',
+                }}
+              >
                 <div style={{ textTransform: 'uppercase', color: 'gray', fontWeight: 'bold' }}>
                   Related
                 </div>
                 <div>
                   {related.map((rel, i) => (
-                    <Link key={rel['@id']} href={`/details/${route.details.view}?id=${encodeURIComponent(
-                      uriToId(rel['@id'], {
-                        base: route.uriBase,
-                      })
-                    )}&type=${query.type}`} passHref>
+                    <Link
+                      key={rel['@id']}
+                      href={`/details/${route.details.view}?id=${encodeURIComponent(
+                        uriToId(rel['@id'], {
+                          base: route.uriBase,
+                        })
+                      )}&type=${query.type}`}
+                      passHref
+                    >
                       <a style={{ fontWeight: 'bold' }}>
                         <span style={{ margin: '0 1em' }}>{rel.label}</span>
                         {i < related.length - 1 && <>&middot;</>}
@@ -165,34 +222,32 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element style={{ padding: '1em', width: 350, textAlign: 'center' }}>
           {typeof wordCloud === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-              Loading word cloud...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading word cloud...
             </Element>
           )}
-          {wordCloud === null && <span style={{ color: 'red' }}>Word cloud could not be loaded at that moment</span>}
-          {wordCloud && (
-            <TagCloud
-              minSize={8}
-              maxSize={35}
-              tags={wordCloud}
-            />
+          {wordCloud === null && (
+            <span style={{ color: 'red' }}>Word cloud could not be loaded at that moment</span>
           )}
+          {wordCloud && <TagCloud minSize={8} maxSize={35} tags={wordCloud} />}
         </Element>
 
         <Element style={{ padding: '1em', color: 'gray' }}>
           {typeof texts === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-              Loading textual occurrences...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading textual occurrences...
             </Element>
           )}
-          {texts === null && <span style={{ color: 'red' }}>Textual occurrences could not be loaded at that moment</span>}
+          {texts === null && (
+            <span style={{ color: 'red' }}>
+              Textual occurrences could not be loaded at that moment
+            </span>
+          )}
           {texts && <h2>In texts ({texts.length} occurrences)</h2>}
         </Element>
 
         {texts && (
           <Results>
-            {texts.map(item => (
+            {texts.map((item) => (
               <Result key={item['@id']} style={{ margin: '0 1em' }}>
                 <OdeuropaCard item={item} route={cardRoute} type={route.details.route} />
               </Result>
@@ -203,17 +258,20 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element style={{ padding: '1em', color: 'gray' }}>
           {typeof visuals === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-              Loading visual occurrences...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading visual occurrences...
             </Element>
           )}
-          {visuals === null && <span style={{ color: 'red' }}>Visual occurrences could not be loaded at that moment</span>}
+          {visuals === null && (
+            <span style={{ color: 'red' }}>
+              Visual occurrences could not be loaded at that moment
+            </span>
+          )}
           {visuals && <h2>In images ({visuals.length} occurrences)</h2>}
         </Element>
 
         {visuals && (
           <Results>
-            {visuals.map(item => (
+            {visuals.map((item) => (
               <Result key={item['@id']} style={{ margin: '0 1em' }}>
                 <OdeuropaCard item={item} route={config.routes.visuals} type="visuals" />
               </Result>
@@ -242,7 +300,11 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, inList = false, debugSparqlQuery = null } = await (
+  const {
+    result = null,
+    inList = false,
+    debugSparqlQuery = null,
+  } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
       headers:
         req && req.headers
@@ -253,19 +315,18 @@ export async function getServerSideProps({ req, res, query, locale }) {
     })
   ).json();
 
-
   if (!result && res) {
     res.statusCode = 404;
   }
 
   return {
     props: {
-      ...await serverSideTranslations(locale, ['common', 'project']),
+      ...(await serverSideTranslations(locale, ['common', 'project'])),
       result,
       inList,
       debugSparqlQuery,
-    }
+    },
   };
-};
+}
 
 export default OdeuropaVocabularyDetailsPage;

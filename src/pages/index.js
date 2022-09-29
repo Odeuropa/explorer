@@ -49,7 +49,7 @@ const HeroTop = styled.div`
 
 const Title = styled.h1`
   text-align: left;
-  color: #735DAE;
+  color: #735dae;
   line-height: 100%;
   margin: 0 auto;
   padding: 1em;
@@ -120,7 +120,7 @@ const SearchForm = styled.form`
   display: flex;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 8px 0px rgba(0,0,0,0.1);
+  box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.1);
   border-radius: 70px;
   height: 70px;
 `;
@@ -139,10 +139,10 @@ const StyledSearchInput = styled(SearchInput)`
     min-width: 0;
     width: 100%;
     outline: 0;
-    color: #B9D59B;
+    color: #b9d59b;
 
     &::placeholder {
-      color: #B9D59B;
+      color: #b9d59b;
     }
   }
 
@@ -193,9 +193,12 @@ const SecondBlock = styled.div`
 
 const ThirdBlock = styled.div`
   display: none;
-  ${customBreakpoint(1280, css`
-    display: block;
-  `)}
+  ${customBreakpoint(
+    1280,
+    css`
+      display: block;
+    `
+  )}
 `;
 
 const TopBlock = styled.div`
@@ -218,7 +221,15 @@ const HomePage = () => {
             <TopBlock style={{ height: '100%' }}>
               <img src="/images/flowers.jpg" alt="" style={{ height: '100%' }} />
             </TopBlock>
-            <div style={{ height: '100%', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div
+              style={{
+                height: '100%',
+                flex: '1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {config.home.hero.showHeadline && <Title>{t('home:hero.headline')}</Title>}
               {config.home.hero.showLogo && <Logo />}
             </div>
@@ -227,16 +238,37 @@ const HomePage = () => {
             </TopBlock>
           </HeroTop>
           <HeroBottom style={{ flexWrap: 'wrap' }}>
-            <div style={{ backgroundColor: '#B9D59B', height: '100%', flex: '1', marginRight: '1em', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding: '2em' }}>
+            <div
+              style={{
+                backgroundColor: '#B9D59B',
+                height: '100%',
+                flex: '1',
+                marginRight: '1em',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                padding: '2em',
+              }}
+            >
               {config.search.allowTextSearch ? (
                 <>
-                  <span style={{ color: '#fff', textTransform: 'uppercase', fontSize: '2rem', marginBottom: '1.5rem' }}>Search any smell</span>
+                  <span
+                    style={{
+                      color: '#fff',
+                      textTransform: 'uppercase',
+                      fontSize: '2rem',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    Search any smell
+                  </span>
                   <SearchForm method="GET" action="/browse">
                     <input type="hidden" name="type" value={config.search.route} />
-                      <StyledSearchInput name="q" placeholder={t('home:search.placeholder')} />
-                      <SearchButton aria-label={t('common:buttons.searchByText')} type="submit">
-                        <SearchIcon />
-                      </SearchButton>
+                    <StyledSearchInput name="q" placeholder={t('home:search.placeholder')} />
+                    <SearchButton aria-label={t('common:buttons.searchByText')} type="submit">
+                      <SearchIcon />
+                    </SearchButton>
                   </SearchForm>
                 </>
               ) : null}
@@ -246,10 +278,7 @@ const HomePage = () => {
                   .filter((routeName) => config.routes[routeName].showInHome !== false)
                   .flatMap((routeName) => (
                     <Link key={routeName} href={`/${routeName}`} passHref>
-                      <BigButton
-                        background="transparent"
-                        color="#fff"
-                      >
+                      <BigButton background="transparent" color="#fff">
                         {t(
                           `project:routes.${routeName}`,
                           routeName.substr(0, 1).toUpperCase() + routeName.substr(1)
@@ -275,7 +304,7 @@ const HomePage = () => {
 
 export const getStaticProps = async ({ locale }) => ({
   props: {
-    ...await serverSideTranslations(locale, ['common', 'home', 'project', 'search']),
+    ...(await serverSideTranslations(locale, ['common', 'home', 'project', 'search'])),
   },
 });
 

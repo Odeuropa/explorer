@@ -33,9 +33,9 @@ module.exports = {
         {
           ?id schema:genre ?genre .
         }
-        `
+        `,
       ],
       $langTag: 'hide',
-    })
+    }),
   },
 };

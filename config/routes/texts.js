@@ -1,7 +1,12 @@
 const escapeAll = /["\\\t\n\r\b\f\u0000-\u0019]|[\ud800-\udbff][\udc00-\udfff]/g;
 const escapedCharacters = {
-  '\\': '\\\\', '"': '\\"', '\t': '\\t',
-  '\n': '\\n', '\r': '\\r', '\b': '\\b', '\f': '\\f',
+  '\\': '\\\\',
+  '"': '\\"',
+  '\t': '\\t',
+  '\n': '\\n',
+  '\r': '\\r',
+  '\b': '\\b',
+  '\f': '\\f',
 };
 
 // Replaces a character by its escaped version
@@ -16,7 +21,11 @@ function characterReplacer(character) {
     }
     // Replace a surrogate pair with its 8-bit unicode escape sequence
     else {
-      result = ((character.charCodeAt(0) - 0xD800) * 0x400 + character.charCodeAt(1) + 0x2400).toString(16);
+      result = (
+        (character.charCodeAt(0) - 0xd800) * 0x400 +
+        character.charCodeAt(1) +
+        0x2400
+      ).toString(16);
       result = '\\U00000000'.substr(0, 10 - result.length) + result;
     }
   }
@@ -45,12 +54,10 @@ module.exports = {
         luc:query "source_label:${escapedValue}" ;
         luc:entities ?id .
       }
-      `
-    ]
+      `,
+    ];
   },
-  baseWhere: [
-    'GRAPH ?g { ?id a od:L11_Smell }',
-  ],
+  baseWhere: ['GRAPH ?g { ?id a od:L11_Smell }'],
   query: ({ language }) => ({
     '@context': 'http://schema.org/',
     '@graph': [
@@ -66,7 +73,7 @@ module.exports = {
           url: '?sourceUrl',
           fragments: {
             '@id': '?fragment',
-            'value': '?fragmentValue',
+            value: '?fragmentValue',
           },
           author: {
             '@id': '?sourceAuthor',
@@ -101,8 +108,8 @@ module.exports = {
           '@id': '?emotion',
           label: '?emotionLabel',
           type: '?emotionType',
-        }
-      }
+        },
+      },
     ],
     $where: [
       `
@@ -221,7 +228,7 @@ module.exports = {
             ?assignment crm:P140_assigned_attribute_to ?id .
           }
         }
-        `
+        `,
     ],
     $langTag: 'hide',
   }),
@@ -249,7 +256,7 @@ module.exports = {
           }
           ?time rdfs:label ?timeLabel .
           FILTER(LANG(?timeLabel) = "${language}" || LANG(?timeLabel) = "")
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
@@ -258,7 +265,9 @@ module.exports = {
         '?emission time:hasTime ?time',
         '?time rdfs:label ?timeLabel',
       ],
-      filterFunc: (values) => [values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || ')],
+      filterFunc: (values) => [
+        values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || '),
+      ],
     },
     {
       id: 'place',
@@ -285,7 +294,7 @@ module.exports = {
           }
           ?place rdfs:label ?placeLabel .
           FILTER(LANG(?placeLabel) = "${language}" || LANG(?placeLabel) = "")
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
@@ -294,7 +303,9 @@ module.exports = {
         '?experience crm:P7_took_place_at ?place',
         '?place rdfs:label ?placeLabel',
       ],
-      filterFunc: (values) => [values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || ')],
+      filterFunc: (values) => [
+        values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || '),
+      ],
     },
     {
       id: 'source',
@@ -317,16 +328,18 @@ module.exports = {
           }
           ?source skos:prefLabel ?sourceLabel .
           FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
       whereFunc: () => [
         '?emission od:F1_generated ?id',
         '?emission od:F3_had_source / crm:P137_exemplifies ?source',
-        '?source skos:prefLabel ?sourceLabel'
+        '?source skos:prefLabel ?sourceLabel',
       ],
-      filterFunc: (values) => [values.map((val) => `STR(?sourceLabel) = ${JSON.stringify(val)}`).join(' || ')],
+      filterFunc: (values) => [
+        values.map((val) => `STR(?sourceLabel) = ${JSON.stringify(val)}`).join(' || '),
+      ],
     },
     {
       id: 'carrier',
@@ -351,7 +364,7 @@ module.exports = {
           }
           ?carrier rdfs:label ?carrierLabel .
           FILTER(LANG(?carrierLabel) = "${language}" || LANG(?carrierLabel) = "")
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
@@ -360,7 +373,9 @@ module.exports = {
         '?emission od:F4_had_carrier ?carrier',
         '?carrier rdfs:label ?carrierLabel',
       ],
-      filterFunc: (values) => [values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || ')],
+      filterFunc: (values) => [
+        values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || '),
+      ],
     },
     {
       id: 'emotion',
@@ -379,7 +394,7 @@ module.exports = {
           ?emotion crm:P137_exemplifies ?emotionType .
           ?emotionType skos:prefLabel ?emotionTypeLabel .
           FILTER(LANG(?emotionTypeLabel) = "${language}" || LANG(?emotionTypeLabel) = "")
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
@@ -404,15 +419,17 @@ module.exports = {
         $where: [
           `
           ?source schema:inLanguage ?language .
-          `
+          `,
         ],
         $langTag: 'hide',
       }),
       whereFunc: () => [
         '?textualObject crm:P67_refers_to ?id .',
-        '?textualObject schema:inLanguage ?language'
+        '?textualObject schema:inLanguage ?language',
       ],
-      filterFunc: (values) => [values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || ')],
+      filterFunc: (values) => [
+        values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || '),
+      ],
     },
   ],
 };

@@ -17,8 +17,7 @@ const theme = {
   fontFamily: {
     sansSerif:
       '"Futura Std Book", Lato, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
-    mono:
-      'Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace',
+    mono: 'Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace',
   },
   colors: {
     text: '#333',
@@ -63,18 +62,18 @@ const theme = {
       Container: {
         minHeight: 150,
         backgroundColor: '#464C5A',
-      }
+      },
     },
     Media: {
       GraphIconContainer: {
         backgroundColor: 'transparent',
         padding: 0,
-      }
+      },
     },
     GraphIcon: {
       StyledImage: {
-        height: 36
-      }
+        height: 36,
+      },
     },
     Sidebar: {
       Container: {
@@ -82,7 +81,7 @@ const theme = {
         backgroundColor: '#D6CFE1',
       },
     },
-  }
+  },
 };
 
 export default theme;
