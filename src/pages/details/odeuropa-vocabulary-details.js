@@ -67,7 +67,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [visuals, setVisuals] = useState();
 
   useEffect(() => {
-    if (result) return;
+    if (!result) return;
 
     const q = {
       id: result['@id'],
