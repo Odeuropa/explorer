@@ -265,9 +265,7 @@ module.exports = {
         '?emission time:hasTime ?time',
         '?time rdfs:label ?timeLabel',
       ],
-      filterFunc: (values) => [
-        values.map((val) => `STR(?timeLabel) = ${JSON.stringify(val)}`).join(' || '),
-      ],
+      filterFunc: (val) => `STR(?timeLabel) = ${JSON.stringify(val)}`,
     },
     {
       id: 'place',
@@ -303,14 +301,13 @@ module.exports = {
         '?experience crm:P7_took_place_at ?place',
         '?place rdfs:label ?placeLabel',
       ],
-      filterFunc: (values) => [
-        values.map((val) => `STR(?placeLabel) = ${JSON.stringify(val)}`).join(' || '),
-      ],
+      filterFunc: (val) => `STR(?placeLabel) = ${JSON.stringify(val)}`,
     },
     {
       id: 'source',
       isMulti: true,
       isSortable: true,
+      condition: 'user-defined',
       query: ({ language }) => ({
         '@graph': [
           {
@@ -332,14 +329,12 @@ module.exports = {
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
+      whereFunc: (index) => [
         '?emission od:F1_generated ?id',
-        '?emission od:F3_had_source / crm:P137_exemplifies ?source',
-        '?source skos:prefLabel ?sourceLabel',
+        `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
+        `?source_${index} skos:prefLabel ?sourceLabel_${index}`,
       ],
-      filterFunc: (values) => [
-        values.map((val) => `STR(?sourceLabel) = ${JSON.stringify(val)}`).join(' || '),
-      ],
+      filterFunc: (val, index) => `STR(?sourceLabel_${index}) = ${JSON.stringify(val)}`,
     },
     {
       id: 'carrier',
@@ -373,9 +368,7 @@ module.exports = {
         '?emission od:F4_had_carrier ?carrier',
         '?carrier rdfs:label ?carrierLabel',
       ],
-      filterFunc: (values) => [
-        values.map((val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`).join(' || '),
-      ],
+      filterFunc: (val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`,
     },
     {
       id: 'emotion',
@@ -403,7 +396,7 @@ module.exports = {
         '?emotion reo:readP27 ?experience',
         '?emotion crm:P137_exemplifies ?emotionType',
       ],
-      filterFunc: (values) => [values.map((val) => `?emotionType = <${val}>`).join(' || ')],
+      filterFunc: (val) => `?emotionType = <${val}>`,
     },
     {
       id: 'language',
@@ -427,9 +420,7 @@ module.exports = {
         '?textualObject crm:P67_refers_to ?id .',
         '?textualObject schema:inLanguage ?language',
       ],
-      filterFunc: (values) => [
-        values.map((val) => `STR(?language) = ${JSON.stringify(val)}`).join(' || '),
-      ],
+      filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
     },
   ],
 };
