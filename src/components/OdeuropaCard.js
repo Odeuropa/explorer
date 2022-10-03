@@ -34,6 +34,14 @@ const Date = styled.div`
   margin-left: auto;
 `;
 
+const Visual = styled.div`
+  width: 100%;
+  height: 300px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+`;
+
 const Body = styled.div`
   padding: 0.75em;
 `;
@@ -119,6 +127,52 @@ const renderCardRow = (label, value) => {
   );
 };
 
+const renderBody = (item) => {
+  const smellRows = [];
+  const experienceRows = [];
+
+  const smellKeys = {
+    smellSource: 'Source',
+    carrier: 'Carrier',
+    time: 'Date',
+    place: 'Place',
+  };
+
+  const experienceKeys = {
+    actor: 'Actor',
+    gesture: 'Gesture',
+    emotion: 'Emotion',
+    adjective: 'Defined as',
+  };
+
+  Object.entries(smellKeys).forEach(([key, label]) => {
+    if (item[key]) {
+      smellRows.push(renderCardRow(label, item[key]));
+    }
+  });
+
+  Object.entries(experienceKeys).forEach(([key, label]) => {
+    if (item[key]) {
+      experienceRows.push(renderCardRow(label, item[key]));
+    }
+  });
+
+  if (smellRows.length > 0 || experienceRows.length > 0) {
+    return (
+      <Body>
+        {smellRows}
+
+        {experienceRows.length > 0 && (
+          <>
+            <Separator>Olfactory Experience</Separator>
+            {experienceRows}
+          </>
+        )}
+      </Body>
+    );
+  }
+};
+
 const OdeuropaCard = ({ item, route, type, ...props }) => {
   const { i18n } = useTranslation();
 
@@ -132,33 +186,14 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
         <Title title={mainLabel}>{mainLabel}</Title>
         {item.time && <Date>{item.time.label}</Date>}
       </Header>
-      <Body>
-        {item.image && (
-          <div
-            style={{
-              width: '100%',
-              height: 300,
-              backgroundImage: `url(${item.image})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-            }}
-          />
-        )}
-        {renderCardRow('Source', item.smellSource)}
-        {renderCardRow('Carrier', item.carrier)}
-        {renderCardRow('Date', item.time)}
-        {renderCardRow('Place', item.place)}
-
-        {(item.actor || item.gesture || item.emotion || item.adjective) && (
-          <Separator>Olfactory Experience</Separator>
-        )}
-
-        {renderCardRow('Actor', item.actor)}
-        {renderCardRow('Gesture', item.gesture)}
-        {renderCardRow('Emotion', item.emotion)}
-        {renderCardRow('Defined as', item.adjective)}
-      </Body>
+      {item.image && (
+        <Visual
+          style={{
+            backgroundImage: `url(${item.image})`,
+          }}
+        />
+      )}
+      {renderBody(item)}
       <Footer>
         <Link
           key={item['@id']}
