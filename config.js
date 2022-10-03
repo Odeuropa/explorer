@@ -78,6 +78,20 @@ module.exports = {
       label: 'Royal Society Corpus',
     },
   },
+  gallery: {
+    options: {
+      showArrows: true,
+      showStatus: true,
+      showIndicators: false,
+      infiniteLoop: false,
+      showThumbs: true,
+      autoPlay: false,
+      stopOnHover: true,
+      swipeable: true,
+      dynamicHeight: false,
+      emulateTouch: true,
+    },
+  },
   vocabularies: {},
   plugins: {},
 };

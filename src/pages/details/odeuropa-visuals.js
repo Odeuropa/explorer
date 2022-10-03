@@ -4,8 +4,11 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
+import Lightbox from 'react-18-image-lightbox';
 import 'react-18-image-lightbox/style.css';
+import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useTranslation } from 'next-i18next';
 
 import NotFoundPage from '@pages/404';
 import Header from '@components/Header';
@@ -21,7 +24,7 @@ import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
-import { useTranslation } from 'next-i18next';
+import { generateMediaUrl } from '@helpers/utils';
 import config from '~/config';
 
 const Columns = styled.div`
@@ -92,6 +95,110 @@ Panel.Value = styled.div`
   font-size: 1.2rem;
 `;
 
+const CarouselContainer = styled.div`
+  .carousel-root {
+    display: flex;
+  }
+  .carousel {
+    &.carousel-slider {
+      min-height: 50vh;
+    }
+    .thumbs {
+      /* For vertical thumbs */
+      display: flex;
+      flex-direction: column;
+      transform: none !important;
+    }
+    .thumbs-wrapper {
+      overflow: visible;
+      margin-top: 0;
+      margin-bottom: 0;
+
+      .control-arrow {
+        display: none;
+      }
+    }
+    .thumb {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+
+      &.selected,
+      &:hover {
+        border: 3px solid ${({ theme }) => theme.colors.primary};
+      }
+
+      img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+
+    .slide {
+      display: flex;
+      justify-content: center;
+
+      .legend {
+        transition: background-color 0.5s ease-in-out;
+        background-color: rgba(0, 0, 0, 0.25);
+        color: #fff;
+        opacity: 1;
+
+        &:hover {
+          background-color: #000;
+        }
+      }
+
+      .subtitle {
+        white-space: pre-line;
+        text-align: left;
+        padding: 0.5em 1em;
+      }
+
+      img {
+        width: auto;
+        max-width: 100%;
+        max-height: 50vh;
+        pointer-events: auto;
+      }
+    }
+
+    .carousel-status {
+      font-size: inherit;
+      color: #fff;
+      top: 16px;
+      left: 16px;
+    }
+
+    .control-arrow::before {
+      border-width: 0 3px 3px 0;
+      border: solid #000;
+      display: inline-block;
+      padding: 3px;
+      border-width: 0 3px 3px 0;
+      width: 20px;
+      height: 20px;
+    }
+    .control-next.control-arrow::before {
+      transform: rotate(-45deg);
+    }
+    .control-prev.control-arrow::before {
+      transform: rotate(135deg);
+    }
+
+    .slider-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+    }
+  }
+`;
+
 const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
@@ -99,6 +206,14 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   const { data: session } = useSession();
   const route = config.routes[query.type];
   const [isItemSaved, setIsItemSaved] = useState(inList);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const showLightbox = (index) => {
+    setLightboxIndex(Math.min(images.length - 1, Math.max(0, index)));
+    setLightboxIsOpen(true);
+  };
 
   if (!result) {
     return (
@@ -130,6 +245,8 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
     setIsItemSaved(status);
   };
 
+  const images = [].concat(result.image).filter((x) => x);
+
   return (
     <Layout>
       <PageTitle title={`${pageTitle}`} />
@@ -137,6 +254,19 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
       <Body>
         <Columns>
           <Primary>
+            {lightboxIsOpen && (
+              <Lightbox
+                mainSrc={images[lightboxIndex]}
+                nextSrc={images[(lightboxIndex + 1) % images.length]}
+                prevSrc={images[(lightboxIndex + images.length - 1) % images.length]}
+                onCloseRequest={() => setLightboxIsOpen(false)}
+                onMovePrevRequest={() =>
+                  setLightboxIndex((lightboxIndex + images.length - 1) % images.length)
+                }
+                onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
+              />
+            )}
+
             <Element>
               <Element
                 style={{
@@ -198,9 +328,22 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
               </Element>
             </Element>
 
-            <Element>
-              <img src={result.image} alt="" />
-            </Element>
+            {images.length > 1 && (
+              <CarouselContainer>
+                <Carousel showArrows {...config.gallery.options} onChange={setCurrentSlide}>
+                  {images.map((image, i) => (
+                    <div key={image} onClick={() => showLightbox(i)} aria-hidden="true">
+                      <img src={generateMediaUrl(image, 1024)} alt="" />
+                    </div>
+                  ))}
+                </Carousel>
+              </CarouselContainer>
+            )}
+            {images.length === 1 && (
+              <Element>
+                <img src={images[0]} alt="" />
+              </Element>
+            )}
 
             <Separator />
 
