@@ -51,7 +51,7 @@ module.exports = {
       `
       {
         ?search a luc-index:search ;
-        luc:query "source_label:${escapedValue}" ;
+        luc:query "source_label:${escapedValue} || source_value:${escapedValue}" ;
         luc:entities ?id .
       }
       `,
