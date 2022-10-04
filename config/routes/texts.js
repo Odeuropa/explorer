@@ -312,8 +312,9 @@ module.exports = {
         $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning implicit values
         '@graph': [
           {
-            '@id': '?sourceLabel',
+            '@id': '?source',
             label: '?sourceLabel',
+            altLabel: '?sourceAltLabel',
           },
         ],
         $where: [
@@ -324,8 +325,17 @@ module.exports = {
               ?emission od:F3_had_source / crm:P137_exemplifies ?source .
             }
           }
-          ?source skos:prefLabel ?sourceLabel .
-          FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+          {
+            ?source skos:prefLabel ?sourceLabel .
+            FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?source skos:altLabel ?sourceAltLabel .
+              FILTER(LANG(?sourceAltLabel) = "${language}" || LANG(?sourceAltLabel) = "")
+            }
+          }
           `,
         ],
         $langTag: 'hide',
@@ -333,9 +343,8 @@ module.exports = {
       whereFunc: (index) => [
         '?emission od:F1_generated ?id',
         `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
-        `?source_${index} skos:prefLabel ?sourceLabel_${index}`,
       ],
-      filterFunc: (val, index) => `STR(?sourceLabel_${index}) = ${JSON.stringify(val)}`,
+      filterFunc: (val, index) => `?source_${index} = <${val}>`,
     },
     {
       id: 'carrier',
