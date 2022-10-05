@@ -428,7 +428,8 @@ const BrowsePage = ({ initialData }) => {
               <Option>
                 <Label htmlFor="select_display">Show as</Label>
                 <StyledSelect
-                  inputId="select_display"
+                  id="select_display"
+                  instanceId="select_display"
                   name="display"
                   placeholder={t('search:labels.select')}
                   options={displayOptions}
@@ -440,7 +441,8 @@ const BrowsePage = ({ initialData }) => {
               <Option>
                 <Label htmlFor="select_sort">{t('search:labels.sortBy')}</Label>
                 <StyledSelect
-                  inputId="select_sort"
+                  id="select_sort"
+                  instanceId="select_sort"
                   name="sort"
                   placeholder={t('search:labels.select')}
                   options={sortOptions}
