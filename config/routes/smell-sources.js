@@ -12,7 +12,7 @@ module.exports = {
       '@graph': [
         {
           '@id': '?id',
-          label: '?sourceLabel',
+          label: '?label',
           related: {
             '@id': '?related',
             label: '?relatedLabel',
@@ -31,7 +31,7 @@ module.exports = {
         # Properties
         {
           ?id skos:prefLabel ?sourceLabel .
-          FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+          FILTER(LANG(?label) = "${language}" || LANG(?label) = "")
         }
         UNION
         {
@@ -60,10 +60,6 @@ module.exports = {
       {
         '@id': '?id',
         label: '?sourceLabel',
-        related: {
-          '@id': '?related',
-          label: '?relatedLabel',
-        },
       },
     ],
     $where: [
@@ -76,14 +72,6 @@ module.exports = {
       {
         ?id skos:prefLabel ?sourceLabel .
         FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
-      }
-      UNION
-      {
-        OPTIONAL {
-          ?id skos:related ?related .
-          ?related skos:prefLabel ?relatedLabel .
-          FILTER(LANG(?relatedLabel) = "${language}" || LANG(?relatedLabel) = "")
-        }
       }
       `,
     ],
@@ -102,8 +90,8 @@ module.exports = {
           `
           {
             SELECT DISTINCT ?id ?smell WHERE {
-              ?emission od:F1_generated ?smell .
               ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+              ?emission od:F1_generated ?smell .
             }
           }
           {
@@ -132,8 +120,8 @@ module.exports = {
           `
           {
             SELECT DISTINCT ?id ?smell WHERE {
-              ?emission od:F1_generated ?smell .
               ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+              ?emission od:F1_generated ?smell .
             }
           }
           {
@@ -169,8 +157,8 @@ module.exports = {
           `
           {
             SELECT DISTINCT ?id ?smell WHERE {
-              ?emission od:F1_generated ?smell .
               ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+              ?emission od:F1_generated ?smell .
             }
           }
           {
