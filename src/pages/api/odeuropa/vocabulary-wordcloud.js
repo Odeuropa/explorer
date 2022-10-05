@@ -28,7 +28,10 @@ export default withRequestValidation({
     params: config.api.params,
   });
 
-  const wordCloud = [].concat(removeEmptyObjects(wordCloudQueryRes['@graph'][0]).word);
+  const wordCloud = [];
+  if (wordCloudQueryRes['@graph'][0]) {
+    wordCloud.push(...removeEmptyObjects(wordCloudQueryRes['@graph'][0]).word);
+  }
 
   res.status(500).json(wordCloud);
 });
