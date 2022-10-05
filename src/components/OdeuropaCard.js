@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
@@ -105,17 +106,19 @@ const renderCardRow = (label, value) => {
   const values = [].concat(value).filter((x) => x);
   const renderedValue = values
     .map((v) => {
+      let inner = v;
       if (typeof v === 'object') {
         if (v.type) {
-          return (
+          inner = (
             <>
               {v.label} <small>({v.type})</small>
             </>
           );
+        } else {
+          inner = v.label;
         }
-        return v.label;
       }
-      return v;
+      return <Fragment key={inner}>{inner}</Fragment>;
     })
     .reduce((prev, curr) => [prev, ', ', curr]);
 
@@ -147,13 +150,13 @@ const renderBody = (item) => {
 
   Object.entries(smellKeys).forEach(([key, label]) => {
     if (item[key]) {
-      smellRows.push(renderCardRow(label, item[key]));
+      smellRows.push(<Fragment key={key}>{renderCardRow(label, item[key])}</Fragment>);
     }
   });
 
   Object.entries(experienceKeys).forEach(([key, label]) => {
     if (item[key]) {
-      experienceRows.push(renderCardRow(label, item[key]));
+      experienceRows.push(<Fragment key={key}>{renderCardRow(label, item[key])}</Fragment>);
     }
   });
 
