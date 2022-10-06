@@ -18,6 +18,7 @@ import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
+import OdeuropaPagination from '@components/OdeuropaPagination';
 import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
 import breakpoints from '@styles/breakpoints';
@@ -153,6 +154,7 @@ const getHighlightedText = (text, highlight) => {
 };
 
 const MAX_TITLE_LENGTH = 50;
+const PAGE_SIZE = 20;
 
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
@@ -320,6 +322,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Columns>
           <Primary>
             <Element>
+              <OdeuropaPagination result={result} />
               {renderTextualObject(result.source)}
 
               <Element display="flex" alignItems="center" justifyContent="space-between">

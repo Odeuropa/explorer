@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Fragment } from 'react';
+import { useContext, useState, useEffect, useRef, Fragment } from 'react';
 import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
@@ -24,6 +24,7 @@ import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
+import AppContext from '@helpers/context';
 import { search, getFilters } from '@pages/api/search';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import { useTranslation } from 'next-i18next';
@@ -169,6 +170,8 @@ const ResultPage = styled.h3`
   margin-bottom: 1rem;
 `;
 
+const PAGE_SIZE = 20;
+
 const BrowsePage = ({ initialData }) => {
   const router = useRouter();
   const { req, query, pathname } = router;
@@ -176,6 +179,7 @@ const BrowsePage = ({ initialData }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const currentPage = parseInt(query.page, 10) || 1;
+  const { setSearchData, setSearchQuery } = useContext(AppContext);
 
   // Store the initial start page on load, because `currentPage`
   // gets updated during infinite scroll.
@@ -186,11 +190,10 @@ const BrowsePage = ({ initialData }) => {
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.results.length) return null; // reached the end
-    const q = { ...query, page: initialPage + pageIndex };
+    const q = { ...query, page: pageIndex };
     return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
-  const PAGE_SIZE = 20;
   const {
     data = [initialData],
     error,
@@ -372,19 +375,34 @@ const BrowsePage = ({ initialData }) => {
     value: display,
   }));
 
-  const renderResults = (results) =>
+  const renderResults = (results, pageNumber) =>
     results.map((result) => (
-      <OdeuropaCard key={result['@id']} item={result} route={route} type={route.details.route} />
+      <OdeuropaCard
+        key={result['@id']}
+        item={result}
+        route={route}
+        type={route.details.route}
+        onSeeMore={() => {
+          // Make sure the page number is correct if it hasn't been updated yet
+          onScrollToPage(pageNumber);
+          setSearchQuery({
+            ...query,
+            page: pageNumber,
+          });
+
+          setSearchData(data[0]);
+        }}
+      />
     ));
 
   const onScrollToPage = (pageIndex) => {
-    if (initialPage + pageIndex !== query.page) {
+    if (pageIndex !== query.page) {
       Router.replace(
         {
           pathname,
           query: {
             ...query,
-            page: initialPage + pageIndex,
+            page: pageIndex,
           },
         },
         undefined,
@@ -458,22 +476,20 @@ const BrowsePage = ({ initialData }) => {
           ) : (
             <>
               {data.map((page, i) => {
-                const pageIndex = i;
+                const pageNumber = initialPage + i;
                 return (
-                  <Fragment key={pageIndex}>
+                  <Fragment key={pageNumber}>
                     {page.results.length > 0 && (
                       <ResultPage>
-                        {initialPage + pageIndex > 1 && (
-                          <>{t('search:labels.page', { page: initialPage + pageIndex })}</>
-                        )}
+                        {pageNumber > 1 && <>{t('search:labels.page', { page: pageNumber })}</>}
                       </ResultPage>
                     )}
                     <ScrollDetector
-                      onAppears={() => onScrollToPage(pageIndex)}
+                      onAppears={() => onScrollToPage(pageNumber)}
                       rootMargin="0px 0px -50% 0px"
                     />
                     <Results loading={isPageLoading || isLoadingInitialData ? 1 : 0}>
-                      {renderResults(page.results)}
+                      {renderResults(page.results, pageNumber)}
                     </Results>
                   </Fragment>
                 );

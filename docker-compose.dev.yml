@@ -43,6 +43,7 @@ services:
       - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js
       - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
+      - ./src/components/OdeuropaPagination.js:/usr/src/app/src/components/OdeuropaPagination.js
     environment:
       - NODE_ENV=development
       - PORT=3001

@@ -176,7 +176,7 @@ const renderBody = (item) => {
   }
 };
 
-const OdeuropaCard = ({ item, route, type, ...props }) => {
+const OdeuropaCard = ({ item, route, type, onSeeMore, ...props }) => {
   const { i18n } = useTranslation();
 
   if (!item || !item['@id']) return null;
@@ -208,7 +208,7 @@ const OdeuropaCard = ({ item, route, type, ...props }) => {
           as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
           passHref
         >
-          <a>See more</a>
+          <a onClick={onSeeMore}>See more</a>
         </Link>
       </Footer>
     </Container>
