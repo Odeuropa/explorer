@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import Link from 'next/link';
 import styled, { css } from 'styled-components';
 import { SearchAlt2 } from '@styled-icons/boxicons-regular/SearchAlt2';
