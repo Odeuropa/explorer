@@ -30,7 +30,7 @@ module.exports = {
 
         # Properties
         {
-          ?id skos:prefLabel ?sourceLabel .
+          ?id skos:prefLabel ?label .
           FILTER(LANG(?label) = "${language}" || LANG(?label) = "")
         }
         UNION
