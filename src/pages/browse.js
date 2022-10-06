@@ -179,7 +179,7 @@ const BrowsePage = ({ initialData }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const currentPage = parseInt(query.page, 10) || 1;
-  const { setSearchData, setSearchQuery } = useContext(AppContext);
+  const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
 
   // Store the initial start page on load, because `currentPage`
   // gets updated during infinite scroll.
@@ -390,6 +390,7 @@ const BrowsePage = ({ initialData }) => {
             page: pageNumber,
           });
 
+          setSearchPath(query.type);
           setSearchData(data[0]);
         }}
       />

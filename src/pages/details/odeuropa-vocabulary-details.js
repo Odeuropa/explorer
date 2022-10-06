@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
 import { absoluteUrl, slugify, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
+import AppContext from '@helpers/context';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
 
@@ -65,6 +66,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [wordCloud, setWordCloud] = useState();
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
+  const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
 
   useEffect(() => {
     if (!result) return;
@@ -249,7 +251,19 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           <Results>
             {texts.map((item) => (
               <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                <OdeuropaCard item={item} route={cardRoute} type={route.details.route} />
+                <OdeuropaCard
+                  item={item}
+                  route={cardRoute}
+                  type={route.details.route}
+                  onSeeMore={() => {
+                    setSearchQuery(null);
+                    setSearchPath(`/${query.type}`);
+                    setSearchData({
+                      totalResults: texts.length,
+                      results: texts,
+                    });
+                  }}
+                />
               </Result>
             ))}
           </Results>

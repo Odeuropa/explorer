@@ -19,7 +19,8 @@ const PAGE_SIZE = 20;
 
 function OdeuropaPagination({ result }) {
   const router = useRouter();
-  const { searchData, setSearchData, searchQuery, setSearchQuery } = useContext(AppContext);
+  const { searchData, setSearchData, searchQuery, setSearchQuery, searchPath } =
+    useContext(AppContext);
   const [isLoadingResults, setIsLoadingResults] = useState(false);
 
   const { query } = router;
@@ -61,7 +62,7 @@ function OdeuropaPagination({ result }) {
 
   const renderBrowseLink = (params, idFunc, children) => {
     return (
-      <Link href={`/browse?${params.toString()}`} passHref>
+      <Link href={`${window.location.host}/${searchPath}?${params.toString()}`} passHref>
         <a
           onClick={(e) => {
             e.preventDefault();
@@ -141,7 +142,7 @@ function OdeuropaPagination({ result }) {
   return (
     <Element display="flex" flexDirection="column">
       <Element alignSelf="center" marginBottom={24}>
-        <Link href={`/browse?${searchParams.toString()}`} passHref>
+        <Link href={`${window.location.host}/${searchPath}?${searchParams?.toString()}`} passHref>
           <a>Back to search</a>
         </Link>
       </Element>
