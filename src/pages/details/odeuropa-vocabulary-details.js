@@ -256,8 +256,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                   route={cardRoute}
                   type={route.details.route}
                   onSeeMore={() => {
-                    setSearchQuery(null);
-                    setSearchPath(`/${query.type}`);
+                    setSearchQuery(query);
+                    setSearchPath(window.location.pathname);
                     setSearchData({
                       totalResults: texts.length,
                       results: texts,
