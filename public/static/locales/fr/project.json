@@ -14,7 +14,12 @@
     "time": "Temps",
     "place": "Lieux",
     "gesture": "Geste",
-    "emotion": "Émotion"
+    "emotion": "Émotion",
+    "date": "Date",
+    "location": "Lieu",
+    "license": "Licence",
+    "consistsOf": "Consiste de",
+    "about": "À propos"
   },
   "routes": {
     "texts": "Recherche",
