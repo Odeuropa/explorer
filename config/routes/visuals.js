@@ -9,7 +9,7 @@ module.exports = {
     view: 'odeuropa-visuals',
     showPermalink: true,
     route: 'visuals',
-    excludedMetadata: ['image'],
+    excludedMetadata: ['image', 'fragment'],
     query: ({ language }) => ({
       '@graph': [
         {
@@ -30,6 +30,15 @@ module.exports = {
           consistsOf: {
             '@id': '?consistsOf',
             label: '?consitsOfLabel',
+          },
+          fragment: {
+            '@id': '?fragment',
+            x: '?fragmentX',
+            y: '?fragmentY',
+            width: '?fragmentW',
+            height: '?fragmentH',
+            label: '?fragmentLabel',
+            score: '?fragmentScore',
           },
           about: '?about',
           license: '?license',
@@ -75,6 +84,16 @@ module.exports = {
               }
             }
           }
+        }
+        UNION
+        {
+          ?id ma:hasFragment ?fragment .
+          ?fragment nsa:spatialX ?fragmentX .
+          ?fragment nsa:spatialY ?fragmentY .
+          ?fragment nsa:spatialW ?fragmentW .
+          ?fragment nsa:spatialH ?fragmentH .
+          ?fragment rdf:value ?fragmentScore .
+          ?fragment oa:hasBody/rdfs:label ?fragmentLabel .
         }
         UNION
         {

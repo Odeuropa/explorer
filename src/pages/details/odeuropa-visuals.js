@@ -1,11 +1,9 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
-import Lightbox from 'react-18-image-lightbox';
-import 'react-18-image-lightbox/style.css';
 import { useTranslation } from 'next-i18next';
 
 import NotFoundPage from '@pages/404';
@@ -24,7 +22,6 @@ import MetadataList from '@components/MetadataList';
 import SaveButton from '@components/SaveButton';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
-import { generateMediaUrl } from '@helpers/utils';
 import config from '~/config';
 
 const Columns = styled.div`
@@ -91,6 +88,28 @@ Panel.Value = styled.div`
   font-size: 1.2rem;
 `;
 
+const AnnotationContainer = styled.div`
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 0.5;
+  cursor: default;
+  user-select: none;
+  transition: opacity 250ms ease-in-out;
+
+  ${({ highlighted }) =>
+    highlighted
+      ? css`
+          opacity: 1;
+          z-index: 10;
+        `
+      : null};
+
+  &:hover {
+    opacity: 1;
+    z-index: 10;
+  }
+`;
+
 const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
@@ -98,14 +117,19 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   const { data: session } = useSession();
   const route = config.routes[query.type];
   const [isItemSaved, setIsItemSaved] = useState(inList);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [fragmentsFilter, setFragmentsFilter] = useState([]);
+  const [visibleFragments, setVisibleFragments] = useState([]);
+  const [highlightedFragment, setHighlightedFragment] = useState(undefined);
 
-  const showLightbox = (index) => {
-    setLightboxIndex(Math.min(images.length - 1, Math.max(0, index)));
-    setLightboxIsOpen(true);
-  };
+  useEffect(() => {
+    const fragmentsFilter = []
+      .concat(result.fragment)
+      .filter((x) => x)
+      .map((fragment) => fragment.label)
+      .filter((v, i, a) => a.indexOf(v) === i);
+    setFragmentsFilter(fragmentsFilter);
+    setVisibleFragments(fragmentsFilter);
+  }, [result]);
 
   if (!result) {
     return (
@@ -138,6 +162,7 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
   };
 
   const images = [].concat(result.image).filter((x) => x);
+  const fragments = [].concat(result.fragment).filter((x) => x);
 
   return (
     <Layout>
@@ -145,6 +170,8 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
       <Header />
       <Body>
         <Element paddingX={48} paddingY={24}>
+          <OdeuropaPagination result={result} />
+
           <Element>
             <Element
               style={{
@@ -208,27 +235,93 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
 
           <Columns>
             <Primary>
-              {lightboxIsOpen && (
-                <Lightbox
-                  mainSrc={images[lightboxIndex]}
-                  nextSrc={images[(lightboxIndex + 1) % images.length]}
-                  prevSrc={images[(lightboxIndex + images.length - 1) % images.length]}
-                  onCloseRequest={() => setLightboxIsOpen(false)}
-                  onMovePrevRequest={() =>
-                    setLightboxIndex((lightboxIndex + images.length - 1) % images.length)
-                  }
-                  onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
-                />
-              )}
-
-              <OdeuropaPagination result={result} />
+              <Element marginBottom={12}>
+                <h4>
+                  Annotations |{' '}
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={fragmentsFilter.length === visibleFragments.length}
+                      onClick={(ev) => {
+                        setVisibleFragments(ev.target.checked ? fragmentsFilter : []);
+                      }}
+                      style={{ verticalAlign: 'middle' }}
+                    />{' '}
+                    select all
+                  </label>
+                </h4>
+                <Element display="flex" flexWrap="wrap">
+                  {fragmentsFilter.map((fragment) => (
+                    <Element
+                      key={fragment}
+                      onMouseEnter={() => {
+                        setHighlightedFragment(fragment);
+                      }}
+                      onMouseLeave={() => {
+                        setHighlightedFragment(undefined);
+                      }}
+                    >
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={visibleFragments.includes(fragment)}
+                          onClick={() => {
+                            setVisibleFragments((prev) =>
+                              prev.includes(fragment)
+                                ? prev.filter((x) => x !== fragment)
+                                : [...prev, fragment]
+                            );
+                          }}
+                          style={{ verticalAlign: 'middle' }}
+                        />{' '}
+                        {fragment}
+                      </label>
+                    </Element>
+                  ))}
+                </Element>
+              </Element>
 
               <Element>
-                <img src={images[0]} alt="" />
+                <div style={{ position: 'relative' }}>
+                  <img src={images[0]} alt="" />
+                  {fragments
+                    .filter((fragment) => visibleFragments.includes(fragment.label))
+                    .map((fragment) => (
+                      <AnnotationContainer
+                        key={fragment['@id']}
+                        style={{
+                          left: parseFloat(fragment.x),
+                          top: parseFloat(fragment.y),
+                          width: parseFloat(fragment.width),
+                          height: parseFloat(fragment.height),
+                        }}
+                        highlighted={highlightedFragment === fragment.label}
+                      >
+                        <span
+                          style={{
+                            position: 'relative',
+                            top: -27,
+                            left: -4,
+                            padding: 4,
+                            lineHeight: '24px',
+                            fontSize: '14px',
+                            backgroundColor: '#fff',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {fragment.label}{' '}
+                          <span style={{ fontSize: '8px' }}>
+                            ({parseFloat(fragment.score) * 100}%)
+                          </span>
+                        </span>
+                      </AnnotationContainer>
+                    ))}
+                </div>
               </Element>
             </Primary>
             <Secondary>
               <Element marginBottom={24}>
+                <h4>Metadata</h4>
                 <MetadataList metadata={result} query={query} route={route} />
               </Element>
             </Secondary>
