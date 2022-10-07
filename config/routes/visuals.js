@@ -22,7 +22,6 @@ module.exports = {
         `
         {
           ?id rdfs:label ?label .
-          FILTER(LANG(?label) = "${language}" || LANG(?label) = "")
         }
         UNION
         {
