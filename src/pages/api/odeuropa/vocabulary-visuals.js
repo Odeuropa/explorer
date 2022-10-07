@@ -16,7 +16,9 @@ export default withRequestValidation({
 
   const visualsQuery = JSON.parse(
     JSON.stringify(
-      getQueryObject(route['odeuropa-vocabulary'].visuals.query, { language: query.locale })
+      getQueryObject(config.plugins['odeuropa-vocabulary'].visuals.query, {
+        language: query.locale,
+      })
     )
   );
   visualsQuery.$filter = visualsQuery.$filter || [];
