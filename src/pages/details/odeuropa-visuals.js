@@ -6,8 +6,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
 import Lightbox from 'react-18-image-lightbox';
 import 'react-18-image-lightbox/style.css';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useTranslation } from 'next-i18next';
 
 import NotFoundPage from '@pages/404';
@@ -91,107 +89,6 @@ Panel.Label = styled.div`
 
 Panel.Value = styled.div`
   font-size: 1.2rem;
-`;
-
-const CarouselContainer = styled.div`
-  .carousel-root {
-    display: flex;
-  }
-  .carousel {
-    &.carousel-slider {
-      min-height: 50vh;
-    }
-    .thumbs {
-      /* For vertical thumbs */
-      display: flex;
-      flex-direction: column;
-      transform: none !important;
-    }
-    .thumbs-wrapper {
-      overflow: visible;
-      margin-top: 0;
-      margin-bottom: 0;
-
-      .control-arrow {
-        display: none;
-      }
-    }
-    .thumb {
-      width: 80px;
-      height: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #fff;
-
-      &.selected,
-      &:hover {
-        border: 3px solid ${({ theme }) => theme.colors.primary};
-      }
-
-      img {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-      }
-    }
-
-    .slide {
-      display: flex;
-      .legend {
-        transition: background-color 0.5s ease-in-out;
-        background-color: rgba(0, 0, 0, 0.25);
-        color: #fff;
-        opacity: 1;
-
-        &:hover {
-          background-color: #000;
-        }
-      }
-
-      .subtitle {
-        white-space: pre-line;
-        text-align: left;
-        padding: 0.5em 1em;
-      }
-
-      img {
-        width: auto;
-        max-height: 50vh;
-        pointer-events: auto;
-      }
-    }
-
-    .carousel-status {
-      font-size: inherit;
-      color: #fff;
-      top: 16px;
-      left: 16px;
-    }
-
-    .control-arrow::before {
-      border-width: 0 3px 3px 0;
-      border: solid #000;
-      display: inline-block;
-      padding: 3px;
-      border-width: 0 3px 3px 0;
-      width: 20px;
-      height: 20px;
-    }
-    .control-next.control-arrow::before {
-      transform: rotate(-45deg);
-    }
-    .control-prev.control-arrow::before {
-      transform: rotate(135deg);
-    }
-
-    .slider-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      height: 100%;
-    }
-  }
 `;
 
 const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
@@ -326,22 +223,9 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
 
               <OdeuropaPagination result={result} />
 
-              {images.length > 1 && (
-                <CarouselContainer>
-                  <Carousel showArrows {...config.gallery.options} onChange={setCurrentSlide}>
-                    {images.map((image, i) => (
-                      <div key={image} onClick={() => showLightbox(i)} aria-hidden="true">
-                        <img src={generateMediaUrl(image, 1024)} alt="" />
-                      </div>
-                    ))}
-                  </Carousel>
-                </CarouselContainer>
-              )}
-              {images.length === 1 && (
-                <Element>
-                  <img src={images[0]} alt="" />
-                </Element>
-              )}
+              <Element>
+                <img src={images[0]} alt="" />
+              </Element>
             </Primary>
             <Secondary>
               <Element marginBottom={24}>
