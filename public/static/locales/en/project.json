@@ -14,7 +14,12 @@
     "time": "Time",
     "place": "Place",
     "gesture": "Gesture",
-    "emotion": "Emotion"
+    "emotion": "Emotion",
+    "date": "Date",
+    "location": "Location",
+    "license": "License",
+    "consistsOf": "Consists of",
+    "about": "About"
   },
   "routes": {
     "texts": "Search",

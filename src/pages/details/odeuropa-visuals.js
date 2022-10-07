@@ -22,6 +22,7 @@ import PageTitle from '@components/PageTitle';
 import OdeuropaPagination from '@components/OdeuropaPagination';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import GraphLink from '@components/GraphLink';
+import MetadataList from '@components/MetadataList';
 import SaveButton from '@components/SaveButton';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
@@ -33,29 +34,25 @@ const Columns = styled.div`
   width: 100%;
   margin: 0 auto;
   flex-direction: column;
-  justify-content: center;
   margin-bottom: 24px;
 
   ${breakpoints.desktop`
     flex-direction: row;
-    padding: 0 2em;
   `}
 `;
 
 const Primary = styled.div`
-  flex: auto;
-  min-width: 50%;
-  padding-right: 24px;
-  padding-top: 24px;
-  margin-left: 24px;
-
   display: flex;
   flex-direction: column;
 `;
 
-const Separator = styled.div`
-  border-bottom: 1px solid lightgray;
-  margin: 1.5rem 0;
+const Secondary = styled.div`
+  flex: auto;
+  padding: 0 24px;
+
+  ${breakpoints.desktop`
+    margin-left: 0;
+  `}
 `;
 
 const Panel = styled.div`
@@ -142,8 +139,6 @@ const CarouselContainer = styled.div`
 
     .slide {
       display: flex;
-      justify-content: center;
-
       .legend {
         transition: background-color 0.5s ease-in-out;
         background-color: rgba(0, 0, 0, 0.25);
@@ -163,7 +158,6 @@ const CarouselContainer = styled.div`
 
       img {
         width: auto;
-        max-width: 100%;
         max-height: 50vh;
         pointer-events: auto;
       }
@@ -253,119 +247,124 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
       <PageTitle title={`${pageTitle}`} />
       <Header />
       <Body>
-        <Columns>
-          <Primary>
-            {lightboxIsOpen && (
-              <Lightbox
-                mainSrc={images[lightboxIndex]}
-                nextSrc={images[(lightboxIndex + 1) % images.length]}
-                prevSrc={images[(lightboxIndex + images.length - 1) % images.length]}
-                onCloseRequest={() => setLightboxIsOpen(false)}
-                onMovePrevRequest={() =>
-                  setLightboxIndex((lightboxIndex + images.length - 1) % images.length)
-                }
-                onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
-              />
-            )}
-
-            <OdeuropaPagination result={result} />
-
-            <Element>
-              <Element
-                style={{
-                  fontSize: '2rem',
-                  color: 'gray',
-                  fontWeight: 'bold',
-                  marginBottom: '1rem',
-                }}
-              >
-                Visual resource
-              </Element>
-
-              <Element
-                style={{
-                  fontSize: '4rem',
-                  color: '#725cae',
-                  fontWeight: 'bold',
-                  lineHeight: '100%',
-                }}
-              >
-                {result.label}
-              </Element>
-
-              <Element display="flex" alignItems="center" justifyContent="space-between">
-                {result.sameAs && (
-                  <small>
-                    (
-                    <a href={result.sameAs} target="_blank" rel="noopener noreferrer">
-                      {t('common:buttons.original')}
-                    </a>
-                    )
-                  </small>
-                )}
-                {route.details.showPermalink && (
-                  <small>
-                    (
-                    <a
-                      href={generatePermalink(result['@id'])}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('common:buttons.permalink')}
-                    </a>
-                    )
-                  </small>
-                )}
-                {session && (
-                  <SaveButton
-                    type={query.type}
-                    item={result}
-                    saved={isItemSaved}
-                    onChange={onItemSaveChange}
-                  />
-                )}
-              </Element>
-
-              <Element marginBottom={12} display="flex">
-                <GraphLink uri={result['@graph']} icon label />
-              </Element>
+        <Element paddingX={48} paddingY={24}>
+          <Element>
+            <Element
+              style={{
+                fontSize: '2rem',
+                color: 'gray',
+                fontWeight: 'bold',
+                marginBottom: '1rem',
+              }}
+            >
+              Visual resource
             </Element>
 
-            {images.length > 1 && (
-              <CarouselContainer>
-                <Carousel showArrows {...config.gallery.options} onChange={setCurrentSlide}>
-                  {images.map((image, i) => (
-                    <div key={image} onClick={() => showLightbox(i)} aria-hidden="true">
-                      <img src={generateMediaUrl(image, 1024)} alt="" />
-                    </div>
-                  ))}
-                </Carousel>
-              </CarouselContainer>
-            )}
-            {images.length === 1 && (
-              <Element>
-                <img src={images[0]} alt="" />
+            <Element
+              style={{
+                fontSize: '4rem',
+                color: '#725cae',
+                fontWeight: 'bold',
+                lineHeight: '100%',
+              }}
+            >
+              {result.label}
+            </Element>
+
+            <Element display="flex" alignItems="center" justifyContent="space-between">
+              {result.sameAs && (
+                <small>
+                  (
+                  <a href={result.sameAs} target="_blank" rel="noopener noreferrer">
+                    {t('common:buttons.original')}
+                  </a>
+                  )
+                </small>
+              )}
+              {route.details.showPermalink && (
+                <small>
+                  (
+                  <a
+                    href={generatePermalink(result['@id'])}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('common:buttons.permalink')}
+                  </a>
+                  )
+                </small>
+              )}
+              {session && (
+                <SaveButton
+                  type={query.type}
+                  item={result}
+                  saved={isItemSaved}
+                  onChange={onItemSaveChange}
+                />
+              )}
+            </Element>
+
+            <Element marginBottom={12} display="flex">
+              <GraphLink uri={result['@graph']} icon label />
+            </Element>
+          </Element>
+
+          <Columns>
+            <Primary>
+              {lightboxIsOpen && (
+                <Lightbox
+                  mainSrc={images[lightboxIndex]}
+                  nextSrc={images[(lightboxIndex + 1) % images.length]}
+                  prevSrc={images[(lightboxIndex + images.length - 1) % images.length]}
+                  onCloseRequest={() => setLightboxIsOpen(false)}
+                  onMovePrevRequest={() =>
+                    setLightboxIndex((lightboxIndex + images.length - 1) % images.length)
+                  }
+                  onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
+                />
+              )}
+
+              <OdeuropaPagination result={result} />
+
+              {images.length > 1 && (
+                <CarouselContainer>
+                  <Carousel showArrows {...config.gallery.options} onChange={setCurrentSlide}>
+                    {images.map((image, i) => (
+                      <div key={image} onClick={() => showLightbox(i)} aria-hidden="true">
+                        <img src={generateMediaUrl(image, 1024)} alt="" />
+                      </div>
+                    ))}
+                  </Carousel>
+                </CarouselContainer>
+              )}
+              {images.length === 1 && (
+                <Element>
+                  <img src={images[0]} alt="" />
+                </Element>
+              )}
+            </Primary>
+            <Secondary>
+              <Element marginBottom={24}>
+                <MetadataList metadata={result} query={query} route={route} />
               </Element>
-            )}
+            </Secondary>
+          </Columns>
 
-            <Separator />
-
-            <Debug>
-              <Metadata label="HTTP Parameters">
-                <pre>{JSON.stringify(query, null, 2)}</pre>
-              </Metadata>
-              <Metadata label="Query Result">
-                <pre>{JSON.stringify(result, null, 2)}</pre>
-              </Metadata>
-              <Metadata label="SPARQL Query">
-                <SPARQLQueryLink query={debugSparqlQuery}>
-                  {t('common:buttons.editQuery')}
-                </SPARQLQueryLink>
-                <pre>{debugSparqlQuery}</pre>
-              </Metadata>
-            </Debug>
-          </Primary>
-        </Columns>
+          <Debug>
+            <Metadata label="HTTP Parameters">
+              <pre>{JSON.stringify(query, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="Query Result">
+              <pre>{JSON.stringify(result, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={debugSparqlQuery}>
+                {t('common:buttons.editQuery')}
+              </SPARQLQueryLink>
+              <pre>{debugSparqlQuery}</pre>
+            </Metadata>
+          </Debug>
+        </Element>
       </Body>
       <Footer />
     </Layout>
