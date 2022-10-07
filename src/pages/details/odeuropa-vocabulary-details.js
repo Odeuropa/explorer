@@ -287,7 +287,19 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           <Results>
             {visuals.map((item) => (
               <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                <OdeuropaCard item={item} route={config.routes.visuals} type="visuals" />
+                <OdeuropaCard
+                  item={item}
+                  route={config.routes.visuals}
+                  type="visuals"
+                  onSeeMore={() => {
+                    setSearchQuery(query);
+                    setSearchPath(window.location.pathname);
+                    setSearchData({
+                      totalResults: visuals.length,
+                      results: visuals,
+                    });
+                  }}
+                />
               </Result>
             ))}
           </Results>

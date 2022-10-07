@@ -19,6 +19,7 @@ import Element from '@components/Element';
 import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
+import OdeuropaPagination from '@components/OdeuropaPagination';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
@@ -266,6 +267,8 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
                 onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
               />
             )}
+
+            <OdeuropaPagination result={result} />
 
             <Element>
               <Element
