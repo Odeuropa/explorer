@@ -242,7 +242,7 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
                     <input
                       type="checkbox"
                       checked={fragmentsFilter.length === visibleFragments.length}
-                      onClick={(ev) => {
+                      onChange={(ev) => {
                         setVisibleFragments(ev.target.checked ? fragmentsFilter : []);
                       }}
                       style={{ verticalAlign: 'middle' }}
@@ -265,7 +265,7 @@ const OdeuropaVisualPage = ({ result, inList, debugSparqlQuery }) => {
                         <input
                           type="checkbox"
                           checked={visibleFragments.includes(fragment)}
-                          onClick={() => {
+                          onChange={() => {
                             setVisibleFragments((prev) =>
                               prev.includes(fragment)
                                 ? prev.filter((x) => x !== fragment)
