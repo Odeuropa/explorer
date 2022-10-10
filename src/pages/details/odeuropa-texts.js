@@ -292,17 +292,23 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     const values = [].concat(value).filter((x) => x);
     const renderedValue = values
       .map((v) => {
+        let inner = v;
         if (typeof v === 'object') {
+          const label = []
+            .concat(v.label)
+            .filter((x) => x)
+            .join(', ');
           if (v.type) {
-            return (
+            inner = (
               <>
-                {v.label} <small>({v.type})</small>
+                {label} <small>({v.type})</small>
               </>
             );
+          } else {
+            inner = label;
           }
-          return v.label;
         }
-        return v;
+        return <Fragment key={inner}>{inner}</Fragment>;
       })
       .reduce((prev, curr) => [prev, ', ', curr]);
 
@@ -313,6 +319,19 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
       </Panel.Row>
     );
   };
+
+  const smellEmissionRows = [
+    renderPanelRow('Source', result.smellSource),
+    renderPanelRow('Carrier', result.carrier),
+    renderPanelRow('Date', result.time),
+    renderPanelRow('Place', result.place),
+  ].filter((x) => x);
+
+  const olfactoryExperienceRows = [
+    renderPanelRow('Actor', result.actor),
+    renderPanelRow('Emotion', result.emotion),
+    renderPanelRow('Defined as', result.adjective),
+  ].filter((x) => x);
 
   return (
     <Layout>
@@ -367,28 +386,27 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
             <Separator />
 
-            <Element marginBottom={24} display="flex">
-              <Panel>
-                <Panel.Title>Smell Emission</Panel.Title>
-                <Panel.Body>
-                  {renderPanelRow('Source', result.smellSource)}
-                  {renderPanelRow('Carrier', result.carrier)}
-                  {renderPanelRow('Date', result.time)}
-                  {renderPanelRow('Place', result.place)}
-                </Panel.Body>
-              </Panel>
+            {(smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) && (
+              <>
+                <Element marginBottom={24} display="flex">
+                  {smellEmissionRows.length > 0 && (
+                    <Panel>
+                      <Panel.Title>Smell Emission</Panel.Title>
+                      <Panel.Body>{smellEmissionRows}</Panel.Body>
+                    </Panel>
+                  )}
 
-              <Panel>
-                <Panel.Title>Olfactory Experience</Panel.Title>
-                <Panel.Body>
-                  {renderPanelRow('Actor', result.actor)}
-                  {renderPanelRow('Emotion', result.emotion)}
-                  {renderPanelRow('Defined as', result.adjective)}
-                </Panel.Body>
-              </Panel>
-            </Element>
+                  {olfactoryExperienceRows.length > 0 && (
+                    <Panel>
+                      <Panel.Title>Olfactory Experience</Panel.Title>
+                      <Panel.Body>{olfactoryExperienceRows}</Panel.Body>
+                    </Panel>
+                  )}
+                </Element>
 
-            <Separator />
+                <Separator />
+              </>
+            )}
 
             {fragments.map((fragment, i) => (
               <Element key={fragment['@id']} id={slugify(fragment['@id'])}>

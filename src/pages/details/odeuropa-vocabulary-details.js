@@ -179,7 +179,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                   lineHeight: '4.5rem',
                 }}
               >
-                {result.label}
+                {pageTitle}
               </div>
             </div>
 

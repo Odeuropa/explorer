@@ -17,6 +17,7 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import breakpoints from '@styles/breakpoints';
 import SparqlClient from '@helpers/sparql';
 import { getQueryObject, uriToId } from '@helpers/utils';
+import { getEntityMainLabel } from '@helpers/explorer';
 import config from '~/config';
 
 const Hero = styled.div`
@@ -118,7 +119,7 @@ const ItemTitle = styled.div`
 `;
 
 const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
-  const { t } = useTranslation(['common', 'project']);
+  const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
 
   const query = { ...router.query };
@@ -161,7 +162,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                     <a>
                       <Item key={result['@id']} id={result['@id']}>
                         <ItemTitle>
-                          <h2>{result.label}</h2>
+                          <h2>{getEntityMainLabel(result, { route, language: i18n.language })}</h2>
                         </ItemTitle>
                         {result.description && <p>{result.description}</p>}
                       </Item>

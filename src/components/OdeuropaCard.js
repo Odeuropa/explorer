@@ -108,14 +108,18 @@ const renderCardRow = (label, value) => {
     .map((v) => {
       let inner = v;
       if (typeof v === 'object') {
+        const label = []
+          .concat(v.label)
+          .filter((x) => x)
+          .join(', ');
         if (v.type) {
           inner = (
             <>
-              {v.label} <small>({v.type})</small>
+              {label} <small>({v.type})</small>
             </>
           );
         } else {
-          inner = v.label;
+          inner = label;
         }
       }
       return <Fragment key={inner}>{inner}</Fragment>;
