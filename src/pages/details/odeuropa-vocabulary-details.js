@@ -74,7 +74,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const q = {
       id: result['@id'],
       type: query.type,
-      locale: i18n.langauge,
+      locale: i18n.language,
     };
     const qs = queryString.stringify(q);
 
