@@ -16,7 +16,7 @@ export default withRequestValidation({
 
   const textsQuery = JSON.parse(
     JSON.stringify(
-      getQueryObject(config.plugins['odeuropa-vocabulary'].texts.query, { language: query.locale })
+      getQueryObject(route.plugins['odeuropa-vocabulary'].texts.query, { language: query.locale })
     )
   );
   textsQuery.$filter = textsQuery.$filter || [];

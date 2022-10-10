@@ -16,7 +16,7 @@ export default withRequestValidation({
 
   const wordCloudQuery = JSON.parse(
     JSON.stringify(
-      getQueryObject(config.plugins['odeuropa-vocabulary'].wordCloud.query, {
+      getQueryObject(route.plugins['odeuropa-vocabulary'].wordCloud.query, {
         language: query.locale,
       })
     )
