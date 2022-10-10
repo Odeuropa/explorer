@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styled, { css } from 'styled-components';
 import { SearchAlt2 } from '@styled-icons/boxicons-regular/SearchAlt2';
 import { Button as ReakitButton } from 'ariakit';
@@ -26,8 +28,6 @@ const Hero = styled.div`
 `;
 
 const HeroTop = styled.div`
-  height: 512px;
-  min-height: fit-content;
   display: flex;
   flex-direction: column-reverse;
   justify-content: center;
@@ -39,7 +39,7 @@ const HeroTop = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  padding-top: 1em;
+  padding: 1em 0;
 
   ${breakpoints.tablet`
     flex-direction: row;
@@ -51,7 +51,7 @@ const Title = styled.h1`
   color: #735dae;
   line-height: 100%;
   margin: 0 auto;
-  padding: 1em;
+  padding: 0 1em;
   font-size: 5rem;
   white-space: pre-line;
 
@@ -73,11 +73,10 @@ const Logo = styled.div`
 `;
 
 const HeroBottom = styled.div`
-  height: 512px;
   display: flex;
   width: 100%;
   background-color: #fff;
-  padding: 1em 0;
+  padding-bottom: 1em;
   overflow: hidden;
 `;
 
@@ -185,17 +184,25 @@ const SearchIcon = styled(SearchAlt2)`
 
 const SecondBlock = styled.div`
   display: none;
+  width: 300px;
+  position: relative;
+  margin-left: 1em;
   ${breakpoints.desktop`
-    display: block;
+    display: flex;
+    align-items: center;
   `}
 `;
 
 const ThirdBlock = styled.div`
   display: none;
+  width: 300px;
+  position: relative;
+  margin-left: 1em;
   ${customBreakpoint(
     1280,
     css`
-      display: block;
+      display: flex;
+      align-items: center;
     `
   )}
 `;
@@ -203,12 +210,34 @@ const ThirdBlock = styled.div`
 const TopBlock = styled.div`
   display: none;
   ${breakpoints.tablet`
-    display: block;
+    display: flex;
   `}
 `;
 
+const getRandom = (arr, n) => {
+  var result = new Array(n),
+    len = arr.length,
+    taken = new Array(len);
+  if (n > len) throw new RangeError('getRandom: more elements taken than available');
+  while (n--) {
+    var x = Math.floor(Math.random() * len);
+    result[n] = arr[x in taken ? taken[x] : x];
+    taken[x] = --len in taken ? taken[len] : len;
+  }
+  return result;
+};
+
+const imagesList = Array.from(Array(16), (_, i) => `/images/odeuropa-homepage/${i + 1}.jpg`);
+
+const numberOfImages = 4;
+
 const HomePage = () => {
   const { t } = useTranslation(['common', 'home', 'project']);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    setImages(getRandom(imagesList, numberOfImages));
+  }, []);
 
   return (
     <Layout>
@@ -217,12 +246,18 @@ const HomePage = () => {
       <Body>
         <Hero>
           <HeroTop>
-            <TopBlock style={{ height: '100%' }}>
-              <img src="/images/flowers.jpg" alt="" style={{ height: '100%' }} />
+            <TopBlock>
+              <Image
+                src={images[0]}
+                alt=""
+                width={330}
+                height={496}
+                layout="fixed"
+                objectFit="cover"
+              />
             </TopBlock>
             <div
               style={{
-                height: '100%',
                 flex: '1',
                 display: 'flex',
                 alignItems: 'center',
@@ -232,17 +267,22 @@ const HomePage = () => {
               {config.home.hero.showHeadline && <Title>{t('home:hero.headline')}</Title>}
               {config.home.hero.showLogo && <Logo />}
             </div>
-            <TopBlock style={{ height: '100%' }}>
-              <img src="/images/horse.jpg" alt="" style={{ height: '100%' }} />
+            <TopBlock>
+              <Image
+                src={images[1]}
+                alt=""
+                width={330}
+                height={496}
+                layout="fixed"
+                objectFit="cover"
+              />
             </TopBlock>
           </HeroTop>
           <HeroBottom style={{ flexWrap: 'wrap' }}>
             <div
               style={{
                 backgroundColor: '#B9D59B',
-                height: '100%',
                 flex: '1',
-                marginRight: '1em',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -287,11 +327,11 @@ const HomePage = () => {
                   ))}
               </ButtonsContainer>
             </div>
-            <SecondBlock style={{ height: '100%', marginRight: '1em' }}>
-              <img src="/images/tea.jpg" alt="" style={{ height: '100%' }} />
+            <SecondBlock>
+              <Image src={images[2]} alt="" layout="fill" objectFit="cover" />
             </SecondBlock>
-            <ThirdBlock style={{ height: '100%' }}>
-              <img src="/images/perfume.jpg" alt="" style={{ height: '100%' }} />
+            <ThirdBlock>
+              <Image src={images[3]} alt="" layout="fill" objectFit="cover" />
             </ThirdBlock>
           </HeroBottom>
         </Hero>

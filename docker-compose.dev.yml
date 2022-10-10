@@ -16,6 +16,7 @@ services:
       - ./theme.js:/usr/src/app/theme.js
       - ./public/fonts/FuturaStdBook.woff:/usr/src/app/public/fonts/FuturaStdBook.woff
       - ./public/fonts/Garamond.woff:/usr/src/app/public/fonts/Garamond.woff
+      - ./public/images/odeuropa-homepage/:/usr/src/app/public/images/odeuropa-homepage/
       - ./public/images/odeuropa-vocabularies/:/usr/src/app/public/images/odeuropa-vocabularies/
       - ./public/images/footer.png:/usr/src/app/public/images/footer.png
       - ./public/images/logo.png:/usr/src/app/public/images/logo.png
