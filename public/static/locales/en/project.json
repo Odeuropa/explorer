@@ -15,11 +15,12 @@
     "place": "Place",
     "gesture": "Gesture",
     "emotion": "Emotion",
-    "date": "Date",
+    "date": "Creation date",
     "location": "Location",
     "license": "License",
     "consistsOf": "Consists of",
-    "about": "About"
+    "about": "Keywords",
+    "author": "Author"
   },
   "routes": {
     "texts": "Search",
