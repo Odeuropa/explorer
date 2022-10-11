@@ -236,7 +236,9 @@ module.exports = {
     {
       id: 'time',
       isMulti: true,
-      isSortable: true,
+      isSortable: {
+        reverse: true,
+      },
       query: ({ language }) => ({
         '@graph': [
           {
@@ -270,7 +272,7 @@ module.exports = {
     {
       id: 'place',
       isMulti: true,
-      isSortable: true,
+      isSortable: false,
       query: ({ language }) => ({
         '@graph': [
           {
@@ -306,7 +308,7 @@ module.exports = {
     {
       id: 'source',
       isMulti: true,
-      isSortable: true,
+      isSortable: false,
       condition: 'user-defined',
       query: ({ language }) => ({
         $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning implicit values
@@ -349,7 +351,7 @@ module.exports = {
     {
       id: 'carrier',
       isMulti: true,
-      isSortable: true,
+      isSortable: false,
       query: ({ language }) => ({
         '@graph': [
           {
@@ -383,7 +385,7 @@ module.exports = {
     {
       id: 'emotion',
       isMulti: true,
-      isSortable: true,
+      isSortable: false,
       query: ({ language }) => ({
         '@graph': [
           {
@@ -411,7 +413,7 @@ module.exports = {
     {
       id: 'language',
       isMulti: true,
-      isSortable: true,
+      isSortable: false,
       query: () => ({
         '@graph': [
           {

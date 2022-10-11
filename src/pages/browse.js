@@ -364,11 +364,27 @@ const BrowsePage = ({ initialData }) => {
   }
 
   const sortOptions = (route.filters || [])
-    .filter((filter) => filter.isSortable === true)
-    .map((filter) => ({
-      label: t(`project:filters.${filter.id}`, filter.label),
-      value: filter.id,
-    }));
+    .filter((filter) => filter.isSortable)
+    .reduce((r, filter) => {
+      if (filter.isSortable?.reverse) {
+        r.push(
+          {
+            label: t(`project:filters.${filter.id}`, filter.label) + ' (Ascendant)',
+            value: `${filter.id}|ASC`,
+          },
+          {
+            label: t(`project:filters.${filter.id}`, filter.label) + ' (Descendant)',
+            value: `${filter.id}|DESC`,
+          }
+        );
+      } else {
+        r.push({
+          label: t(`project:filters.${filter.id}`, filter.label),
+          value: `${filter.id}`,
+        });
+      }
+      return r;
+    }, []);
 
   const displayOptions = ['card', 'text'].map((display) => ({
     label: t(`project:display.${display}`, display),
