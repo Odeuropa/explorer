@@ -395,7 +395,7 @@ module.exports = {
           `
           ?emotion reo:readP27 ?experience .
           ?emotion crm:P137_exemplifies ?emotionType .
-          ?emotionType skos:prefLabel ?emotionTypeLabel .
+          ?emotionType rdfs:label ?emotionTypeLabel .
           FILTER(LANG(?emotionTypeLabel) = "${language}" || LANG(?emotionTypeLabel) = "")
           `,
         ],
