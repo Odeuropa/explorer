@@ -323,8 +323,9 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const smellEmissionRows = [
     renderPanelRow('Source', result.smellSource),
     renderPanelRow('Carrier', result.carrier),
-    renderPanelRow('Date', result.time),
-    renderPanelRow('Place', result.place),
+    renderPanelRow('Date', result.source?.time),
+    renderPanelRow('Place', result.source?.place),
+    renderPanelRow('Author', result.source?.author),
   ].filter((x) => x);
 
   const olfactoryExperienceRows = [

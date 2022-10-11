@@ -135,44 +135,29 @@ const renderCardRow = (label, value) => {
 };
 
 const renderBody = (item) => {
-  const smellRows = [];
-  const experienceRows = [];
+  const smellEmissionRows = [
+    renderCardRow('Source', item.smellSource),
+    renderCardRow('Carrier', item.carrier),
+    renderCardRow('Date', item.source?.time),
+    renderCardRow('Place', item.source?.place),
+    renderCardRow('Author', item.source?.author),
+  ].filter((x) => x);
 
-  const smellKeys = {
-    smellSource: 'Source',
-    carrier: 'Carrier',
-    time: 'Date',
-    place: 'Place',
-  };
+  const olfactoryExperienceRows = [
+    renderCardRow('Actor', item.actor),
+    renderCardRow('Emotion', item.emotion),
+    renderCardRow('Defined as', item.adjective),
+  ].filter((x) => x);
 
-  const experienceKeys = {
-    actor: 'Actor',
-    gesture: 'Gesture',
-    emotion: 'Emotion',
-    adjective: 'Defined as',
-  };
-
-  Object.entries(smellKeys).forEach(([key, label]) => {
-    if (item[key]) {
-      smellRows.push(<Fragment key={key}>{renderCardRow(label, item[key])}</Fragment>);
-    }
-  });
-
-  Object.entries(experienceKeys).forEach(([key, label]) => {
-    if (item[key]) {
-      experienceRows.push(<Fragment key={key}>{renderCardRow(label, item[key])}</Fragment>);
-    }
-  });
-
-  if (smellRows.length > 0 || experienceRows.length > 0) {
+  if (smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) {
     return (
       <Body>
-        {smellRows}
+        {smellEmissionRows}
 
-        {experienceRows.length > 0 && (
+        {olfactoryExperienceRows.length > 0 && (
           <>
             <Separator>Olfactory Experience</Separator>
-            {experienceRows}
+            {olfactoryExperienceRows}
           </>
         )}
       </Body>
