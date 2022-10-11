@@ -17,7 +17,7 @@ module.exports = {
     },
   },
   footer: {
-    logo: '/images/footer.png',
+    logo: ['/images/eu-logo.png', '/images/footer.png'],
   },
   search: {
     route: 'texts',

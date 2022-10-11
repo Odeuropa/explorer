@@ -63,6 +63,9 @@ const theme = {
         minHeight: 150,
         backgroundColor: '#464C5A',
       },
+      Credits: {
+        flex: 1,
+      },
     },
     Media: {
       GraphIconContainer: {
