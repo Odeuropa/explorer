@@ -127,7 +127,7 @@ const renderCardRow = (label, value) => {
     .reduce((prev, curr) => [prev, ', ', curr]);
 
   return (
-    <Row>
+    <Row key={label}>
       <Label>{label}</Label>
       <Value>{renderedValue}</Value>
     </Row>
