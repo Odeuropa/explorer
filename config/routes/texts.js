@@ -58,61 +58,91 @@ module.exports = {
     ];
   },
   baseWhere: ['GRAPH ?g { ?id a od:L11_Smell }'],
-  query: ({ language }) => ({
-    '@context': 'http://schema.org/',
-    '@graph': [
-      {
-        '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
-        '@id': '?id',
-        '@graph': '?g',
-        label: '?label',
-        relevantFragment: '?relevantFragment',
-        source: {
-          '@id': '?source',
-          label: '?sourceLabel',
-          url: '?sourceUrl',
-          fragments: {
-            '@id': '?fragment',
-            value: '?fragmentValue',
+  query: ({ language, params }) => {
+    if (params?.display === 'text') {
+      return {
+        '@context': 'http://schema.org/',
+        '@graph': [
+          {
+            '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
+            '@id': '?id',
+            '@graph': '?g',
+            label: '?label',
+            text: '?text',
           },
-          author: {
-            '@id': '?sourceAuthor',
-            label: '?sourceAuthorLabel',
-            sameAs: '?sourceAuthorSameAs',
+        ],
+        $where: [
+          `
+          GRAPH ?g { ?id a od:L11_Smell . }
+          ?id rdfs:label ?label .
+          ?source crm:P67_refers_to ?id .
+
+          OPTIONAL {
+            ?relevantFragment crm:P67_refers_to ?id .
+            FILTER(?relevantFragment != ?source)
+            ?relevantFragment rdf:value ?text .
+          }
+          `,
+        ],
+        $langTag: 'hide',
+      };
+    }
+
+    return {
+      '@context': 'http://schema.org/',
+      '@graph': [
+        {
+          '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
+          '@id': '?id',
+          '@graph': '?g',
+          label: '?label',
+          relevantFragment: '?relevantFragment',
+          source: {
+            '@id': '?source',
+            label: '?sourceLabel',
+            url: '?sourceUrl',
+            fragments: {
+              '@id': '?fragment',
+              value: '?fragmentValue',
+            },
+            author: {
+              '@id': '?sourceAuthor',
+              label: '?sourceAuthorLabel',
+              sameAs: '?sourceAuthorSameAs',
+            },
+            date: '?sourceDate',
+            genre: {
+              '@id': '?sourceGenre',
+              label: '?sourceGenreLabel',
+            },
+            language: '?sourceLanguage',
           },
-          date: '?sourceDate',
-          genre: {
-            '@id': '?sourceGenre',
-            label: '?sourceGenreLabel',
+          smellSource: {
+            '@id': '?smellSource',
+            label: '?smellSourceLabel',
           },
-          language: '?sourceLanguage',
+          carrier: {
+            '@id': '?carrier',
+            label: '?carrierLabel',
+          },
+          time: {
+            '@id': '?time',
+            label: '?timeLabel',
+          },
+          place: {
+            '@id': '?place',
+            label: '?placeLabel',
+          },
+          adjective: '?adjective',
+          emotion: {
+            '@id': '?emotion',
+            label: '?emotionLabel',
+            type: '?emotionType',
+          },
         },
-        smellSource: {
-          '@id': '?smellSource',
-          label: '?smellSourceLabel',
-        },
-        carrier: {
-          '@id': '?carrier',
-          label: '?carrierLabel',
-        },
-        time: {
-          '@id': '?time',
-          label: '?timeLabel',
-        },
-        place: {
-          '@id': '?place',
-          label: '?placeLabel',
-        },
-        adjective: '?adjective',
-        emotion: {
-          '@id': '?emotion',
-          label: '?emotionLabel',
-          type: '?emotionType',
-        },
-      },
-    ],
-    $where: [
-      `
+      ],
+      $where: [
+        `
         GRAPH ?g { ?id a od:L11_Smell . }
         ?id rdfs:label ?label .
         ?source crm:P67_refers_to ?id .
@@ -229,9 +259,10 @@ module.exports = {
           }
         }
         `,
-    ],
-    $langTag: 'hide',
-  }),
+      ],
+      $langTag: 'hide',
+    };
+  },
   filters: [
     {
       id: 'time',

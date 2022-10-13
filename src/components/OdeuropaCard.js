@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
+import { getHighlightedText } from '@helpers/odeuropa';
 
 const Container = styled.div`
   width: 100%;
@@ -134,7 +135,12 @@ const renderCardRow = (label, value) => {
   );
 };
 
-const renderBody = (item) => {
+const renderBody = (item, highlightKeyword) => {
+  if (item.text) {
+    const truncatedText = item.text.length < 200 ? item.text : item.text.substring(0, 200) + '…';
+    return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
+  }
+
   const smellEmissionRows = [
     renderCardRow('Source', item.smellSource),
     renderCardRow('Carrier', item.carrier),
@@ -185,7 +191,7 @@ const OdeuropaCard = ({ item, route, type, onSeeMore, ...props }) => {
           }}
         />
       )}
-      {renderBody(item)}
+      {renderBody(item, mainLabel)}
       <Footer>
         <Link
           key={item['@id']}

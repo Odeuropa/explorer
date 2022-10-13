@@ -44,5 +44,10 @@
   },
   "buttons": {
     "source": "Source :"
+  },
+  "display": {
+    "showAs": "Affichage",
+    "card": "cartes",
+    "text": "textes"
   }
 }

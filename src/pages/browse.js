@@ -457,7 +457,7 @@ const BrowsePage = ({ initialData, filters }) => {
             </StyledTitle>
             <OptionsBar>
               <Option>
-                <Label htmlFor="select_display">Show as</Label>
+                <Label htmlFor="select_display">{t(`project:display.showAs`)}</Label>
                 <StyledSelect
                   id="select_display"
                   instanceId="select_display"
