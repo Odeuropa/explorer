@@ -518,40 +518,6 @@ module.exports = {
       filterFunc: (val, index) => `?source_${index} = <${val}>`,
     },
     {
-      id: 'carrier',
-      isMulti: true,
-      isSortable: false,
-      query: ({ language }) => ({
-        '@graph': [
-          {
-            '@id': '?carrierLabel',
-            label: '?carrierLabel',
-          },
-        ],
-        $where: [
-          `
-          {
-            SELECT DISTINCT ?carrier WHERE {
-              ?emission od:F1_generated ?smell .
-              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-
-              ?emission od:F4_had_carrier ?carrier .
-            }
-          }
-          ?carrier rdfs:label ?carrierLabel .
-          FILTER(LANG(?carrierLabel) = "${language}" || LANG(?carrierLabel) = "")
-          `,
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: () => [
-        '?emission od:F1_generated ?id',
-        '?emission od:F4_had_carrier ?carrier',
-        '?carrier rdfs:label ?carrierLabel',
-      ],
-      filterFunc: (val) => `STR(?carrierLabel) = ${JSON.stringify(val)}`,
-    },
-    {
       id: 'emotion',
       isMulti: true,
       isSortable: false,
