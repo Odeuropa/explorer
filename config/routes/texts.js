@@ -44,51 +44,7 @@ module.exports = {
     showPermalink: true,
     excludedMetadata: ['textualObject'],
     route: 'texts',
-  },
-  textSearchFunc: (q) => {
-    const escapedValue = q.replace(escapeAll, characterReplacer);
-    return [
-      `
-      {
-        ?search a luc-index:search ;
-        luc:query "source_label:${escapedValue} || source_value:${escapedValue}" ;
-        luc:entities ?id .
-      }
-      `,
-    ];
-  },
-  baseWhere: ['GRAPH ?g { ?id a od:L11_Smell }'],
-  query: ({ language, params }) => {
-    if (params?.display === 'text') {
-      return {
-        '@context': 'http://schema.org/',
-        '@graph': [
-          {
-            '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
-            '@id': '?id',
-            '@graph': '?g',
-            label: '?label',
-            text: '?text',
-          },
-        ],
-        $where: [
-          `
-          GRAPH ?g { ?id a od:L11_Smell . }
-          ?id rdfs:label ?label .
-          ?source crm:P67_refers_to ?id .
-
-          OPTIONAL {
-            ?relevantFragment crm:P67_refers_to ?id .
-            FILTER(?relevantFragment != ?source)
-            ?relevantFragment rdf:value ?text .
-          }
-          `,
-        ],
-        $langTag: 'hide',
-      };
-    }
-
-    return {
+    query: ({ language }) => ({
       '@context': 'http://schema.org/',
       '@graph': [
         {
@@ -261,8 +217,190 @@ module.exports = {
         `,
       ],
       $langTag: 'hide',
-    };
+    }),
   },
+  textSearchFunc: (q) => {
+    const escapedValue = q.replace(escapeAll, characterReplacer);
+    return [
+      `
+      {
+        ?search a luc-index:search ;
+        luc:query "source_label:${escapedValue} || source_value:${escapedValue}" ;
+        luc:entities ?id .
+      }
+      `,
+    ];
+  },
+  baseWhere: ['GRAPH ?g { ?id a od:L11_Smell }'],
+  query: ({ language }) => ({
+    '@context': 'http://schema.org/',
+    '@graph': [
+      {
+        '@type': 'http://data.odeuropa.eu/ontology/L11_Smell',
+        '@id': '?id',
+        '@graph': '?g',
+        label: '?label',
+        text: '?relevantFragmentValue',
+        source: {
+          '@id': '?source',
+          label: '?sourceLabel',
+          url: '?sourceUrl',
+          author: {
+            '@id': '?sourceAuthor',
+            label: '?sourceAuthorLabel',
+            sameAs: '?sourceAuthorSameAs',
+          },
+          date: '?sourceDate',
+          genre: {
+            '@id': '?sourceGenre',
+            label: '?sourceGenreLabel',
+          },
+          language: '?sourceLanguage',
+        },
+        smellSource: {
+          '@id': '?smellSource',
+          label: '?smellSourceLabel',
+        },
+        carrier: {
+          '@id': '?carrier',
+          label: '?carrierLabel',
+        },
+        time: {
+          '@id': '?time',
+          label: '?timeLabel',
+        },
+        place: {
+          '@id': '?place',
+          label: '?placeLabel',
+        },
+        adjective: '?adjective',
+        emotion: {
+          '@id': '?emotion',
+          label: '?emotionLabel',
+          type: '?emotionType',
+        },
+      },
+    ],
+    $where: [
+      `
+      GRAPH ?g { ?id a od:L11_Smell . }
+      ?id rdfs:label ?label .
+      ?source crm:P67_refers_to ?id .
+
+      {
+        ?source rdfs:label ?sourceLabel .
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:url ?sourceUrl .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?relevantFragment crm:P67_refers_to ?id .
+          FILTER(?relevantFragment != ?source)
+          ?relevantFragment rdf:value ?relevantFragmentValue .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:author ?sourceAuthor .
+          {
+            OPTIONAL {
+              ?sourceAuthor rdfs:label ?sourceAuthorLabel .
+            }
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
+            }
+          }
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:dateCreated / rdfs:label ?sourceDate .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:genre ?sourceGenre .
+          ?sourceGenre rdfs:label ?sourceGenreLabel .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:inLanguage ?sourceLanguage .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?emission od:F1_generated ?id .
+          {
+            OPTIONAL {
+              ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
+              ?smellSource skos:prefLabel ?smellSourceLabel .
+              FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
+            }
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?emission od:F4_had_carrier ?carrier .
+              ?carrier rdfs:label ?carrierLabel .
+            }
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?emission time:hasTime ?time .
+              ?time rdfs:label ?timeLabel .
+            }
+          }
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?experience od:F2_perceived ?id .
+          {
+            OPTIONAL {
+              ?experience crm:P7_took_place_at ?place .
+              ?place rdfs:label ?placeLabel .
+            }
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?emotion reo:readP27 ?experience .
+              OPTIONAL {
+                ?emotion rdfs:label ?emotionLabel .
+                ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
+              }
+            }
+          }
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?assignment a crm:E13_Attribute_Assignment .
+          ?assignment crm:P141_assigned/rdfs:label ?adjective .
+          ?assignment crm:P140_assigned_attribute_to ?id .
+        }
+      }
+      `,
+    ],
+    $langTag: 'hide',
+  }),
   filters: [
     {
       id: 'time',

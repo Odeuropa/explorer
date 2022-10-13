@@ -130,7 +130,6 @@ const ExcerptContainer = styled.div`
 `;
 
 const MAX_TITLE_LENGTH = 50;
-const PAGE_SIZE = 20;
 
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);

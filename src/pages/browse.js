@@ -326,12 +326,6 @@ const BrowsePage = ({ initialData, filters }) => {
       display: value,
     };
 
-    // Reset page index
-    setSize(1);
-    setInitialPage(1);
-    delete newQuery.page;
-
-    setIsPageLoading(true);
     return Router.replace(
       {
         pathname,
@@ -395,6 +389,7 @@ const BrowsePage = ({ initialData, filters }) => {
         item={result}
         route={route}
         type={route.details.route}
+        displayText={query.display === 'text'}
         onSeeMore={() => {
           // Make sure the page number is correct if it hasn't been updated yet
           onScrollToPage(pageNumber);

@@ -136,8 +136,9 @@ const renderCardRow = (label, value) => {
 };
 
 const renderBody = (item, highlightKeyword) => {
-  if (item.text) {
-    const truncatedText = item.text.length < 200 ? item.text : item.text.substring(0, 200) + '…';
+  if (highlightKeyword && item.text) {
+    const { text } = item;
+    const truncatedText = text.length < 200 ? text : text.substring(0, 200) + '…';
     return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
   }
 
@@ -171,7 +172,7 @@ const renderBody = (item, highlightKeyword) => {
   }
 };
 
-const OdeuropaCard = ({ item, route, type, onSeeMore, ...props }) => {
+const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) => {
   const { i18n } = useTranslation();
 
   if (!item || !item['@id']) return null;
@@ -191,7 +192,7 @@ const OdeuropaCard = ({ item, route, type, onSeeMore, ...props }) => {
           }}
         />
       )}
-      {renderBody(item, mainLabel)}
+      {renderBody(item, displayText ? mainLabel : undefined)}
       <Footer>
         <Link
           key={item['@id']}
