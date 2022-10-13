@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
 import queryString from 'query-string';
-import useSWRInfinite from 'swr/infinite';
 import ReactPaginate from 'react-paginate';
+import useSWRInfinite from 'swr/infinite';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -22,13 +24,12 @@ import PageTitle from '@components/PageTitle';
 import ScrollDetector from '@components/ScrollDetector';
 import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
+import { start, done } from '@components/NProgress';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import AppContext from '@helpers/context';
 import { search, getFilters } from '@pages/api/search';
 import breakpoints, { sizes } from '@styles/breakpoints';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import config from '~/config';
 import mainTheme from '~/theme';
 
@@ -172,7 +173,7 @@ const ResultPage = styled.h3`
 
 const PAGE_SIZE = 20;
 
-const BrowsePage = ({ initialData }) => {
+const BrowsePage = ({ initialData, filters }) => {
   const router = useRouter();
   const { req, query, pathname } = router;
   const { t } = useTranslation(['common', 'search', 'project']);
@@ -190,24 +191,30 @@ const BrowsePage = ({ initialData }) => {
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.results.length) return null; // reached the end
-    const q = { ...query, page: pageIndex };
+    const q = { ...query, page: pageIndex + initialPage };
     return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
-  const {
-    data = [initialData],
-    error,
-    size,
-    setSize,
-  } = useSWRInfinite(getKey, fetcher, {
-    persistSize: true,
+  useEffect(() => {
+    if (isPageLoading) start();
+    else done();
+  }, [isPageLoading]);
+
+  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, {
+    fallbackData: [initialData],
+    onSuccess: () => {
+      setIsPageLoading(false);
+    },
+    onError: () => {
+      setIsPageLoading(false);
+    },
   });
+
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData || (data && typeof data[size - 1] === 'undefined');
   const isReachingEnd = data && data[data.length - 1]?.results.length < PAGE_SIZE;
   const isEmpty = data?.[0]?.results.length === 0;
 
-  const { filters } = initialData;
   let totalPages = 0;
   let totalResults = 0;
   let debugSparqlQuery = null;
@@ -234,12 +241,16 @@ const BrowsePage = ({ initialData }) => {
     const newQuery = {
       type: query.type,
       ...fields,
+      page: '1',
     };
 
+    if (Object.entries(newQuery).toString() === Object.entries(query).toString()) {
+      // Prevent querying if query is the same
+      return;
+    }
+
     // Reset page index
-    setSize(1);
     setInitialPage(1);
-    delete newQuery.page;
 
     setIsPageLoading(true);
     Router.push(
@@ -247,7 +258,8 @@ const BrowsePage = ({ initialData }) => {
         pathname,
         query: newQuery,
       },
-      undefined
+      undefined,
+      { shallow: true }
     );
   };
 
@@ -332,8 +344,7 @@ const BrowsePage = ({ initialData }) => {
 
   const loadMore = () => {
     if (isLoadingMore || currentPage + 1 > totalPages) return;
-
-    setSize(size + 1);
+    setSize((size) => size + 1);
   };
 
   const $loadMoreButton = useRef(null);
@@ -342,20 +353,6 @@ const BrowsePage = ({ initialData }) => {
   useEffect(() => {
     if (isOnScreen) loadMore();
   }, [isOnScreen]);
-
-  useEffect(() => {
-    const onDoneLoading = () => {
-      setIsPageLoading(false);
-    };
-
-    router.events.on('routeChangeComplete', onDoneLoading);
-    router.events.on('routeChangeError', onDoneLoading);
-
-    return () => {
-      router.events.off('routeChangeComplete', onDoneLoading);
-      router.events.off('routeChangeError', onDoneLoading);
-    };
-  }, []);
 
   const route = config.routes[query.type];
 
@@ -405,7 +402,6 @@ const BrowsePage = ({ initialData }) => {
             ...query,
             page: pageNumber,
           });
-
           setSearchPath(query.type);
           setSearchData(data[0]);
         }}
@@ -488,11 +484,11 @@ const BrowsePage = ({ initialData }) => {
               </Option>
             </OptionsBar>
           </TitleBar>
-          {isEmpty ? (
+          {isEmpty && !isPageLoading ? (
             renderEmptyResults()
           ) : (
             <>
-              {data.map((page, i) => {
+              {data?.map((page, i) => {
                 const pageNumber = initialPage + i;
                 return (
                   <Fragment key={pageNumber}>
@@ -505,7 +501,7 @@ const BrowsePage = ({ initialData }) => {
                       onAppears={() => onScrollToPage(pageNumber)}
                       rootMargin="0px 0px -50% 0px"
                     />
-                    <Results loading={isPageLoading || isLoadingInitialData ? 1 : 0}>
+                    <Results loading={isPageLoading ? 1 : 0}>
                       {renderResults(page.results, pageNumber)}
                     </Results>
                   </Fragment>
@@ -534,8 +530,7 @@ const BrowsePage = ({ initialData }) => {
                   breakLabel="..."
                   breakClassName="break"
                   pageCount={totalPages}
-                  initialPage={initialPage - 1}
-                  forcePage={currentPage > 1 ? currentPage - 1 : undefined}
+                  forcePage={currentPage - 1}
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={5}
                   onPageChange={onPageChange}
@@ -589,8 +584,8 @@ export async function getServerSideProps({ query, locale }) {
         results: searchData.results,
         totalResults: searchData.totalResults,
         debugSparqlQuery: searchData.debugSparqlQuery,
-        filters,
       },
+      filters,
     },
   };
 }
