@@ -483,12 +483,10 @@ export async function getServerSideProps({ req, res, query, locale }) {
     debugSparqlQuery,
   } = await (
     await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
-      headers:
-        req && req.headers
-          ? {
-              cookie: req.headers.cookie,
-            }
-          : undefined,
+      headers: {
+        ...req.headers,
+        'accept-language': locale,
+      },
     })
   ).json();
 
