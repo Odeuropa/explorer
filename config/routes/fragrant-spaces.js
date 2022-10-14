@@ -50,30 +50,73 @@ module.exports = {
       $langTag: 'hide',
     }),
   },
-  query: ({ language }) => ({
+  query: ({ language, params }) => ({
     $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning Wikidata entities
     '@graph': [
       {
-        '@id': '?id',
-        label: '?sourceLabel',
+        items: {
+          '@id': '?id',
+          label: '?bestLabel',
+          count: '?count',
+        },
+        dates: '?date',
       },
     ],
     $where: [
       `
       {
-        SELECT DISTINCT ?id WHERE {
-          ?place crm:P2_has_type ?id .
-          ?emission crm:P7_took_place_at ?place .
-          ?emission od:F1_generated ?smell .
+        {
+          SELECT DISTINCT ?emission ?id WHERE {
+            ?place crm:P2_has_type ?id .
+            ?emission crm:P7_took_place_at ?place .
+
+            ${
+              params.date
+                ? `
+              ?emission_source crm:P67_refers_to ?emission .
+              ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
+                params.date
+              )}^^xsd:gYear .
+              `
+                : ''
+            }
+          }
+        }
+        {
+          OPTIONAL {
+            SELECT DISTINCT ?id (COUNT(?object) AS ?count) WHERE {
+              ?object crm:P137_exemplifies ?id .
+            }
+            GROUP BY ?id
+          }
+        }
+        {
+          OPTIONAL { ?id skos:prefLabel ?label_fr . FILTER(LANGMATCHES(LANG(?label_fr), "${language}")) }
+          OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
+          OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          BIND(COALESCE(?label_fr, ?label_unk, ?label_en) AS ?bestKnownLabel)
+          OPTIONAL {
+              SELECT ?label_default WHERE {
+                  ?id skos:prefLabel ?label_default
+              }
+              ORDER BY ASC(?label_default)
+              LIMIT 1
+          }
+          BIND(COALESCE(?bestKnownLabel, ?label_default) AS ?bestLabel)
         }
       }
+      UNION
       {
-        ?id skos:prefLabel ?sourceLabel .
-        FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+        SELECT DISTINCT ?emission ?date WHERE {
+          ?place crm:P2_has_type ?id .
+          ?emission crm:P7_took_place_at ?place .
+          ?source crm:P67_refers_to ?emission .
+          ?source schema:dateCreated/time:hasBeginning ?date .
+        }
       }
       `,
     ],
-    $orderby: 'ASC(?sourceLabel)',
+    $orderby: params.order === 'count' ? 'DESC(?count)' : 'ASC(?bestLabel)',
     $langTag: 'hide',
   }),
   plugins: {
@@ -137,7 +180,7 @@ module.exports = {
           ],
           $where: [
             `
-            ?place crm:P2_has_type ?id .
+            ?place crm:P137_exemplifies ?id .
             ?emission crm:P7_took_place_at ?place .
 
             ?emission od:F1_generated ?smell .

@@ -569,5 +569,26 @@ module.exports = {
       ],
       filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
     },
+    {
+      id: 'museum',
+      isMulti: true,
+      isSortable: false,
+      query: () => ({
+        '@graph': [
+          {
+            '@id': '?location',
+            label: '?locationName',
+          },
+        ],
+        $where: [
+          '?id crm:P53_has_former_or_current_location ?location',
+          '?location a gn:Feature',
+          '?location gn:name ?locationName',
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => ['?id crm:P53_has_former_or_current_location ?location'],
+      filterFunc: (val) => `?location = <${val}>`,
+    },
   ],
 };

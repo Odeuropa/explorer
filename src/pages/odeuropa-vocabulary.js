@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -14,11 +15,47 @@ import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
+import Input from '@components/Input';
+import Select from '@components/Select';
 import breakpoints from '@styles/breakpoints';
 import SparqlClient from '@helpers/sparql';
-import { getQueryObject, uriToId } from '@helpers/utils';
+import { getQueryObject, removeEmptyObjects, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import config from '~/config';
+import theme from '~/theme';
+
+const selectTheme = (base) => ({
+  ...base,
+  ...theme.select,
+  colors: {
+    ...base.colors,
+    primary: '#000',
+    neutral0: '#eee',
+    primary25: '#ddd',
+    ...theme.select?.colors,
+  },
+});
+
+const selectStyles = {
+  control: (provided) => ({
+    ...provided,
+    border: 'none',
+    border: '1px solid #b9d59b',
+    backgroundColor: '#f0f0f0',
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: 'hsl(0,0%,20%)',
+    '&:hover': {
+      color: 'hsl(0,0%,20%)',
+    },
+  }),
+  option: (base) => ({
+    ...base,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }),
+};
 
 const Hero = styled.div`
   width: 100%;
@@ -74,6 +111,10 @@ const VocabularyTitle = styled.div`
   }
 `;
 
+const StyledSelect = styled(Select)`
+  min-width: 200px;
+`;
+
 const Results = styled.div`
   flex: 1;
   display: grid;
@@ -118,17 +159,96 @@ const ItemTitle = styled.div`
   }
 `;
 
+const StyledInput = styled(Input)`
+  border: 1px solid #b9d59b;
+  border-radius: 20px;
+  background-color: #fff;
+  padding: 0 16px;
+
+  ::placeholder {
+    color: #b9d59b;
+  }
+`;
+
+const FilterBar = styled.div`
+  display: flex;
+  margin-bottom: 24px;
+
+  ${breakpoints.weirdMedium`
+    margin-left: 120px;
+    margin-right: 120px;
+  `}
+`;
+
+const orderOptions = [
+  {
+    label: 'Alphabetical',
+    value: 'name',
+  },
+  {
+    label: 'Occurrences',
+    value: 'count',
+  },
+];
+
 const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
-
   const query = { ...router.query };
+  const [searchText, setSearchText] = useState('');
+  const [searchDate, setSearchDate] = useState(query.date);
+  const [searchOrder, setSearchOrder] = useState(query.order);
+  const [resultsWithLabel, setResultsWithLabel] = useState([]);
+  const [dateOptions, setDateOptions] = useState([]);
+
   const route = config.routes[query.type];
+
+  useEffect(() => {
+    const resultsWithLabel = [];
+    if (Array.isArray(results[0]?.items)) {
+      results[0].items.forEach((item) => {
+        resultsWithLabel.push({
+          ...item,
+          mainLabel: getEntityMainLabel(item, { route, language: i18n.language }),
+        });
+      });
+    }
+    setResultsWithLabel(resultsWithLabel);
+
+    const dates = [].concat(results[0]?.dates).filter((x) => x);
+    dates.sort((a, b) => a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()));
+    setDateOptions(
+      dates.map((date) => ({
+        label: date,
+        value: date,
+      }))
+    );
+  }, [results]);
 
   const useWith = [];
   if (route && Array.isArray(route.useWith)) {
     useWith.push(...route.useWith);
   }
+
+  const handleSearchTextChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const onSelectDate = (selectedOption) => {
+    setSearchDate(selectedOption?.value);
+
+    router.push({
+      query: { ...query, date: selectedOption?.value },
+    });
+  };
+
+  const onSelectOrder = (selectedOption) => {
+    setSearchOrder(selectedOption?.value);
+
+    router.push({
+      query: { ...query, order: selectedOption?.value },
+    });
+  };
 
   return (
     <Layout>
@@ -147,29 +267,94 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
           </VocabularyTitle>
         </Hero>
         <Content>
+          <FilterBar>
+            <div style={{ marginRight: '1em' }}>
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+              <label style={{ display: 'flex', flexDirection: 'column' }}>
+                <StyledInput
+                  name="q"
+                  type="text"
+                  placeholder="Search"
+                  value={searchText}
+                  onChange={handleSearchTextChange}
+                />
+              </label>
+            </div>
+
+            <div style={{ marginLeft: 'auto', display: 'flex' }}>
+              {dateOptions.length > 0 && (
+                <div style={{ marginRight: '1em' }}>
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>
+                      Present In
+                    </span>
+                    <StyledSelect
+                      id="select_date"
+                      instanceId="select_date"
+                      name="date"
+                      placeholder={t('search:labels.select')}
+                      options={dateOptions}
+                      value={dateOptions.find((o) => o.value === searchDate)}
+                      onChange={onSelectDate}
+                      styles={selectStyles}
+                      theme={selectTheme}
+                      isClearable
+                    />
+                  </label>
+                </div>
+              )}
+              <div>
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                <label style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>Order By</span>
+                  <StyledSelect
+                    id="select_order"
+                    instanceId="select_order"
+                    name="order"
+                    placeholder={t('search:labels.select')}
+                    options={orderOptions}
+                    value={orderOptions.find((o) => o.value === searchOrder)}
+                    onChange={onSelectOrder}
+                    styles={selectStyles}
+                    theme={selectTheme}
+                    isClearable
+                  />
+                </label>
+              </div>
+            </div>
+          </FilterBar>
+
           <Container>
             <Results>
-              {results.map((result) => (
-                <Result key={result['@id']} id={result['@id']}>
-                  <Link
-                    href={`/details/${route.details.view}?id=${encodeURIComponent(
-                      uriToId(result['@id'], {
-                        base: route.uriBase,
-                      })
-                    )}&type=${query.type}`}
-                    passHref
-                  >
-                    <a>
-                      <Item key={result['@id']} id={result['@id']}>
-                        <ItemTitle>
-                          <h2>{getEntityMainLabel(result, { route, language: i18n.language })}</h2>
-                        </ItemTitle>
-                        {result.description && <p>{result.description}</p>}
-                      </Item>
-                    </a>
-                  </Link>
-                </Result>
-              ))}
+              {resultsWithLabel
+                .filter((result) =>
+                  result.mainLabel
+                    ?.trim()
+                    .toLocaleLowerCase()
+                    .includes(searchText.trim().toLocaleLowerCase())
+                )
+                .map((result) => (
+                  <Result key={result['@id']} id={result['@id']}>
+                    <Link
+                      href={`/details/${route.details.view}?id=${encodeURIComponent(
+                        uriToId(result['@id'], {
+                          base: route.uriBase,
+                        })
+                      )}&type=${query.type}`}
+                      passHref
+                    >
+                      <a>
+                        <Item key={result['@id']} id={result['@id']}>
+                          <ItemTitle>
+                            <h2>{result.mainLabel}</h2>
+                          </ItemTitle>
+                          {result.description && <p>{result.description}</p>}
+                        </Item>
+                      </a>
+                    </Link>
+                  </Result>
+                ))}
             </Results>
           </Container>
           <Debug>
@@ -200,7 +385,10 @@ export async function getServerSideProps({ query, locale }) {
   const results = [];
 
   if (route) {
-    const mainQuery = getQueryObject(route.query, { language: locale });
+    const mainQuery = getQueryObject(route.query, {
+      language: locale,
+      params: { date: query.date, order: query.order },
+    });
 
     if (config.debug) {
       debugSparqlQuery.results = await SparqlClient.getSparqlQuery(mainQuery);
