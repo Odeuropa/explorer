@@ -401,7 +401,7 @@ export async function getServerSideProps({ query, locale }) {
       params: config.api.params,
     });
     if (res) {
-      results.push(...res['@graph']);
+      results.push(...removeEmptyObjects(res['@graph']));
     }
   }
 
