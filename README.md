@@ -32,6 +32,13 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
 ```
 
+- How to rebuild and start in production:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build --force-recreate -d
+```
+
 ## How to clear redis cache
 
 Sometimes clearing the redis cache might be required if the Knowledge Graph has been recently updated. This can be done using the following command:
