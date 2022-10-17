@@ -41,7 +41,7 @@ const selectStyles = {
     ...provided,
     border: 'none',
     border: '1px solid #b9d59b',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   }),
   dropdownIndicator: (base) => ({
     ...base,
@@ -54,6 +54,10 @@ const selectStyles = {
     ...base,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: '#b9d59b',
   }),
 };
 
