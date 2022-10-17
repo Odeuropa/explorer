@@ -183,7 +183,7 @@ module.exports = {
               label: '?itemLabel',
               carrier: '?item_carrierLabel',
               gesture: '?item_gestureLabel',
-              source: '?item_sourceLabel',
+              smellSource: '?item_sourceLabel',
               adjective: '?item_adjective',
               time: '?item_timeLabel',
               place: '?item_placeLabel',
