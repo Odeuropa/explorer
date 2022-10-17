@@ -153,6 +153,18 @@ const Item = styled.div`
   margin-bottom: 24px;
 `;
 
+const ItemImage = styled.div`
+  width: 300px;
+  height: 267px;
+  background-color: #e9e9e9;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
 const ItemTitle = styled.div`
   display: flex;
   align-items: center;
@@ -349,6 +361,17 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                     >
                       <a>
                         <Item key={result['@id']} id={result['@id']}>
+                          <ItemImage>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={
+                                result.image ||
+                                `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
+                              }
+                              alt=""
+                              loading="lazy"
+                            />
+                          </ItemImage>
                           <ItemTitle>
                             <h2>{result.mainLabel}</h2>
                           </ItemTitle>

@@ -13,6 +13,7 @@ module.exports = {
         {
           '@id': '?id',
           label: '?label',
+          image: '?image',
           related: {
             '@id': '?related',
             label: '?relatedLabel',
@@ -24,6 +25,12 @@ module.exports = {
         {
           ?id skos:prefLabel ?label .
           FILTER(LANG(?label) = "${language}" || LANG(?label) = "")
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?id <http://schema.org/image> ?image .
+          }
         }
         UNION
         {
@@ -59,6 +66,7 @@ module.exports = {
         items: {
           '@id': '?id',
           label: '?bestLabel',
+          image: '?image',
           count: '?count',
         },
         dates: '?date',
@@ -92,6 +100,7 @@ module.exports = {
             GROUP BY ?id
           }
         }
+        UNION
         {
           OPTIONAL { ?id skos:prefLabel ?label_fr . FILTER(LANGMATCHES(LANG(?label_fr), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
@@ -105,6 +114,12 @@ module.exports = {
               LIMIT 1
           }
           BIND(COALESCE(?bestKnownLabel, ?label_default) AS ?bestLabel)
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?id <http://schema.org/image> ?image .
+          }
         }
       }
       UNION

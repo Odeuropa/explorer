@@ -147,18 +147,13 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element>
           <div style={{ display: 'flex', padding: '1em' }}>
             <div style={{ marginRight: '2em' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/images/odeuropa-vocabularies/${query.type}/${slugify(result['@id'])}.jpg`}
+                src={result.image || `/images/odeuropa-vocabularies/placeholder_${query.type}.png`}
                 alt=""
                 width="300"
                 height="180"
                 style={{ objectFit: 'cover' }}
-                onLoad={(event) => {
-                  event.target.style.display = 'inline-block';
-                }}
-                onError={(event) => {
-                  event.target.style.display = 'none';
-                }}
               />
             </div>
 
