@@ -83,7 +83,7 @@ const VocabularyTitle = styled.div`
   align-items: center;
   margin: 0 auto;
   color: #725cae;
-  padding-bottom: 2em;
+  padding: 0 1em 2em 1em;
 
   h1 {
     word-break: break-all;
@@ -91,16 +91,15 @@ const VocabularyTitle = styled.div`
     font-weight: 200;
     line-height: 100%;
 
-    ${breakpoints.mobile`
-      font-size: 5rem;
-    `}
     ${breakpoints.weirdMedium`
-      font-size: 10rem;
+      font-size: 7rem;
     `}
   }
 
   p {
+    text-align: center;
     font-weight: 200;
+    padding: 0 1em;
 
     ${breakpoints.mobile`
       font-size: 1rem;
