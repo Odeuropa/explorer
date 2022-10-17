@@ -29,7 +29,7 @@ module.exports = {
         UNION
         {
           OPTIONAL {
-            ?id <http://schema.org/image> ?image .
+            ?id schema:image ?image .
           }
         }
         UNION
@@ -116,7 +116,7 @@ module.exports = {
         UNION
         {
           OPTIONAL {
-            ?id <http://schema.org/image> ?image .
+            ?id schema:image ?image .
           }
         }
       }
