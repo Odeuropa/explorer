@@ -250,6 +250,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
     setSearchDate(selectedOption?.value);
 
     router.push({
+      pathname: query.type,
       query: { ...query, date: selectedOption?.value },
     });
   };
@@ -257,8 +258,15 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   const onSelectOrder = (selectedOption) => {
     setSearchOrder(selectedOption?.value);
 
+    const newQuery = {
+      ...query,
+      order: selectedOption?.value,
+    };
+    delete newQuery.type;
+
     router.push({
-      query: { ...query, order: selectedOption?.value },
+      pathname: query.type,
+      query: newQuery,
     });
   };
 
