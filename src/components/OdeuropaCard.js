@@ -145,8 +145,8 @@ const renderBody = (item, highlightKeyword) => {
   const smellEmissionRows = [
     renderCardRow('Source', item.smellSource),
     renderCardRow('Carrier', item.carrier),
-    renderCardRow('Date', item.source?.time),
-    renderCardRow('Place', item.source?.place),
+    renderCardRow('Date', item.time),
+    renderCardRow('Place', item.place),
     renderCardRow('Author', item.source?.author),
   ].filter((x) => x);
 
