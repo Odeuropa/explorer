@@ -180,62 +180,86 @@ module.exports = {
           '@graph': [
             {
               '@id': '?smell',
-              label: '?itemLabel',
-              carrier: '?item_carrierLabel',
-              gesture: '?item_gestureLabel',
-              smellSource: '?item_sourceLabel',
-              adjective: '?item_adjective',
-              time: '?item_timeLabel',
-              place: '?item_placeLabel',
+              label: '?label',
+              smellSource: {
+                '@id': '?id',
+                label: '?smellSourceLabel',
+              },
+              carrier: {
+                '@id': '?carrier',
+                label: '?carrierLabel',
+              },
+              time: {
+                '@id': '?time',
+                label: '?timeLabel',
+              },
+              place: {
+                '@id': '?place',
+                label: '?placeLabel',
+              },
+              adjective: '?adjective',
+              emotion: {
+                '@id': '?emotion',
+                label: '?emotionLabel',
+                type: '?emotionType',
+              },
             },
           ],
           $where: [
             `
             ?emission od:F3_had_source/crm:P137_exemplifies ?id .
-
             ?emission od:F1_generated ?smell .
-            ?item a crm:E33_Linguistic_Object .
-            ?item crm:P67_refers_to ?smell .
-            ?item rdfs:label ?itemLabel .
-
-            ?item_emission od:F1_generated ?smell .
-            ?item_emission od:F3_had_source / crm:P137_exemplifies ?item_source .
+            ?smell crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object .
+            {
+              ?smell rdfs:label ?label .
+            }
+            UNION
             {
               OPTIONAL {
-                ?item_source skos:prefLabel ?item_sourceLabel .
-                FILTER(LANG(?item_sourceLabel) = "${language}" || LANG(?item_sourceLabel) = "")
+                ?emission od:F4_had_carrier ?carrier .
+                ?carrier rdfs:label ?carrierLabel .
               }
             }
             UNION
             {
               OPTIONAL {
-                ?item_emission od:F4_had_carrier ?item_carrier .
-                ?item_carrier rdfs:label ?item_carrierLabel .
+                ?id skos:prefLabel ?smellSourceLabel .
+                FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
               }
             }
             UNION
             {
               OPTIONAL {
-                ?item_emission time:hasTime ?item_time .
-                ?item_time rdfs:label ?item_timeLabel .
+                ?emission time:hasTime ?time .
+                ?time rdfs:label ?timeLabel .
               }
             }
             UNION
             {
               OPTIONAL {
-                ?item_experience od:F2_perceived ?smell .
+                ?experience od:F2_perceived ?smell .
                 {
                   OPTIONAL {
-                    ?item_experience od:F5_involved_gesture ?item_gesture .
-                    ?item_gesture rdfs:label ?item_gestureLabel .
-                    FILTER(LANG(?item_gestureLabel) = "${language}" || LANG(?item_gestureLabel) = "")
+                    ?experience od:F5_involved_gesture ?gesture .
+                    ?gesture rdfs:label ?gestureLabel .
+                    FILTER(LANG(?gestureLabel) = "${language}" || LANG(?gestureLabel) = "")
                   }
                 }
                 UNION
                 {
                   OPTIONAL {
-                    ?item_experience crm:P7_took_place_at ?item_place .
-                    ?item_place rdfs:label ?item_placeLabel .
+                    ?experience crm:P7_took_place_at ?place .
+                    ?place rdfs:label ?placeLabel .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?emotion reo:readP27 ?experience .
+                    OPTIONAL {
+                      ?emotion rdfs:label ?emotionLabel .
+                      ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
+                    }
                   }
                 }
               }
@@ -243,9 +267,9 @@ module.exports = {
             UNION
             {
               OPTIONAL {
-                ?item_assignment a crm:E13_Attribute_Assignment .
-                ?item_assignment crm:P141_assigned/rdfs:label ?item_adjective .
-                ?item_assignment crm:P140_assigned_attribute_to ?smell .
+                ?assignment a crm:E13_Attribute_Assignment .
+                ?assignment crm:P141_assigned/rdfs:label ?adjective .
+                ?assignment crm:P140_assigned_attribute_to ?smell .
               }
             }
             `,
