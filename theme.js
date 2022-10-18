@@ -65,6 +65,12 @@ const theme = {
       },
       Credits: {
         flex: 1,
+        '& a': {
+          textDecoration: 'underline',
+          ':hover': {
+            color: '#d7d7d7',
+          },
+        },
       },
     },
     Media: {
