@@ -131,7 +131,15 @@ const Results = styled.div`
   pointer-events: ${({ loading }) => (loading ? 'none' : 'auto')};
 `;
 
-const Result = styled.div``;
+const Result = styled.div`
+  a {
+    text-decoration: none;
+    &:hover {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+`;
 
 const Container = styled.div`
   display: flex;
@@ -157,6 +165,7 @@ const ItemImage = styled.div`
 const ItemTitle = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
 
   h2:not(:last-child) {
     margin-right: 0.25em;
