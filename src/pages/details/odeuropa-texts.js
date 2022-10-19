@@ -290,7 +290,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     renderPanelRow('carrier', result.carrier, 'odour-carriers', 'exemplifies'),
     renderPanelRow('date', result.time),
     renderPanelRow('place', result.place, 'fragrant-spaces', 'exemplifies'),
-    renderPanelRow('author', result.source?.author),
   ].filter((x) => x);
 
   const olfactoryExperienceRows = [
