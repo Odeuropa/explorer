@@ -51,5 +51,25 @@
     "showAs": "Affichage",
     "card": "cartes",
     "text": "textes"
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Odeur de",
+    "related": "Lié à",
+    "occurrences_one": "{{count}} occurrence",
+    "occurrences_other": "{{count}} occurrences",
+    "wordCloud": {
+      "loading": "Chargement du nuage de mots...",
+      "error": "Le nuage de mots n'a pas pu être chargé pour le moment"
+    },
+    "texts": {
+      "title": "Dans les textes",
+      "loading": "Chargement des occurrences textuelles...",
+      "error": "Les occurrences textuelles n'ont pas pu être chargées pour le moment"
+    },
+    "visuals": {
+      "title": "Dans les images",
+      "loading": "Chargement des occurrences visuelles...",
+      "error": "Les occurrences visuelles n'ont pas pu être chargées pour le moment"
+    }
   }
 }

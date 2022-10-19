@@ -51,5 +51,25 @@
     "showAs": "Show as",
     "card": "cards",
     "text": "texts"
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Smell of",
+    "related": "Related",
+    "occurrences_one": "{{count}} occurrence",
+    "occurrences_other": "{{count}} occurrences",
+    "wordCloud": {
+      "loading": "Loading word cloud...",
+      "error": "Word cloud could not be loaded at that moment"
+    },
+    "texts": {
+      "title": "In texts",
+      "loading": "Loading textual occurrences...",
+      "error": "Textual occurrences could not be loaded at that moment"
+    },
+    "visuals": {
+      "title": "In images",
+      "loading": "Loading visual occurrences...",
+      "error": "Visual occurrences could not be loaded at that moment"
+    }
   }
 }

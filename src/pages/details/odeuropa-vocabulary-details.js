@@ -157,7 +157,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 justifyContent: 'center',
               }}
             >
-              <div style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold' }}>Smell of</div>
+              <div style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold' }}>
+                {t('project:odeuropa-vocabulary-details.smellOf')}
+              </div>
               <div
                 style={{
                   fontSize: '5rem',
@@ -183,7 +185,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 }}
               >
                 <div style={{ textTransform: 'uppercase', color: 'gray', fontWeight: 'bold' }}>
-                  Related
+                  {t('project:odeuropa-vocabulary-details.related')}
                 </div>
                 <div>
                   {related.map((rel, i) => (
@@ -211,11 +213,14 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element style={{ padding: '1em', width: 350, textAlign: 'center' }}>
           {typeof wordCloud === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading word cloud...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
             </Element>
           )}
           {wordCloud === null && (
-            <span style={{ color: 'red' }}>Word cloud could not be loaded at that moment</span>
+            <span style={{ color: 'red' }}>
+              {t('project:odeuropa-vocabulary-details.wordCloud.error')}
+            </span>
           )}
           {wordCloud && <TagCloud minSize={8} maxSize={35} tags={wordCloud} />}
         </Element>
@@ -223,15 +228,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element style={{ padding: '1em', color: 'gray' }}>
           {typeof texts === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading textual occurrences...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              {t('project:odeuropa-vocabulary-details.texts.loading')}
             </Element>
           )}
           {texts === null && (
             <span style={{ color: 'red' }}>
-              Textual occurrences could not be loaded at that moment
+              {t('project:odeuropa-vocabulary-details.texts.error')}
             </span>
           )}
-          {texts && <h2>In texts ({texts.length} occurrences)</h2>}
+          {texts && (
+            <h2>
+              {t('project:odeuropa-vocabulary-details.texts.title')} (
+              {t('project:odeuropa-vocabulary-details.occurrences', { count: texts.length })})
+            </h2>
+          )}
         </Element>
 
         {texts && (
@@ -259,15 +270,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element style={{ padding: '1em', color: 'gray' }}>
           {typeof visuals === 'undefined' && (
             <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} /> Loading visual occurrences...
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              {t('project:odeuropa-vocabulary-details.visuals.loading')}
             </Element>
           )}
           {visuals === null && (
             <span style={{ color: 'red' }}>
-              Visual occurrences could not be loaded at that moment
+              {t('project:odeuropa-vocabulary-details.visuals.error')}
             </span>
           )}
-          {visuals && <h2>In images ({visuals.length} occurrences)</h2>}
+          {visuals && (
+            <h2>
+              {t('project:odeuropa-vocabulary-details.visuals.title')} (
+              {t('project:odeuropa-vocabulary-details.occurrences', { count: visuals.length })})
+            </h2>
+          )}
         </Element>
 
         {visuals && (
