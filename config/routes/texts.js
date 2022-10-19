@@ -80,6 +80,7 @@ module.exports = {
           carrier: {
             '@id': '?carrier',
             label: '?carrierLabel',
+            exemplifies: '?carrierExemplifies',
           },
           time: {
             '@id': '?time',
@@ -173,6 +174,9 @@ module.exports = {
               OPTIONAL {
                 ?emission od:F4_had_carrier ?carrier .
                 ?carrier rdfs:label ?carrierLabel .
+                OPTIONAL {
+                  ?carrier crm:P137_exemplifies ?carrierExemplifies .
+                }
               }
             }
             UNION
@@ -264,6 +268,7 @@ module.exports = {
         carrier: {
           '@id': '?carrier',
           label: '?carrierLabel',
+          exemplifies: '?carrierExemplifies',
         },
         time: {
           '@id': '?time',
@@ -356,6 +361,9 @@ module.exports = {
             OPTIONAL {
               ?emission od:F4_had_carrier ?carrier .
               ?carrier rdfs:label ?carrierLabel .
+              OPTIONAL {
+                ?carrier crm:P137_exemplifies ?carrierExemplifies .
+              }
             }
           }
           UNION
@@ -445,7 +453,7 @@ module.exports = {
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?placeLabel',
+            '@id': '?place',
             label: '?placeLabel',
           },
         ],
@@ -470,9 +478,8 @@ module.exports = {
       whereFunc: () => [
         '?experience od:F2_perceived ?id',
         '?experience crm:P7_took_place_at ?place',
-        '?place rdfs:label ?placeLabel',
       ],
-      filterFunc: (val) => `STR(?placeLabel) = ${JSON.stringify(val)}`,
+      filterFunc: (val) => `?place = <${val}>`,
     },
     {
       id: 'source',
@@ -587,7 +594,10 @@ module.exports = {
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => ['?id crm:P53_has_former_or_current_location ?location'],
+      whereFunc: () => [
+        '?source crm:P67_refers_to ?id',
+        '?source crm:P53_has_former_or_current_location ?location',
+      ],
       filterFunc: (val) => `?location = <${val}>`,
     },
   ],

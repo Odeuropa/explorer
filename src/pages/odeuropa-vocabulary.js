@@ -129,14 +129,6 @@ const Results = styled.div`
   transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1) 0s;
   opacity: ${({ loading }) => (loading ? 0.25 : 1)};
   pointer-events: ${({ loading }) => (loading ? 'none' : 'auto')};
-
-  a {
-    text-decoration: none;
-    &:hover {
-      color: inherit;
-      text-decoration: underline;
-    }
-  }
 `;
 
 const Result = styled.div``;

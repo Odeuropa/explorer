@@ -193,6 +193,7 @@ module.exports = {
               carrier: {
                 '@id': '?carrier',
                 label: '?carrierLabel',
+                exemplifies: '?carrierExemplifies',
               },
               time: {
                 '@id': '?time',
@@ -231,6 +232,9 @@ module.exports = {
               OPTIONAL {
                 ?emission od:F4_had_carrier ?carrier .
                 ?carrier rdfs:label ?carrierLabel .
+                OPTIONAL {
+                  ?carrier crm:P137_exemplifies ?carrierExemplifies .
+                }
               }
             }
             UNION

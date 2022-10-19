@@ -40,14 +40,6 @@ const Results = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
   grid-gap: var(--col-gap);
-
-  a {
-    text-decoration: none;
-    &:hover {
-      color: inherit;
-      text-decoration: underline;
-    }
-  }
 `;
 
 const Result = styled.div`

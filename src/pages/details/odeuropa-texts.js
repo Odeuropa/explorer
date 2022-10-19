@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
@@ -21,6 +22,7 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaPagination from '@components/OdeuropaPagination';
 import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
+import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
 import { slugify } from '@helpers/utils';
@@ -259,33 +261,21 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     </Element>
   );
 
-  const renderPanelRow = (label, value) => {
+  const renderPanelRow = (metaName, value, targetRouteName, targetProperty) => {
     if (typeof value === 'undefined' || value === null) {
       return null;
     }
 
-    const values = [].concat(value).filter((x) => x);
-    const renderedValue = values
-      .map((v) => {
-        let inner = v;
-        if (typeof v === 'object') {
-          const label = []
-            .concat(v.label)
-            .filter((x) => x)
-            .join(', ');
-          if (v.type) {
-            inner = (
-              <>
-                {label} <small>({v.type})</small>
-              </>
-            );
-          } else {
-            inner = label;
-          }
-        }
-        return <Fragment key={inner}>{inner}</Fragment>;
-      })
-      .reduce((prev, curr) => [prev, ', ', curr]);
+    const renderedValue = renderRowValues(
+      value,
+      metaName,
+      route,
+      query.type,
+      targetRouteName,
+      targetProperty
+    );
+
+    const label = t(`project:metadata.${metaName}`, metaName);
 
     return (
       <Panel.Row>
@@ -296,17 +286,17 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   };
 
   const smellEmissionRows = [
-    renderPanelRow('Source', result.smellSource),
-    renderPanelRow('Carrier', result.carrier),
-    renderPanelRow('Date', result.time),
-    renderPanelRow('Place', result.place),
-    renderPanelRow('Author', result.source?.author),
+    renderPanelRow('source', result.smellSource, 'smell-sources', '@id'),
+    renderPanelRow('carrier', result.carrier, 'odour-carriers', 'exemplifies'),
+    renderPanelRow('date', result.time),
+    renderPanelRow('place', result.place, 'fragrant-spaces', 'exemplifies'),
+    renderPanelRow('author', result.source?.author),
   ].filter((x) => x);
 
   const olfactoryExperienceRows = [
-    renderPanelRow('Actor', result.actor),
-    renderPanelRow('Emotion', result.emotion),
-    renderPanelRow('Defined as', result.adjective),
+    renderPanelRow('actor', result.actor),
+    renderPanelRow('emotion', result.emotion),
+    renderPanelRow('definedAs', result.adjective),
   ].filter((x) => x);
 
   return (

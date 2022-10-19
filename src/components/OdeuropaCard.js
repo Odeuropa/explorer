@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 
-import { getEntityMainLabel } from '@helpers/explorer';
+import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
 import { getHighlightedText } from '@helpers/odeuropa';
+import config from '~/config';
 
 const Container = styled.div`
   width: 100%;
@@ -99,16 +100,37 @@ const Footer = styled.div`
   margin-top: auto;
 `;
 
-const renderCardRow = (label, value) => {
-  if (typeof value === 'undefined' || value === null) {
-    return null;
-  }
-
+export const renderRowValues = (
+  value,
+  metaName,
+  route,
+  queryType,
+  targetRouteName,
+  targetProperty
+) => {
   const values = [].concat(value).filter((x) => x);
-  const renderedValue = values
+  return values
     .map((v) => {
       let inner = v;
       if (typeof v === 'object') {
+        let url = null;
+        if (v['@id']) {
+          const targetRoute = config.routes[targetRouteName];
+          if (v[targetProperty]) {
+            url = `/details/${targetRoute.details.view}?id=${encodeURIComponent(
+              uriToId(v[targetProperty], {
+                base: targetRoute.uriBase,
+              })
+            )}&type=${targetRouteName}`;
+          } else {
+            const filter =
+              route && Array.isArray(route.filters) && route.filters.find((f) => f.id === metaName);
+            if (filter) {
+              url = `/${queryType}?field_filter_${metaName}=${encodeURIComponent(v['@id'])}`;
+            }
+          }
+        }
+
         const label = []
           .concat(v.label)
           .filter((x) => x)
@@ -122,62 +144,88 @@ const renderCardRow = (label, value) => {
         } else {
           inner = label;
         }
+
+        if (url) {
+          inner = (
+            <Link href={url} passHref>
+              <a>{inner}</a>
+            </Link>
+          );
+        }
       }
+
       return <Fragment key={inner}>{inner}</Fragment>;
     })
     .reduce((prev, curr) => [prev, ', ', curr]);
-
-  return (
-    <Row key={label}>
-      <Label>{label}</Label>
-      <Value>{renderedValue}</Value>
-    </Row>
-  );
-};
-
-const renderBody = (item, highlightKeyword) => {
-  if (highlightKeyword && item.text) {
-    const { text } = item;
-    const truncatedText = text.length < 200 ? text : text.substring(0, 200) + '…';
-    return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
-  }
-
-  const smellEmissionRows = [
-    renderCardRow('Source', item.smellSource),
-    renderCardRow('Carrier', item.carrier),
-    renderCardRow('Date', item.time),
-    renderCardRow('Place', item.place),
-    renderCardRow('Author', item.source?.author),
-  ].filter((x) => x);
-
-  const olfactoryExperienceRows = [
-    renderCardRow('Actor', item.actor),
-    renderCardRow('Emotion', item.emotion),
-    renderCardRow('Defined as', item.adjective),
-  ].filter((x) => x);
-
-  if (smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) {
-    return (
-      <Body>
-        {smellEmissionRows}
-
-        {olfactoryExperienceRows.length > 0 && (
-          <>
-            <Separator>Olfactory Experience</Separator>
-            {olfactoryExperienceRows}
-          </>
-        )}
-      </Body>
-    );
-  }
 };
 
 const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (!item || !item['@id']) return null;
 
   const mainLabel = getEntityMainLabel(item, { route, language: i18n.language });
+
+  const renderCardRow = (metaName, value, targetRouteName, targetProperty) => {
+    if (typeof value === 'undefined' || value === null) {
+      return null;
+    }
+
+    const renderedValue = renderRowValues(
+      value,
+      metaName,
+      route,
+      type,
+      targetRouteName,
+      targetProperty
+    );
+
+    const label = t(`project:metadata.${metaName}`, metaName);
+
+    return (
+      <Row key={label}>
+        <Label>{label}</Label>
+        <Value>{renderedValue}</Value>
+      </Row>
+    );
+  };
+
+  const renderBody = (item, highlightKeyword) => {
+    if (highlightKeyword && item.text) {
+      const { text } = item;
+      const truncatedText = text.length < 200 ? text : text.substring(0, 200) + '…';
+      return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
+    }
+
+    const smellEmissionRows = [
+      renderCardRow('source', item.smellSource, 'smell-sources', '@id'),
+      renderCardRow('carrier', item.carrier, 'odour-carriers', 'exemplifies'),
+      renderCardRow('date', item.time),
+      renderCardRow('place', item.place, 'fragrant-spaces', 'exemplifies'),
+      renderCardRow('author', item.source?.author),
+    ].filter((x) => x);
+
+    const olfactoryExperienceRows = [
+      renderCardRow('actor', item.actor),
+      renderCardRow('emotion', item.emotion),
+      renderCardRow('definedAs', item.adjective),
+    ].filter((x) => x);
+
+    if (smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) {
+      return (
+        <Body>
+          {smellEmissionRows}
+
+          {olfactoryExperienceRows.length > 0 && (
+            <>
+              <Separator>Olfactory Experience</Separator>
+              {olfactoryExperienceRows}
+            </>
+          )}
+        </Body>
+      );
+    }
+  };
 
   return (
     <Container {...props}>
@@ -192,7 +240,7 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
           }}
         />
       )}
-      {renderBody(item, displayText ? mainLabel : undefined)}
+      {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>
         <Link
           key={item['@id']}
