@@ -35,6 +35,7 @@ module.exports = {
     params: {
       sameAs: false,
     },
+    queryLink: (query) => `https://data.odeuropa.eu/sparql?query=${encodeURIComponent(query)}`,
     prefixes: {
       'luc-index': 'http://www.ontotext.com/connectors/lucene/instance#',
       'olfactory-objects': 'http://data.odeuropa.eu/vocabulary/olfactory-objects/',
