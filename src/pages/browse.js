@@ -168,7 +168,7 @@ const PAGE_SIZE = 20;
 const BrowsePage = ({ initialData, filters }) => {
   const router = useRouter();
   const { req, query, pathname } = router;
-  const { t } = useTranslation(['common', 'search', 'project']);
+  const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const currentPage = parseInt(query.page, 10) || 1;
@@ -183,7 +183,7 @@ const BrowsePage = ({ initialData, filters }) => {
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.results.length) return null; // reached the end
-    const q = { ...query, page: pageIndex + initialPage };
+    const q = { ...query, page: pageIndex + initialPage, hl: i18n.language };
     return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
@@ -562,7 +562,7 @@ const BrowsePage = ({ initialData, filters }) => {
 
 export async function getServerSideProps({ query, locale }) {
   const filters = await getFilters(query, { language: locale });
-  const searchData = await search(query);
+  const searchData = await search(query, locale);
 
   return {
     props: {
