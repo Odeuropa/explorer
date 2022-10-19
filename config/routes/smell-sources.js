@@ -182,7 +182,7 @@ module.exports = {
               '@id': '?smell',
               label: '?label',
               smellSource: {
-                '@id': '?id',
+                '@id': '?smellSource',
                 label: '?smellSourceLabel',
               },
               carrier: {
@@ -227,7 +227,8 @@ module.exports = {
             UNION
             {
               OPTIONAL {
-                ?id skos:prefLabel ?smellSourceLabel .
+                ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
+                ?smellSource skos:prefLabel ?smellSourceLabel .
                 FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
               }
             }
