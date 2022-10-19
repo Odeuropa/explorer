@@ -300,7 +300,7 @@ const HomePage = () => {
                       marginBottom: '1.5rem',
                     }}
                   >
-                    Search any smell
+                    {t('project:home.searchTitle')}
                   </span>
                   <SearchForm method="GET" action="/browse">
                     <input type="hidden" name="type" value={config.search.route} />

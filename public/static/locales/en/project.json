@@ -52,6 +52,9 @@
     "card": "cards",
     "text": "texts"
   },
+  "home": {
+    "searchTitle": "Search any smell"
+  },
   "odeuropa-vocabulary": {
     "search": "Search",
     "presentIn": "Present In",

@@ -52,6 +52,9 @@
     "card": "cartes",
     "text": "textes"
   },
+  "home": {
+    "searchTitle": "Rechercher une odeur"
+  },
   "odeuropa-vocabulary": {
     "search": "Recherche",
     "presentIn": "Présent dans",
