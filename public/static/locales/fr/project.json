@@ -52,6 +52,15 @@
     "card": "cartes",
     "text": "textes"
   },
+  "odeuropa-vocabulary": {
+    "search": "Recherche",
+    "presentIn": "Présent dans",
+    "orderBy": "Trier par",
+    "sort": {
+      "name": "Alphabétique",
+      "count": "Occurrences"
+    }
+  },
   "odeuropa-vocabulary-details": {
     "smellOf": "Odeur de",
     "related": "Lié à",

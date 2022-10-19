@@ -52,6 +52,15 @@
     "card": "cards",
     "text": "texts"
   },
+  "odeuropa-vocabulary": {
+    "search": "Search",
+    "presentIn": "Present In",
+    "orderBy": "Order by",
+    "sort": {
+      "name": "Alphabetical",
+      "count": "Occurrences"
+    }
+  },
   "odeuropa-vocabulary-details": {
     "smellOf": "Smell of",
     "related": "Related",

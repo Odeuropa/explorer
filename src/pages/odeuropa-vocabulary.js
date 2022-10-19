@@ -193,17 +193,6 @@ const FilterBar = styled.div`
   `}
 `;
 
-const orderOptions = [
-  {
-    label: 'Alphabetical',
-    value: 'name',
-  },
-  {
-    label: 'Occurrences',
-    value: 'count',
-  },
-];
-
 const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
@@ -271,6 +260,17 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
     });
   };
 
+  const orderOptions = [
+    {
+      label: t('project:odeuropa-vocabulary.sort.name'),
+      value: 'name',
+    },
+    {
+      label: t('project:odeuropa-vocabulary.sort.count'),
+      value: 'count',
+    },
+  ];
+
   return (
     <Layout>
       <PageTitle title={`${t('common:vocabulary.title')} ${query.type}`} />
@@ -295,7 +295,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                 <StyledInput
                   name="q"
                   type="text"
-                  placeholder="Search"
+                  placeholder={t('project:odeuropa-vocabulary.search')}
                   value={searchText}
                   onChange={handleSearchTextChange}
                 />
@@ -308,7 +308,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label style={{ display: 'flex', alignItems: 'center' }}>
                     <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>
-                      Present In
+                      {t('project:odeuropa-vocabulary.presentIn')}
                     </span>
                     <StyledSelect
                       id="select_date"
@@ -328,7 +328,9 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
               <div>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>Order By</span>
+                  <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>
+                    {t('project:odeuropa-vocabulary.orderBy')}
+                  </span>
                   <StyledSelect
                     id="select_order"
                     instanceId="select_order"
