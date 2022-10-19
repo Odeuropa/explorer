@@ -20,7 +20,8 @@
     "license": "Licence",
     "consistsOf": "Consiste de",
     "about": "Mots-clés",
-    "author": "Auteur"
+    "author": "Auteur",
+    "definedAs": "Définie comme"
   },
   "routes": {
     "texts": "Recherche",
