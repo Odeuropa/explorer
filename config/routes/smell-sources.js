@@ -162,6 +162,12 @@ module.exports = {
               '@id': '?image',
               label: '?imageLabel',
               image: '?imageUrl',
+              time: {
+                '@id': '?time',
+                label: '?timeLabel',
+                begin: '?timeBegin',
+                end: '?timeEnd',
+              },
             },
           ],
           $where: [
@@ -171,6 +177,23 @@ module.exports = {
             ?image schema:image ?imageUrl .
             FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
             ?image rdfs:label ?imageLabel .
+            {
+              OPTIONAL {
+                ?image schema:dateCreated ?time .
+                ?time rdfs:label ?timeLabel .
+                {
+                  OPTIONAL {
+                    ?time time:hasBeginning ?timeBegin .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?time time:hasEnd ?timeEnd .
+                  }
+                }
+              }
+            }
             `,
           ],
           $langTag: 'hide',
@@ -194,6 +217,8 @@ module.exports = {
               time: {
                 '@id': '?time',
                 label: '?timeLabel',
+                begin: '?timeBegin',
+                end: '?timeEnd',
               },
               place: {
                 '@id': '?place',
@@ -212,6 +237,7 @@ module.exports = {
             ?emission od:F3_had_source/crm:P137_exemplifies ?id .
             ?emission od:F1_generated ?smell .
             ?smell crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object .
+
             {
               ?smell rdfs:label ?label .
             }
@@ -238,6 +264,17 @@ module.exports = {
               OPTIONAL {
                 ?emission time:hasTime ?time .
                 ?time rdfs:label ?timeLabel .
+                {
+                  OPTIONAL {
+                    ?time time:hasBeginning ?timeBegin .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?time time:hasEnd ?timeEnd .
+                  }
+                }
               }
             }
             UNION

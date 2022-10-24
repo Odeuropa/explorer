@@ -199,6 +199,8 @@ module.exports = {
               time: {
                 '@id': '?time',
                 label: '?timeLabel',
+                begin: '?timeBegin',
+                end: '?timeEnd',
               },
               place: {
                 '@id': '?place',
@@ -243,6 +245,17 @@ module.exports = {
               OPTIONAL {
                 ?emission time:hasTime ?time .
                 ?time rdfs:label ?timeLabel .
+                {
+                  OPTIONAL {
+                    ?time time:hasBeginning ?timeBegin .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?time time:hasEnd ?timeEnd .
+                  }
+                }
               }
             }
             UNION

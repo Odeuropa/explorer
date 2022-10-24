@@ -46,6 +46,7 @@ services:
       - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
       - ./src/components/OdeuropaPagination.js:/usr/src/app/src/components/OdeuropaPagination.js
+      - ./src/components/OdeuropaTimeline.js:/usr/src/app/src/components/OdeuropaTimeline.js
       - ./src/helpers/odeuropa.js:/usr/src/app/src/helpers/odeuropa.js
     environment:
       - NODE_ENV=development

@@ -22,6 +22,7 @@ import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
+import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { absoluteUrl, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import AppContext from '@helpers/context';
@@ -92,16 +93,49 @@ const ShowMore = styled.div`
   }
 `;
 
+const TIMELINE_INTERVAL = 20; // years
+
+const filterItemWithDate = (item, targetDate) => {
+  const time = [].concat(item.time).filter((x) => x)[0];
+  const timeBegin = parseInt(time?.begin, 10);
+  return timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL;
+};
+
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
-  const { req, query } = useRouter();
+  const router = useRouter();
+  const { req, query } = router;
   const route = config.routes[query.type];
   const [wordCloud, setWordCloud] = useState();
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
+  const [filteredTexts, setFilteredTexts] = useState();
+  const [filteredVisuals, setFilteredVisuals] = useState();
+  const [timelineDates, setTimelineDates] = useState({});
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
   const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
+
+  const updateTimelineWithResults = (results) => {
+    if (!Array.isArray(results)) return;
+
+    const dates = results
+      .map((result) =>
+        []
+          .concat(result.time)
+          .map((time) => time?.begin)
+          .filter((x) => x)
+      )
+      .flat();
+
+    const newTimelineDates = dates.reduce((acc, cur) => {
+      const rounded = Math.floor(cur / TIMELINE_INTERVAL) * TIMELINE_INTERVAL;
+      acc[rounded] = (acc[rounded] || 0) + 1;
+      return acc;
+    }, timelineDates);
+
+    setTimelineDates(newTimelineDates);
+  };
 
   useEffect(() => {
     if (!result) return;
@@ -132,6 +166,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
       setTexts(results.error ? null : results);
+      updateTimelineWithResults(results);
     })();
 
     (async () => {
@@ -139,8 +174,29 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
       setVisuals(results.error ? null : results);
+      updateTimelineWithResults(results);
     })();
   }, [result]);
+
+  useEffect(() => {
+    if (!texts) return;
+    if (!query.date) {
+      setFilteredTexts(texts);
+      return;
+    }
+    const targetDate = parseInt(query.date, 10);
+    setFilteredTexts(texts.filter((item) => filterItemWithDate(item, targetDate)));
+  }, [texts, query]);
+
+  useEffect(() => {
+    if (!visuals) return;
+    if (!query.date) {
+      setFilteredVisuals(visuals);
+      return;
+    }
+    const targetDate = parseInt(query.date, 10);
+    setFilteredVisuals(visuals.filter((item) => filterItemWithDate(item, targetDate)));
+  }, [visuals, query]);
 
   if (!result) {
     return (
@@ -253,6 +309,22 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           </div>
         </Element>
 
+        {Object.keys(timelineDates).length > 0 && (
+          <OdeuropaTimeline
+            values={timelineDates}
+            interval={TIMELINE_INTERVAL}
+            onChange={(date) => {
+              router.push({
+                query: {
+                  ...query,
+                  date,
+                },
+              });
+            }}
+            defaultValue={query.date}
+          />
+        )}
+
         <Element style={{ padding: '1em', width: 350, textAlign: 'center' }}>
           {typeof wordCloud === 'undefined' && (
             <Element display="flex" alignItems="center">
@@ -280,18 +352,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               {t('project:odeuropa-vocabulary-details.texts.error')}
             </span>
           )}
-          {texts && (
+          {filteredTexts && (
             <h2>
               {t('project:odeuropa-vocabulary-details.texts.title')} (
-              {t('project:odeuropa-vocabulary-details.occurrences', { count: texts.length })})
+              {t('project:odeuropa-vocabulary-details.occurrences', {
+                count: filteredTexts.length,
+              })}
+              )
             </h2>
           )}
         </Element>
 
-        {texts && (
+        {filteredTexts && (
           <>
             <Results showAll={showingAllTexts}>
-              {texts.map((item) => (
+              {filteredTexts.map((item) => (
                 <Result key={item['@id']}>
                   <OdeuropaCard
                     item={item}
@@ -301,22 +376,27 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                       setSearchQuery(query);
                       setSearchPath(window.location.pathname);
                       setSearchData({
-                        totalResults: texts.length,
-                        results: texts,
+                        totalResults: filteredTexts.length,
+                        results: filteredTexts,
                       });
                     }}
                   />
                 </Result>
               ))}
             </Results>
-            <ShowMore active={showingAllTexts} onClick={() => setShowingAllTexts((show) => !show)}>
-              <div>
-                {showingAllTexts
-                  ? t('project:odeuropa-vocabulary-details.showLess')
-                  : t('project:odeuropa-vocabulary-details.showMore')}
-                <ShowMoreIcon as={showingAllTexts ? ChevronUp : ChevronDown} />
-              </div>
-            </ShowMore>
+            {filteredTexts.length > 4 && (
+              <ShowMore
+                active={showingAllTexts}
+                onClick={() => setShowingAllTexts((show) => !show)}
+              >
+                <div>
+                  {showingAllTexts
+                    ? t('project:odeuropa-vocabulary-details.showLess')
+                    : t('project:odeuropa-vocabulary-details.showMore')}
+                  <ShowMoreIcon as={showingAllTexts ? ChevronUp : ChevronDown} />
+                </div>
+              </ShowMore>
+            )}
           </>
         )}
 
@@ -332,18 +412,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               {t('project:odeuropa-vocabulary-details.visuals.error')}
             </span>
           )}
-          {visuals && (
+          {filteredVisuals && (
             <h2>
               {t('project:odeuropa-vocabulary-details.visuals.title')} (
-              {t('project:odeuropa-vocabulary-details.occurrences', { count: visuals.length })})
+              {t('project:odeuropa-vocabulary-details.occurrences', {
+                count: filteredVisuals.length,
+              })}
+              )
             </h2>
           )}
         </Element>
 
-        {visuals && (
+        {filteredVisuals && (
           <>
             <Results showAll={showingAllVisuals}>
-              {visuals.map((item) => (
+              {filteredVisuals.map((item) => (
                 <Result key={item['@id']} style={{ margin: '0 1em' }}>
                   <OdeuropaCard
                     item={item}
@@ -353,25 +436,27 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                       setSearchQuery(query);
                       setSearchPath(window.location.pathname);
                       setSearchData({
-                        totalResults: visuals.length,
-                        results: visuals,
+                        totalResults: filteredVisuals.length,
+                        results: filteredVisuals,
                       });
                     }}
                   />
                 </Result>
               ))}
             </Results>
-            <ShowMore
-              active={showingAllVisuals}
-              onClick={() => setShowingAllVisuals((show) => !show)}
-            >
-              <div>
-                {showingAllVisuals
-                  ? t('project:odeuropa-vocabulary-details.showLess')
-                  : t('project:odeuropa-vocabulary-details.showMore')}
-                <ShowMoreIcon as={showingAllVisuals ? ChevronUp : ChevronDown} />
-              </div>
-            </ShowMore>
+            {filteredVisuals.length > 4 && (
+              <ShowMore
+                active={showingAllVisuals}
+                onClick={() => setShowingAllVisuals((show) => !show)}
+              >
+                <div>
+                  {showingAllVisuals
+                    ? t('project:odeuropa-vocabulary-details.showLess')
+                    : t('project:odeuropa-vocabulary-details.showMore')}
+                  <ShowMoreIcon as={showingAllVisuals ? ChevronUp : ChevronDown} />
+                </div>
+              </ShowMore>
+            )}
           </>
         )}
 
