@@ -21,8 +21,10 @@ export default withRequestValidation({
       })
     )
   );
-  visualsQuery.$filter = visualsQuery.$filter || [];
-  visualsQuery.$filter.push(`?id = <${query.id}>`);
+  if (!visualsQuery.$values) {
+    visualsQuery.$values = {};
+  }
+  visualsQuery.$values['?id'] = [query.id];
 
   const visualsQueryRes = await SparqlClient.query(visualsQuery, {
     endpoint: config.api.endpoint,

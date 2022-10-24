@@ -21,8 +21,10 @@ export default withRequestValidation({
       })
     )
   );
-  wordCloudQuery.$filter = wordCloudQuery.$filter || [];
-  wordCloudQuery.$filter.push(`?id = <${query.id}>`);
+  if (!wordCloudQuery.$values) {
+    wordCloudQuery.$values = {};
+  }
+  wordCloudQuery.$values['?id'] = [query.id];
 
   const wordCloudQueryRes = await SparqlClient.query(wordCloudQuery, {
     endpoint: config.api.endpoint,

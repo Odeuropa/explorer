@@ -19,8 +19,10 @@ export default withRequestValidation({
       getQueryObject(route.plugins['odeuropa-vocabulary'].texts.query, { language: query.locale })
     )
   );
-  textsQuery.$filter = textsQuery.$filter || [];
-  textsQuery.$filter.push(`?id = <${query.id}>`);
+  if (!textsQuery.$values) {
+    textsQuery.$values = {};
+  }
+  textsQuery.$values['?id'] = [query.id];
 
   const textsQueryRes = await SparqlClient.query(textsQuery, {
     endpoint: config.api.endpoint,
