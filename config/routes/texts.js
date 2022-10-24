@@ -244,6 +244,7 @@ module.exports = {
         '@id': '?id',
         '@graph': '?g',
         label: '?label',
+        image: '?imageUrl',
         text: '?relevantFragmentValue',
         source: {
           '@id': '?source',
@@ -289,16 +290,65 @@ module.exports = {
     $where: [
       `
       GRAPH ?g { ?id a od:L11_Smell . }
-      ?id rdfs:label ?label .
-      ?source crm:P67_refers_to ?id .
-
       {
-        ?source rdfs:label ?sourceLabel .
+        OPTIONAL {
+          ?id rdfs:label ?label .
+        }
       }
       UNION
       {
-        OPTIONAL {
-          ?source schema:url ?sourceUrl .
+        ?source crm:P67_refers_to ?id .
+        {
+          OPTIONAL {
+            ?source rdfs:label ?sourceLabel .
+          }
+        }
+        UNION
+        {
+          ?source schema:image ?imageUrl .
+          FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:url ?sourceUrl .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:author ?sourceAuthor .
+            {
+              OPTIONAL {
+                ?sourceAuthor rdfs:label ?sourceAuthorLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
+              }
+            }
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:dateCreated / rdfs:label ?sourceDate .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:genre ?sourceGenre .
+            ?sourceGenre rdfs:label ?sourceGenreLabel .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:inLanguage ?sourceLanguage .
+          }
         }
       }
       UNION
@@ -307,42 +357,6 @@ module.exports = {
           ?relevantFragment crm:P67_refers_to ?id .
           FILTER(?relevantFragment != ?source)
           ?relevantFragment rdf:value ?relevantFragmentValue .
-        }
-      }
-      UNION
-      {
-        OPTIONAL {
-          ?source schema:author ?sourceAuthor .
-          {
-            OPTIONAL {
-              ?sourceAuthor rdfs:label ?sourceAuthorLabel .
-            }
-          }
-          UNION
-          {
-            OPTIONAL {
-              ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
-            }
-          }
-        }
-      }
-      UNION
-      {
-        OPTIONAL {
-          ?source schema:dateCreated / rdfs:label ?sourceDate .
-        }
-      }
-      UNION
-      {
-        OPTIONAL {
-          ?source schema:genre ?sourceGenre .
-          ?sourceGenre rdfs:label ?sourceGenreLabel .
-        }
-      }
-      UNION
-      {
-        OPTIONAL {
-          ?source schema:inLanguage ?sourceLanguage .
         }
       }
       UNION

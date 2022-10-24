@@ -72,25 +72,23 @@ module.exports = {
     $where: [
       `
       {
-        {
-          SELECT DISTINCT ?emission ?id WHERE {
-            ?emission od:F3_had_source / crm:P137_exemplifies ?id .
-
-            ${
-              params.date
-                ? `
-              ?emission_source crm:P67_refers_to ?emission .
-              ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
-                params.date
-              )}^^xsd:gYear .
-              `
-                : ''
-            }
-          }
+        ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
+        ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+        ${
+          params.date
+            ? `
+          ?emission_source crm:P67_refers_to ?emission .
+          ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
+            params.date
+          )}^^xsd:gYear .
+          `
+            : ''
         }
+
         {
           OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(?object) AS ?count) WHERE {
+            SELECT DISTINCT ?id (COUNT(DISTINCT ?object) AS ?count) WHERE {
+              ?emission od:F3_had_source ?object .
               ?object crm:P137_exemplifies ?id .
             }
             GROUP BY ?id
@@ -98,10 +96,10 @@ module.exports = {
         }
         UNION
         {
-          OPTIONAL { ?id skos:prefLabel ?label_fr . FILTER(LANGMATCHES(LANG(?label_fr), "${language}")) }
+          OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          BIND(COALESCE(?label_fr, ?label_unk, ?label_en) AS ?bestKnownLabel)
+          BIND(COALESCE(?label_hl, ?label_unk, ?label_en) AS ?bestKnownLabel)
           OPTIONAL {
               SELECT ?label_default WHERE {
                   ?id skos:prefLabel ?label_default
@@ -120,8 +118,12 @@ module.exports = {
       }
       UNION
       {
-        SELECT DISTINCT ?emission ?date WHERE {
-          ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+        SELECT DISTINCT ?date WHERE {
+          { # Nested select because of an issue with GraphDB optimization engine
+            SELECT DISTINCT ?emission WHERE {
+                ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+            }
+          }
           ?source crm:P67_refers_to ?emission .
           ?source schema:dateCreated/time:hasBeginning ?date .
         }

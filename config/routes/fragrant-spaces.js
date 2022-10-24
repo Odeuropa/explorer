@@ -73,26 +73,25 @@ module.exports = {
     $where: [
       `
       {
-        {
-          SELECT DISTINCT ?emission ?id WHERE {
-            ?place crm:P2_has_type ?id .
-            ?emission crm:P7_took_place_at ?place .
+        ?id <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
+        ?place crm:P2_has_type ?id .
+        ?emission crm:P7_took_place_at ?place .
 
-            ${
-              params.date
-                ? `
-              ?emission_source crm:P67_refers_to ?emission .
-              ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
-                params.date
-              )}^^xsd:gYear .
-              `
-                : ''
-            }
-          }
+        ${
+          params.date
+            ? `
+          ?emission_source crm:P67_refers_to ?emission .
+          ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
+            params.date
+          )}^^xsd:gYear .
+          `
+            : ''
         }
+
         {
           OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(?object) AS ?count) WHERE {
+            SELECT DISTINCT ?id (COUNT(DISTINCT ?object) AS ?count) WHERE {
+              ?emission crm:P7_took_place_at ?object .
               ?object crm:P137_exemplifies ?id .
             }
             GROUP BY ?id
@@ -100,10 +99,10 @@ module.exports = {
         }
         UNION
         {
-          OPTIONAL { ?id skos:prefLabel ?label_fr . FILTER(LANGMATCHES(LANG(?label_fr), "${language}")) }
+          OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          BIND(COALESCE(?label_fr, ?label_unk, ?label_en) AS ?bestKnownLabel)
+          BIND(COALESCE(?label_hl, ?label_unk, ?label_en) AS ?bestKnownLabel)
           OPTIONAL {
               SELECT ?label_default WHERE {
                   ?id skos:prefLabel ?label_default
@@ -122,8 +121,13 @@ module.exports = {
       }
       UNION
       {
-        SELECT DISTINCT ?emission ?date WHERE {
+        SELECT DISTINCT ?date WHERE {
           ?place crm:P2_has_type ?id .
+          { # Nested select because of an issue with GraphDB optimization engine
+            SELECT DISTINCT ?emission WHERE {
+              ?emission crm:P7_took_place_at ?place .
+            }
+          }
           ?emission crm:P7_took_place_at ?place .
           ?source crm:P67_refers_to ?emission .
           ?source schema:dateCreated/time:hasBeginning ?date .
