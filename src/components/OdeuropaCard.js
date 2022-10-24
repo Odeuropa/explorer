@@ -154,7 +154,7 @@ export const renderRowValues = (
         }
       }
 
-      return <Fragment key={inner}>{inner}</Fragment>;
+      return <Fragment key={v['@id']}>{inner}</Fragment>;
     })
     .reduce((prev, curr) => [prev, ', ', curr]);
 };
