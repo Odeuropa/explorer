@@ -170,6 +170,10 @@ const ItemTitle = styled.div`
   h2:not(:last-child) {
     margin-right: 0.25em;
   }
+
+  span {
+    font-size: 1.2rem;
+  }
 `;
 
 const StyledInput = styled(Input)`
@@ -395,7 +399,9 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                             />
                           </ItemImage>
                           <ItemTitle>
-                            <h2>{result.mainLabel}</h2>
+                            <h2>
+                              {result.mainLabel} <span>({result.count})</span>
+                            </h2>
                           </ItemTitle>
                           {result.description && <p>{result.description}</p>}
                         </Item>
