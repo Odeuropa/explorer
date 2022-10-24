@@ -131,7 +131,6 @@ module.exports = {
       }
       `,
     ],
-    $orderby: params.order === 'count' ? 'DESC(?count)' : 'ASC(?bestLabel)',
     $langTag: 'hide',
   }),
   plugins: {

@@ -215,8 +215,18 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
         });
       });
     }
+    resultsWithLabel.sort((a, b) => {
+      if (searchOrder === 'count') {
+        return b.count - a.count;
+      }
+      if (!a.mainLabel) return b.mainLabel ? 1 : 0;
+      if (!b.mainLabel) return -1;
+      return a.mainLabel.toLocaleLowerCase().localeCompare(b.mainLabel.toLocaleLowerCase());
+    });
     setResultsWithLabel(resultsWithLabel);
+  }, [results, searchOrder]);
 
+  useEffect(() => {
     const dates = [].concat(results[0]?.dates).filter((x) => x);
     dates.sort((a, b) => a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()));
     setDateOptions(
@@ -254,10 +264,14 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
     };
     delete newQuery.type;
 
-    router.push({
-      pathname: query.type,
-      query: newQuery,
-    });
+    router.push(
+      {
+        pathname: query.type,
+        query: newQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   const orderOptions = [
@@ -421,7 +435,7 @@ export async function getServerSideProps({ query, locale }) {
   if (route) {
     const mainQuery = getQueryObject(route.query, {
       language: locale,
-      params: { date: query.date, order: query.order },
+      params: { date: query.date },
     });
 
     if (config.debug) {
