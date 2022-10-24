@@ -82,6 +82,8 @@
       "title": "Dans les images",
       "loading": "Chargement des occurrences visuelles...",
       "error": "Les occurrences visuelles n'ont pas pu être chargées pour le moment"
-    }
+    },
+    "showMore": "Afficher tout",
+    "showLess": "Afficher moins"
   }
 }

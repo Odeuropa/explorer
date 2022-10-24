@@ -7,6 +7,8 @@ import queryString from 'query-string';
 import 'react-18-image-lightbox/style.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { TagCloud } from 'react-tagcloud';
+import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
+import { ChevronUp } from '@styled-icons/boxicons-regular/ChevronUp';
 
 import NotFoundPage from '@pages/404';
 import Header from '@components/Header';
@@ -20,26 +22,20 @@ import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
-import { absoluteUrl, slugify, uriToId } from '@helpers/utils';
+import { absoluteUrl, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import AppContext from '@helpers/context';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
 
 const Results = styled.div`
-  --visible-cols: 4;
-  --col-gap: 20px;
-  --col-hint: 20px;
-  --scrollbar-padding: 20px;
-  --col-size: calc((100% / var(--visible-cols)) - var(--col-gap) - var(--col-hint));
-
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: var(--col-size);
-  grid-auto-columns: var(--col-size);
+  grid-auto-flow: ${({ showAll }) => (showAll ? 'row' : 'column')};
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-auto-columns: 400px;
   overflow-x: auto;
   overflow-y: hidden;
-  grid-gap: var(--col-gap);
+  grid-gap: 20px;
 `;
 
 const Result = styled.div`
@@ -51,6 +47,51 @@ const Result = styled.div`
   overflow: hidden;
 `;
 
+const ShowMoreIcon = styled.svg`
+  width: 2em;
+  height: 2em;
+`;
+
+const ShowMore = styled.div`
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  position: relative;
+  margin: 2em;
+  text-transform: uppercase;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1 1;
+    border-bottom: 2px solid;
+    margin: auto;
+  }
+
+  &::before {
+    margin-right: 10px;
+  }
+
+  &::after {
+    margin-left: 10px;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    svg {
+      position: absolute;
+    }
+  }
+
+  & ${ShowMoreIcon} {
+    top: ${({ active }) => (active ? '-1.5em' : 'inherit')};
+    bottom: ${({ active }) => (active ? 'inherit' : '-1.5em')};
+  }
+`;
+
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const { req, query } = useRouter();
@@ -58,6 +99,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [wordCloud, setWordCloud] = useState();
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
+  const [showingAllTexts, setShowingAllTexts] = useState(false);
+  const [showingAllVisuals, setShowingAllVisuals] = useState(false);
   const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
 
   useEffect(() => {
@@ -246,25 +289,35 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         </Element>
 
         {texts && (
-          <Results>
-            {texts.map((item) => (
-              <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                <OdeuropaCard
-                  item={item}
-                  route={cardRoute}
-                  type={route.details.route}
-                  onSeeMore={() => {
-                    setSearchQuery(query);
-                    setSearchPath(window.location.pathname);
-                    setSearchData({
-                      totalResults: texts.length,
-                      results: texts,
-                    });
-                  }}
-                />
-              </Result>
-            ))}
-          </Results>
+          <>
+            <Results showAll={showingAllTexts}>
+              {texts.map((item) => (
+                <Result key={item['@id']}>
+                  <OdeuropaCard
+                    item={item}
+                    route={cardRoute}
+                    type={route.details.route}
+                    onSeeMore={() => {
+                      setSearchQuery(query);
+                      setSearchPath(window.location.pathname);
+                      setSearchData({
+                        totalResults: texts.length,
+                        results: texts,
+                      });
+                    }}
+                  />
+                </Result>
+              ))}
+            </Results>
+            <ShowMore active={showingAllTexts} onClick={() => setShowingAllTexts((show) => !show)}>
+              <div>
+                {showingAllTexts
+                  ? t('project:odeuropa-vocabulary-details.showLess')
+                  : t('project:odeuropa-vocabulary-details.showMore')}
+                <ShowMoreIcon as={showingAllTexts ? ChevronUp : ChevronDown} />
+              </div>
+            </ShowMore>
+          </>
         )}
 
         <Element style={{ padding: '1em', color: 'gray' }}>
@@ -288,25 +341,38 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         </Element>
 
         {visuals && (
-          <Results>
-            {visuals.map((item) => (
-              <Result key={item['@id']} style={{ margin: '0 1em' }}>
-                <OdeuropaCard
-                  item={item}
-                  route={config.routes.visuals}
-                  type="visuals"
-                  onSeeMore={() => {
-                    setSearchQuery(query);
-                    setSearchPath(window.location.pathname);
-                    setSearchData({
-                      totalResults: visuals.length,
-                      results: visuals,
-                    });
-                  }}
-                />
-              </Result>
-            ))}
-          </Results>
+          <>
+            <Results showAll={showingAllVisuals}>
+              {visuals.map((item) => (
+                <Result key={item['@id']} style={{ margin: '0 1em' }}>
+                  <OdeuropaCard
+                    item={item}
+                    route={config.routes.visuals}
+                    type="visuals"
+                    onSeeMore={() => {
+                      setSearchQuery(query);
+                      setSearchPath(window.location.pathname);
+                      setSearchData({
+                        totalResults: visuals.length,
+                        results: visuals,
+                      });
+                    }}
+                  />
+                </Result>
+              ))}
+            </Results>
+            <ShowMore
+              active={showingAllVisuals}
+              onClick={() => setShowingAllVisuals((show) => !show)}
+            >
+              <div>
+                {showingAllVisuals
+                  ? t('project:odeuropa-vocabulary-details.showLess')
+                  : t('project:odeuropa-vocabulary-details.showMore')}
+                <ShowMoreIcon as={showingAllVisuals ? ChevronUp : ChevronDown} />
+              </div>
+            </ShowMore>
+          </>
         )}
 
         <Debug>

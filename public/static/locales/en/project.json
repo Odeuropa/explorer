@@ -82,6 +82,8 @@
       "title": "In images",
       "loading": "Loading visual occurrences...",
       "error": "Visual occurrences could not be loaded at that moment"
-    }
+    },
+    "showMore": "Show all",
+    "showLess": "Show less"
   }
 }
