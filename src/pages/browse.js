@@ -440,7 +440,7 @@ const BrowsePage = ({ initialData, filters }) => {
             <StyledTitle>
               {isPageLoading
                 ? t('search:labels.loading')
-                : t('search:labels.searchResults', { totalResults })}
+                : t('search:labels.searchResults', { count: totalResults })}
             </StyledTitle>
             <OptionsBar>
               <Option>
