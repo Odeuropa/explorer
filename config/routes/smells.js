@@ -115,6 +115,7 @@ module.exports = {
         GRAPH ?g { ?id a od:L11_Smell . }
         ?source crm:P67_refers_to ?id .
         FILTER (NOT EXISTS { ?source rdf:value []})
+
         {
           OPTIONAL {
             ?id rdfs:label ?label .
@@ -346,6 +347,7 @@ module.exports = {
       `
       GRAPH ?g { ?id a od:L11_Smell . }
       ?source crm:P67_refers_to ?id .
+      FILTER (NOT EXISTS { ?source rdf:value []})
 
       {
         OPTIONAL {

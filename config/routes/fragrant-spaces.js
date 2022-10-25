@@ -165,18 +165,48 @@ module.exports = {
         query: () => ({
           '@graph': [
             {
-              '@id': '?image',
+              '@id': '?smell',
               label: '?imageLabel',
               image: '?imageUrl',
+              time: {
+                '@id': '?time',
+                label: '?timeLabel',
+                begin: '?timeBegin',
+                end: '?timeEnd',
+              },
             },
           ],
           $where: [
             `
+            ?emission od:F1_generated ?smell .
+            ?source crm:P67_refers_to ?emission .
+            ?source crm:P138_represents ?object .
             ?object crm:P137_exemplifies ?id .
-            ?image crm:P138_represents ?object .
-            ?image schema:image ?imageUrl .
+            ?source schema:image ?imageUrl .
             FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
-            ?image rdfs:label ?imageLabel .
+            {
+              OPTIONAL {
+                ?source rdfs:label ?imageLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                ?source schema:dateCreated ?time .
+                ?time rdfs:label ?timeLabel .
+                {
+                  OPTIONAL {
+                    ?time time:hasBeginning ?timeBegin .
+                  }
+                }
+                UNION
+                {
+                  OPTIONAL {
+                    ?time time:hasEnd ?timeEnd .
+                  }
+                }
+              }
+            }
             `,
           ],
           $langTag: 'hide',
