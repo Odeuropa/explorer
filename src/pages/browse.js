@@ -375,25 +375,30 @@ const BrowsePage = ({ initialData, filters }) => {
   }));
 
   const renderResults = (results, pageNumber) =>
-    results.map((result) => (
-      <OdeuropaCard
-        key={result['@id']}
-        item={result}
-        route={route}
-        type={route.details.route}
-        displayText={query.display === 'text'}
-        onSeeMore={() => {
-          // Make sure the page number is correct if it hasn't been updated yet
-          onScrollToPage(pageNumber);
-          setSearchQuery({
-            ...query,
-            page: pageNumber,
-          });
-          setSearchPath(query.type);
-          setSearchData(data[0]);
-        }}
-      />
-    ));
+    results.map((result) => {
+      const displayText = query.display === 'text';
+      const onSeeMore = () => {
+        // Make sure the page number is correct if it hasn't been updated yet
+        onScrollToPage(pageNumber);
+        setSearchQuery({
+          ...query,
+          page: pageNumber,
+        });
+        setSearchPath(query.type);
+        setSearchData(data[0]);
+      };
+
+      return (
+        <OdeuropaCard
+          key={result['@id']}
+          item={result}
+          route={route}
+          type={route.details.route}
+          displayText={displayText}
+          onSeeMore={onSeeMore}
+        />
+      );
+    });
 
   const onScrollToPage = (pageIndex) => {
     if (pageIndex !== query.page) {

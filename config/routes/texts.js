@@ -42,7 +42,7 @@ module.exports = {
   details: {
     view: 'odeuropa-texts',
     showPermalink: true,
-    excludedMetadata: ['textualObject'],
+    excludedMetadata: ['textualObject', 'image', 'fragment'],
     route: 'texts',
     query: ({ language }) => ({
       '@context': 'http://schema.org/',
@@ -52,14 +52,15 @@ module.exports = {
           '@id': '?id',
           '@graph': '?g',
           label: '?label',
-          relevantFragment: '?relevantFragment',
+          image: '?imageUrl',
+          relevantExcerpt: '?relevantExcerpt',
           source: {
             '@id': '?source',
             label: '?sourceLabel',
             url: '?sourceUrl',
-            fragments: {
-              '@id': '?fragment',
-              value: '?fragmentValue',
+            excerpts: {
+              '@id': '?excerpt',
+              value: '?excerptValue',
             },
             author: {
               '@id': '?sourceAuthor',
@@ -96,30 +97,78 @@ module.exports = {
             label: '?emotionLabel',
             type: '?emotionType',
           },
+          fragment: {
+            '@id': '?fragment',
+            x: '?fragmentX',
+            y: '?fragmentY',
+            width: '?fragmentW',
+            height: '?fragmentH',
+            label: '?fragmentLabel',
+            score: '?fragmentScore',
+          },
+          about: '?about',
+          license: '?license',
         },
       ],
       $where: [
         `
         GRAPH ?g { ?id a od:L11_Smell . }
-        ?id rdfs:label ?label .
         ?source crm:P67_refers_to ?id .
-        ?source crm:P165_incorporates ?fragment .
-        ?fragment rdf:value ?fragmentValue .
-
-        {
-          ?source rdfs:label ?sourceLabel .
-        }
-        UNION
+        FILTER (NOT EXISTS { ?source rdf:value []})
         {
           OPTIONAL {
-            ?source schema:url ?sourceUrl .
+            ?id rdfs:label ?label .
           }
         }
         UNION
         {
           OPTIONAL {
-            ?relevantFragment crm:P67_refers_to ?id .
-            FILTER(?relevantFragment != ?source)
+            ?source crm:P165_incorporates ?excerpt .
+            ?excerpt rdf:value ?excerptValue .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?relevantExcerpt crm:P67_refers_to ?id .
+            FILTER(?relevantExcerpt != ?source)
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:image ?imageUrl .
+            FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+          }
+        }
+        UNION
+        {
+          ?source ma:hasFragment ?fragment .
+          ?fragment nsa:spatialX ?fragmentX .
+          ?fragment nsa:spatialY ?fragmentY .
+          ?fragment nsa:spatialW ?fragmentW .
+          ?fragment nsa:spatialH ?fragmentH .
+          ?fragment rdf:value ?fragmentScore .
+          ?fragment oa:hasBody/rdfs:label ?fragmentLabel .
+        }
+        UNION
+        {
+          ?source schema:about/rdfs:label ?about .
+        }
+        UNION
+        {
+          ?source schema:license ?license .
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source rdfs:label ?sourceLabel .
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
+            ?source schema:url ?sourceUrl .
           }
         }
         UNION
@@ -134,7 +183,9 @@ module.exports = {
             UNION
             {
               OPTIONAL {
-                ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
+                GRAPH <http://www.ontotext.com/explicit> {
+                  ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
+                }
               }
             }
           }
@@ -245,7 +296,7 @@ module.exports = {
         '@graph': '?g',
         label: '?label',
         image: '?imageUrl',
-        text: '?relevantFragmentValue',
+        text: '?relevantExcerptValue',
         source: {
           '@id': '?source',
           label: '?sourceLabel',
@@ -261,6 +312,10 @@ module.exports = {
             label: '?sourceGenreLabel',
           },
           language: '?sourceLanguage',
+          location: {
+            '@id': '?sourceLocation',
+            label: '?sourceLocationName',
+          },
         },
         smellSource: {
           '@id': '?smellSource',
@@ -290,6 +345,8 @@ module.exports = {
     $where: [
       `
       GRAPH ?g { ?id a od:L11_Smell . }
+      ?source crm:P67_refers_to ?id .
+
       {
         OPTIONAL {
           ?id rdfs:label ?label .
@@ -297,66 +354,72 @@ module.exports = {
       }
       UNION
       {
-        ?source crm:P67_refers_to ?id .
-        {
-          OPTIONAL {
-            ?source rdfs:label ?sourceLabel .
-          }
+        OPTIONAL {
+          ?source rdfs:label ?sourceLabel .
         }
-        UNION
-        {
-          ?source schema:image ?imageUrl .
-          FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+      }
+      UNION
+      {
+        ?source schema:image ?imageUrl .
+        FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:url ?sourceUrl .
         }
-        UNION
-        {
-          OPTIONAL {
-            ?source schema:url ?sourceUrl .
-          }
-        }
-        UNION
-        {
-          OPTIONAL {
-            ?source schema:author ?sourceAuthor .
-            {
-              OPTIONAL {
-                ?sourceAuthor rdfs:label ?sourceAuthorLabel .
-              }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:author ?sourceAuthor .
+          {
+            OPTIONAL {
+              ?sourceAuthor rdfs:label ?sourceAuthorLabel .
             }
-            UNION
-            {
-              OPTIONAL {
+          }
+          UNION
+          {
+            OPTIONAL {
+              GRAPH <http://www.ontotext.com/explicit> {
                 ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
               }
             }
-          }
-        }
-        UNION
-        {
-          OPTIONAL {
-            ?source schema:dateCreated / rdfs:label ?sourceDate .
-          }
-        }
-        UNION
-        {
-          OPTIONAL {
-            ?source schema:genre ?sourceGenre .
-            ?sourceGenre rdfs:label ?sourceGenreLabel .
-          }
-        }
-        UNION
-        {
-          OPTIONAL {
-            ?source schema:inLanguage ?sourceLanguage .
           }
         }
       }
       UNION
       {
         OPTIONAL {
-          ?relevantFragment crm:P67_refers_to ?id .
-          FILTER(?relevantFragment != ?source)
-          ?relevantFragment rdf:value ?relevantFragmentValue .
+          ?source schema:dateCreated / rdfs:label ?sourceDate .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:genre ?sourceGenre .
+          ?sourceGenre rdfs:label ?sourceGenreLabel .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:inLanguage ?sourceLanguage .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source crm:P53_has_former_or_current_location ?sourceLocation .
+          ?sourceLocation gn:name ?sourceLocationName .
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?relevantExcerpt crm:P67_refers_to ?id .
+          FILTER(?relevantExcerpt != ?source)
+          ?relevantExcerpt rdf:value ?relevantExcerptValue .
         }
       }
       UNION

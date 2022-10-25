@@ -229,10 +229,12 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
 
   return (
     <Container {...props}>
-      <Header>
-        <Title title={mainLabel}>{mainLabel}</Title>
-        {item.time && <Date>{item.time.label}</Date>}
-      </Header>
+      {(mainLabel || item.time?.label) && (
+        <Header>
+          <Title title={mainLabel}>{mainLabel}</Title>
+          {item.time && <Date>{item.time.label}</Date>}
+        </Header>
+      )}
       {item.image && (
         <Visual
           style={{

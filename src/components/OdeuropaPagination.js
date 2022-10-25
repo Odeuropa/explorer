@@ -17,7 +17,7 @@ const loader = (
 
 const PAGE_SIZE = 20;
 
-function OdeuropaPagination({ result }) {
+function OdeuropaPagination({ result, ...props }) {
   const router = useRouter();
   const { searchData, setSearchData, searchQuery, setSearchQuery, searchPath } =
     useContext(AppContext);
@@ -140,7 +140,7 @@ function OdeuropaPagination({ result }) {
   };
 
   return (
-    <Element display="flex" flexDirection="column">
+    <Element display="flex" flexDirection="column" {...props}>
       <Element alignSelf="center" marginBottom={24}>
         <Link href={`${window.location.origin}/${searchPath}?${searchParams?.toString()}`} passHref>
           <a>Back to search</a>
@@ -155,13 +155,19 @@ function OdeuropaPagination({ result }) {
           borderBottom: '1px solid #e7e7e7',
         }}
       >
-        <Element width={200} display="flex" alignItems="center">
+        <Element width={200} display="flex" alignItems="center" paddingLeft={48}>
           {renderPrevious()}
         </Element>
         <Element>
           {currentIndex} / {totalResults}
         </Element>
-        <Element width={200} display="flex" alignItems="center" justifyContent="flex-end">
+        <Element
+          width={200}
+          display="flex"
+          alignItems="center"
+          justifyContent="flex-end"
+          paddingRight={48}
+        >
           {renderNext()}
         </Element>
       </Element>

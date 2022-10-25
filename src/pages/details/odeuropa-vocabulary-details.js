@@ -430,8 +430,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 <Result key={item['@id']} style={{ margin: '0 1em' }}>
                   <OdeuropaCard
                     item={item}
-                    route={config.routes.visuals}
-                    type="visuals"
+                    route={cardRoute}
+                    type={route.details.route}
                     onSeeMore={() => {
                       setSearchQuery(query);
                       setSearchPath(window.location.pathname);

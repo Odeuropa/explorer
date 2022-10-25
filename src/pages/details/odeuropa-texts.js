@@ -1,7 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
@@ -21,6 +20,7 @@ import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaPagination from '@components/OdeuropaPagination';
 import GraphLink from '@components/GraphLink';
+import MetadataList from '@components/MetadataList';
 import SaveButton from '@components/SaveButton';
 import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
@@ -39,7 +39,6 @@ const Columns = styled.div`
 
   ${breakpoints.desktop`
     flex-direction: row;
-    padding: 0 2em;
   `}
 `;
 
@@ -47,11 +46,19 @@ const Primary = styled.div`
   flex: auto;
   min-width: 50%;
   padding-right: 24px;
-  padding-top: 24px;
-  margin-left: 24px;
+  margin-bottom: 24px;
 
   display: flex;
   flex-direction: column;
+`;
+
+const Secondary = styled.div`
+  flex: auto;
+
+  ${breakpoints.desktop`
+    margin-left: 0;
+    padding: 0 24px;
+  `}
 `;
 
 const Separator = styled.div`
@@ -131,6 +138,28 @@ const ExcerptContainer = styled.div`
   `}
 `;
 
+const AnnotationContainer = styled.div`
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 0.5;
+  cursor: default;
+  user-select: none;
+  transition: opacity 250ms ease-in-out;
+
+  ${({ highlighted }) =>
+    highlighted
+      ? css`
+          opacity: 1;
+          z-index: 10;
+        `
+      : null};
+
+  &:hover {
+    opacity: 1;
+    z-index: 10;
+  }
+`;
+
 const MAX_TITLE_LENGTH = 50;
 
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
@@ -140,21 +169,32 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { data: session } = useSession();
   const route = config.routes[query.type];
   const [isItemSaved, setIsItemSaved] = useState(inList);
-  const [fragments, setFragments] = useState([]);
+  const [excerpts, setExcerpts] = useState([]);
   const [openedExcerpts, setOpenedExcerpts] = useState([]);
+  const [fragmentsFilter, setFragmentsFilter] = useState([]);
+  const [visibleFragments, setVisibleFragments] = useState([]);
+  const [highlightedFragment, setHighlightedFragment] = useState(undefined);
 
   useEffect(() => {
     if (!result) return;
-    if (result.relevantFragment) {
-      setOpenedExcerpts([result.relevantFragment]);
+    if (result.relevantExcerpt) {
+      setOpenedExcerpts([result.relevantExcerpt]);
     }
 
-    const fragmentsList = [].concat(result.source?.fragments).filter((x) => x);
-    fragmentsList.sort((a, b) => {
+    const excerptsList = [].concat(result.source?.excerpts).filter((x) => x);
+    excerptsList.sort((a, b) => {
       if (a['@id'] === b['@id']) return 0;
-      return a['@id'] === result.relevantFragment ? -1 : 1;
+      return a['@id'] === result.relevantExcerpt ? -1 : 1;
     });
-    setFragments(fragmentsList);
+    setExcerpts(excerptsList);
+
+    const fragmentsFilter = []
+      .concat(result.fragment)
+      .filter((x) => x)
+      .map((fragment) => fragment.label)
+      .filter((v, i, a) => a.indexOf(v) === i);
+    setFragmentsFilter(fragmentsFilter);
+    setVisibleFragments(fragmentsFilter);
   }, [result]);
 
   if (!result) {
@@ -187,7 +227,9 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     setIsItemSaved(status);
   };
 
-  const renderTextualObject = (source) => {
+  const renderHeader = () => {
+    const { source } = result;
+
     const subtitles = [];
     if (typeof source.date === 'string') {
       subtitles.push(<>{result.date}</>);
@@ -214,11 +256,17 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     }
 
     return (
-      <Element>
+      <Element
+        style={{
+          minWidth: '50%',
+          paddingTop: 24,
+          marginBottom: 24,
+        }}
+      >
         <Element
           style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}
         >
-          Textual resource
+          {result.image ? 'Visual resource' : 'Textual resource'}
         </Element>
         <Element
           style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}
@@ -236,7 +284,222 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
             </Fragment>
           ))}
         </Element>
+
+        <Element display="flex" alignItems="center" justifyContent="space-between">
+          {session && (
+            <SaveButton
+              type={query.type}
+              item={result}
+              saved={isItemSaved}
+              onChange={onItemSaveChange}
+            />
+          )}
+        </Element>
+
+        <Element marginBottom={12} display="flex">
+          <GraphLink uri={result['@graph']} icon label style={{ marginRight: '0.5em' }} />
+          {route.details.showPermalink && (
+            <small>
+              (
+              <a href={generatePermalink(result['@id'])} target="_blank" rel="noopener noreferrer">
+                {t('common:buttons.permalink')}
+              </a>
+              )
+            </small>
+          )}
+          {result.source?.url && (
+            <small style={{ paddingLeft: 12 }}>
+              {t('project:buttons.source')}{' '}
+              <a href={result.source?.url} target="_blank" rel="noopener noreferrer">
+                {result.source?.url}
+              </a>
+            </small>
+          )}
+        </Element>
+
+        {result.source?.label?.length > MAX_TITLE_LENGTH &&
+          renderPanelRow('Full title', result.source.label)}
       </Element>
+    );
+  };
+
+  const renderTextualObject = () => {
+    return (
+      <Element>
+        {excerpts.map((excerpt, i) => (
+          <Element key={excerpt['@id']} id={slugify(excerpt['@id'])}>
+            <ExcerptContainer
+              active={openedExcerpts.includes(excerpt['@id'])}
+              style={{
+                backgroundColor: result.relevantExcerpt === excerpt['@id'] ? '#f5f5f5' : '',
+              }}
+            >
+              <ExcerptTitle
+                onClick={() => {
+                  setOpenedExcerpts((prev) =>
+                    prev.includes(excerpt['@id'])
+                      ? prev.filter((x) => x !== excerpt['@id'])
+                      : [...prev, excerpt['@id']]
+                  );
+                }}
+              >
+                <a
+                  href={`#${slugify(excerpt['@id'])}`}
+                  onClick={(e) => {
+                    setOpenedExcerpts((prev) =>
+                      prev.includes(excerpt['@id']) ? prev : [excerpt['@id']]
+                    );
+                    e.stopPropagation();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z" />
+                  </svg>
+                </a>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    width: '100%',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <span style={{ marginLeft: 12, marginRight: 12 }}>Excerpt {i + 1}</span>
+                  <ExcerptPreview>
+                    {getHighlightedText(
+                      excerpt.value,
+                      excerpt['@id'] === result.relevantExcerpt ? mainLabel : null
+                    )}
+                  </ExcerptPreview>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  style={{
+                    fill: '#333',
+                    transform: openedExcerpts.includes(excerpt['@id'])
+                      ? 'rotate(0deg)'
+                      : 'rotate(180deg)',
+                  }}
+                >
+                  <path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
+                </svg>
+              </ExcerptTitle>
+              {openedExcerpts.includes(excerpt['@id']) &&
+                renderExcerpt(
+                  excerpt.value,
+                  excerpt['@id'] === result.relevantExcerpt ? mainLabel : null
+                )}
+            </ExcerptContainer>
+            {i < excerpts.length - 1 && <Separator />}
+          </Element>
+        ))}
+      </Element>
+    );
+  };
+
+  const renderVisualObject = () => {
+    return (
+      <Columns>
+        <Primary>
+          <Element marginBottom={12}>
+            <h4>
+              Annotations |{' '}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={fragmentsFilter.length === visibleFragments.length}
+                  onChange={(ev) => {
+                    setVisibleFragments(ev.target.checked ? fragmentsFilter : []);
+                  }}
+                  style={{ verticalAlign: 'middle' }}
+                />{' '}
+                select all
+              </label>
+            </h4>
+            <Element display="flex" flexWrap="wrap">
+              {fragmentsFilter.map((fragment) => (
+                <Element
+                  key={fragment}
+                  onMouseEnter={() => {
+                    setHighlightedFragment(fragment);
+                  }}
+                  onMouseLeave={() => {
+                    setHighlightedFragment(undefined);
+                  }}
+                >
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={visibleFragments.includes(fragment)}
+                      onChange={() => {
+                        setVisibleFragments((prev) =>
+                          prev.includes(fragment)
+                            ? prev.filter((x) => x !== fragment)
+                            : [...prev, fragment]
+                        );
+                      }}
+                      style={{ verticalAlign: 'middle' }}
+                    />{' '}
+                    {fragment}
+                  </label>
+                </Element>
+              ))}
+            </Element>
+          </Element>
+
+          <Element>
+            <div style={{ position: 'relative' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={images[0]} alt="" />
+              {fragments
+                .filter((fragment) => visibleFragments.includes(fragment.label))
+                .map((fragment) => (
+                  <AnnotationContainer
+                    key={fragment['@id']}
+                    style={{
+                      left: parseFloat(fragment.x),
+                      top: parseFloat(fragment.y),
+                      width: parseFloat(fragment.width),
+                      height: parseFloat(fragment.height),
+                    }}
+                    highlighted={highlightedFragment === fragment.label}
+                  >
+                    <span
+                      style={{
+                        position: 'relative',
+                        top: -27,
+                        left: -4,
+                        padding: 4,
+                        lineHeight: '24px',
+                        fontSize: '14px',
+                        backgroundColor: '#fff',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {fragment.label}{' '}
+                      <span style={{ fontSize: '8px' }}>({parseFloat(fragment.score) * 100}%)</span>
+                    </span>
+                  </AnnotationContainer>
+                ))}
+            </div>
+          </Element>
+        </Primary>
+        <Secondary>
+          <Element marginBottom={24}>
+            <h4>Metadata</h4>
+            <MetadataList metadata={result} query={query} route={route} />
+          </Element>
+        </Secondary>
+      </Columns>
     );
   };
 
@@ -278,7 +541,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     const label = t(`project:metadata.${metaName}`, metaName);
 
     return (
-      <Panel.Row>
+      <Panel.Row key={metaName}>
         <Panel.Label>{label}</Panel.Label>
         <Panel.Value>{renderedValue}</Panel.Value>
       </Panel.Row>
@@ -298,174 +561,59 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     renderPanelRow('definedAs', result.adjective),
   ].filter((x) => x);
 
+  const images = [].concat(result.image).filter((x) => x);
+  const fragments = [].concat(result.fragment).filter((x) => x);
+
   return (
     <Layout>
       <PageTitle title={`${result.source?.label || mainLabel}`} />
       <Header />
       <Body>
-        <Columns>
-          <Primary>
-            <Element>
-              <OdeuropaPagination result={result} />
-              {renderTextualObject(result.source)}
+        <OdeuropaPagination result={result} style={{ marginTop: 24 }} />
+        <Element marginLeft={48} marginRight={48}>
+          {renderHeader()}
 
-              <Element display="flex" alignItems="center" justifyContent="space-between">
-                {session && (
-                  <SaveButton
-                    type={query.type}
-                    item={result}
-                    saved={isItemSaved}
-                    onChange={onItemSaveChange}
-                  />
+          {result.image ? renderVisualObject() : renderTextualObject()}
+
+          <Separator />
+
+          <Element>
+            {(smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) && (
+              <Element display="flex">
+                {smellEmissionRows.length > 0 && (
+                  <Panel>
+                    <Panel.Title>Smell Emission</Panel.Title>
+                    <Panel.Body>{smellEmissionRows}</Panel.Body>
+                  </Panel>
+                )}
+
+                {olfactoryExperienceRows.length > 0 && (
+                  <Panel>
+                    <Panel.Title>Olfactory Experience</Panel.Title>
+                    <Panel.Body>{olfactoryExperienceRows}</Panel.Body>
+                  </Panel>
                 )}
               </Element>
+            )}
+          </Element>
 
-              <Element marginBottom={12} display="flex">
-                <GraphLink uri={result['@graph']} icon label />{' '}
-                {route.details.showPermalink && (
-                  <small>
-                    (
-                    <a
-                      href={generatePermalink(result['@id'])}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('common:buttons.permalink')}
-                    </a>
-                    )
-                  </small>
-                )}
-                {result.source?.url && (
-                  <small style={{ marginLeft: 'auto', paddingLeft: 12 }}>
-                    {t('project:buttons.source')}{' '}
-                    <a href={result.source?.url} target="_blank" rel="noopener noreferrer">
-                      {result.source?.url}
-                    </a>
-                  </small>
-                )}
-              </Element>
-            </Element>
-
-            {result.source?.label?.length > MAX_TITLE_LENGTH &&
-              renderPanelRow('Full title', result.source.label)}
-
+          <Debug>
             <Separator />
 
-            {(smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) && (
-              <>
-                <Element marginBottom={24} display="flex">
-                  {smellEmissionRows.length > 0 && (
-                    <Panel>
-                      <Panel.Title>Smell Emission</Panel.Title>
-                      <Panel.Body>{smellEmissionRows}</Panel.Body>
-                    </Panel>
-                  )}
-
-                  {olfactoryExperienceRows.length > 0 && (
-                    <Panel>
-                      <Panel.Title>Olfactory Experience</Panel.Title>
-                      <Panel.Body>{olfactoryExperienceRows}</Panel.Body>
-                    </Panel>
-                  )}
-                </Element>
-
-                <Separator />
-              </>
-            )}
-
-            {fragments.map((fragment, i) => (
-              <Element key={fragment['@id']} id={slugify(fragment['@id'])}>
-                <ExcerptContainer
-                  active={openedExcerpts.includes(fragment['@id'])}
-                  style={{
-                    backgroundColor: result.relevantFragment === fragment['@id'] ? '#f5f5f5' : '',
-                  }}
-                >
-                  <ExcerptTitle
-                    onClick={() => {
-                      setOpenedExcerpts((prev) =>
-                        prev.includes(fragment['@id'])
-                          ? prev.filter((x) => x !== fragment['@id'])
-                          : [...prev, fragment['@id']]
-                      );
-                    }}
-                  >
-                    <a
-                      href={`#${slugify(fragment['@id'])}`}
-                      onClick={(e) => {
-                        setOpenedExcerpts((prev) =>
-                          prev.includes(fragment['@id']) ? prev : [fragment['@id']]
-                        );
-                        e.stopPropagation();
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z" />
-                      </svg>
-                    </a>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        width: '100%',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <span style={{ marginLeft: 12, marginRight: 12 }}>Excerpt {i + 1}</span>
-                      <ExcerptPreview>
-                        {getHighlightedText(
-                          fragment.value,
-                          fragment['@id'] === result.relevantFragment ? mainLabel : null
-                        )}
-                      </ExcerptPreview>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      style={{
-                        fill: '#333',
-                        transform: openedExcerpts.includes(fragment['@id'])
-                          ? 'rotate(0deg)'
-                          : 'rotate(180deg)',
-                      }}
-                    >
-                      <path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
-                    </svg>
-                  </ExcerptTitle>
-                  {openedExcerpts.includes(fragment['@id']) &&
-                    renderExcerpt(
-                      fragment.value,
-                      fragment['@id'] === result.relevantFragment ? mainLabel : null
-                    )}
-                </ExcerptContainer>
-                <Separator />
-              </Element>
-            ))}
-
-            <Debug>
-              <Metadata label="HTTP Parameters">
-                <pre>{JSON.stringify(query, null, 2)}</pre>
-              </Metadata>
-              <Metadata label="Query Result">
-                <pre>{JSON.stringify(result, null, 2)}</pre>
-              </Metadata>
-              <Metadata label="SPARQL Query">
-                <SPARQLQueryLink query={debugSparqlQuery}>
-                  {t('common:buttons.editQuery')}
-                </SPARQLQueryLink>
-                <pre>{debugSparqlQuery}</pre>
-              </Metadata>
-            </Debug>
-          </Primary>
-        </Columns>
+            <Metadata label="HTTP Parameters">
+              <pre>{JSON.stringify(query, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="Query Result">
+              <pre>{JSON.stringify(result, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={debugSparqlQuery}>
+                {t('common:buttons.editQuery')}
+              </SPARQLQueryLink>
+              <pre>{debugSparqlQuery}</pre>
+            </Metadata>
+          </Debug>
+        </Element>
       </Body>
       <Footer />
     </Layout>

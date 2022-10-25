@@ -2,7 +2,6 @@ const texts = require('./config/routes/texts');
 const smellSources = require('./config/routes/smell-sources');
 const odourCarriers = require('./config/routes/odour-carriers');
 const fragrantSpaces = require('./config/routes/fragrant-spaces');
-const visuals = require('./config/routes/visuals');
 
 module.exports = {
   debug: typeof process !== 'undefined' && process.env.NODE_ENV === 'development',
@@ -60,7 +59,6 @@ module.exports = {
   },
   routes: {
     texts: texts,
-    visuals: visuals,
     'smell-sources': smellSources,
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
