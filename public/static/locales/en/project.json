@@ -56,6 +56,10 @@
   "home": {
     "searchTitle": "Search any smell"
   },
+  "details": {
+    "textualResource": "Textual resource",
+    "visualResource": "Visual resource"
+  },
   "odeuropa-vocabulary": {
     "search": "Search",
     "presentIn": "Present In",

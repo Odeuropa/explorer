@@ -56,6 +56,10 @@
   "home": {
     "searchTitle": "Rechercher une odeur"
   },
+  "details": {
+    "textualResource": "Ressource textuelle",
+    "visualResource": "Ressource visuelle"
+  },
   "odeuropa-vocabulary": {
     "search": "Recherche",
     "presentIn": "Présent dans",

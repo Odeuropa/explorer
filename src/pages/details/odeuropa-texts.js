@@ -266,7 +266,9 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Element
           style={{ fontSize: '2rem', color: 'gray', fontWeight: 'bold', marginBottom: '1rem' }}
         >
-          {result.image ? 'Visual resource' : 'Textual resource'}
+          {result.image
+            ? t('project:details.visualResource')
+            : t('projects:details.textualResource')}
         </Element>
         <Element
           style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}
