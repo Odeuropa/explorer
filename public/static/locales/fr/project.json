@@ -45,7 +45,8 @@
     "museum": "Musée"
   },
   "buttons": {
-    "source": "Source :"
+    "source": "Source :",
+    "seeMore": "En savoir plus"
   },
   "display": {
     "showAs": "Affichage",

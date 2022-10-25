@@ -254,7 +254,7 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
           as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
           passHref
         >
-          <a onClick={onSeeMore}>See more</a>
+          <a onClick={onSeeMore}>{t('project:buttons.seeMore')}</a>
         </Link>
       </Footer>
     </Container>
