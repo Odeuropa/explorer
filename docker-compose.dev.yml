@@ -8,46 +8,46 @@ services:
     ports:
       - '3001:3001'
     volumes:
-      - /usr/src/app/node_modules
       - /usr/src/app/.next
+      - /usr/src/app/node_modules
       - ./.env:/usr/src/app/.env
-      - ./config.js:/usr/src/app/config.js
       - ./config:/usr/src/app/config
-      - ./theme.js:/usr/src/app/theme.js
+      - ./config.js:/usr/src/app/config.js
       - ./public/fonts/FuturaStdBook.woff:/usr/src/app/public/fonts/FuturaStdBook.woff
       - ./public/fonts/Garamond.woff:/usr/src/app/public/fonts/Garamond.woff
-      - ./public/images/odeuropa-homepage/:/usr/src/app/public/images/odeuropa-homepage/
-      - ./public/images/odeuropa-vocabularies/:/usr/src/app/public/images/odeuropa-vocabularies/
       - ./public/images/eu-logo.png:/usr/src/app/public/images/eu-logo.png
-      - ./public/images/footer.png:/usr/src/app/public/images/footer.png
-      - ./public/images/logo.png:/usr/src/app/public/images/logo.png
-      - ./public/images/placeholder.jpg:/usr/src/app/public/images/placeholder.jpg
-      - ./public/images/thumbnail.jpg:/usr/src/app/public/images/thumbnail.jpg
       - ./public/images/favicon.png:/usr/src/app/public/images/favicon.png
       - ./public/images/flowers.jpg:/usr/src/app/public/images/flowers.jpg
+      - ./public/images/footer.png:/usr/src/app/public/images/footer.png
       - ./public/images/horse.jpg:/usr/src/app/public/images/horse.jpg
-      - ./public/images/tea.jpg:/usr/src/app/public/images/tea.jpg
-      - ./public/images/perfume.jpg:/usr/src/app/public/images/perfume.jpg
-      - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
-      - ./public/images/pages/odour-carriers.jpg:/usr/src/app/public/images/pages/odour-carriers.jpg
+      - ./public/images/logo.png:/usr/src/app/public/images/logo.png
+      - ./public/images/odeuropa-homepage/:/usr/src/app/public/images/odeuropa-homepage/
+      - ./public/images/odeuropa-vocabularies/:/usr/src/app/public/images/odeuropa-vocabularies/
       - ./public/images/pages/fragrant-spaces.jpg:/usr/src/app/public/images/pages/fragrant-spaces.jpg
-      - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
+      - ./public/images/pages/odour-carriers.jpg:/usr/src/app/public/images/pages/odour-carriers.jpg
+      - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
+      - ./public/images/perfume.jpg:/usr/src/app/public/images/perfume.jpg
+      - ./public/images/placeholder.jpg:/usr/src/app/public/images/placeholder.jpg
+      - ./public/images/tea.jpg:/usr/src/app/public/images/tea.jpg
+      - ./public/images/thumbnail.jpg:/usr/src/app/public/images/thumbnail.jpg
       - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
-      - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
+      - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
       - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
-      - ./src/pages/index.js:/usr/src/app/src/pages/index.js
-      - ./src/pages/browse.js:/usr/src/app/src/pages/browse.js
-      - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
-      - ./src/pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
-      - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
-      - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
-      - ./src/pages/api/odeuropa/vocabulary-wordcloud.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-wordcloud.js
-      - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js
-      - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
+      - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
       - ./src/components/OdeuropaPagination.js:/usr/src/app/src/components/OdeuropaPagination.js
       - ./src/components/OdeuropaTimeline.js:/usr/src/app/src/components/OdeuropaTimeline.js
       - ./src/helpers/odeuropa.js:/usr/src/app/src/helpers/odeuropa.js
+      - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js
+      - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
+      - ./src/pages/api/odeuropa/vocabulary-wordcloud.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-wordcloud.js
+      - ./src/pages/browse.js:/usr/src/app/src/pages/browse.js
+      - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
+      - ./src/pages/details/odeuropa-visuals.js:/usr/src/app/src/pages/details/odeuropa-visuals.js
+      - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
+      - ./src/pages/index.js:/usr/src/app/src/pages/index.js
+      - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
+      - ./theme.js:/usr/src/app/theme.js
     environment:
       - NODE_ENV=development
       - PORT=3001
