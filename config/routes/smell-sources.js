@@ -87,9 +87,13 @@ module.exports = {
 
         {
           OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(DISTINCT ?object) AS ?count) WHERE {
-              ?emission od:F3_had_source ?object .
-              ?object crm:P137_exemplifies ?id .
+            SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
+              {
+                # Textual items
+                ?emission od:F1_generated ?item .
+                ?emission od:F3_had_source ?object .
+                ?object crm:P137_exemplifies ?id .
+              }
             }
             GROUP BY ?id
           }

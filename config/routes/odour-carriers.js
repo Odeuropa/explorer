@@ -91,10 +91,20 @@ module.exports = {
 
         {
           OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(DISTINCT ?object) AS ?count) WHERE {
-              ?source crm:P67_refers_to ?emission .
-              ?source crm:P138_represents ?object .
-              ?object crm:P137_exemplifies ?id .
+            SELECT DISTINCT ?id (COUNT(DISTINCT ?smell) AS ?count) WHERE {
+              ?emission od:F1_generated ?smell .
+              {
+                # Visual items
+                ?source crm:P67_refers_to ?emission .
+                ?source crm:P138_represents ?object .
+                ?object crm:P137_exemplifies ?id .
+              }
+              UNION
+              {
+                # Textual items
+                ?emission od:F3_had_source ?object .
+                ?object crm:P137_exemplifies ?id .
+              }
             }
             GROUP BY ?id
           }
@@ -247,7 +257,7 @@ module.exports = {
           ],
           $where: [
             `
-            ?emission od:F4_had_carrier/crm:P137_exemplifies ?id .
+            ?emission od:F3_had_source/crm:P137_exemplifies ?id .
             ?emission od:F1_generated ?smell .
             ?smell crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object .
             {

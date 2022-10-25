@@ -90,9 +90,18 @@ module.exports = {
 
         {
           OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(DISTINCT ?object) AS ?count) WHERE {
-              ?emission crm:P7_took_place_at ?object .
-              ?object crm:P137_exemplifies ?id .
+            SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
+              ?place crm:P137_exemplifies ?id .
+              {
+                  # Visual items use schema:about
+                  ?item schema:about ?place .
+              }
+              UNION
+              {
+                  # Textual items use emissions
+                  ?emission crm:P7_took_place_at ?place .
+                  ?emission od:F1_generated ?item .
+              }
             }
             GROUP BY ?id
           }
@@ -180,8 +189,8 @@ module.exports = {
             `
             ?emission od:F1_generated ?smell .
             ?source crm:P67_refers_to ?emission .
-            ?source crm:P138_represents ?object .
-            ?object crm:P137_exemplifies ?id .
+            ?source schema:about ?place .
+            ?place crm:P137_exemplifies ?id .
             ?source schema:image ?imageUrl .
             FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
             {
