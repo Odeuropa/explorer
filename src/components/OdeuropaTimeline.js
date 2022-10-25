@@ -37,7 +37,7 @@ const Chart = styled.ul`
   grid-auto-columns: 20px;
   align-items: end;
   list-style-type: none;
-  height: 150px;
+  height: 100px;
 `;
 
 const Item = styled.li`
