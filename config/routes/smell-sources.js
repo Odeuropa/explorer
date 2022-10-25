@@ -6,7 +6,7 @@ module.exports = {
     view: 'odeuropa-vocabulary-details',
     showPermalink: false,
     excludedMetadata: [],
-    route: 'texts',
+    route: 'smells',
     query: ({ language }) => ({
       $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning Wikidata entities
       '@graph': [

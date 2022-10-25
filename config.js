@@ -1,4 +1,4 @@
-const texts = require('./config/routes/texts');
+const smells = require('./config/routes/smells');
 const smellSources = require('./config/routes/smell-sources');
 const odourCarriers = require('./config/routes/odour-carriers');
 const fragrantSpaces = require('./config/routes/fragrant-spaces');
@@ -19,7 +19,7 @@ module.exports = {
     logo: ['/images/eu-logo.png', '/images/footer.png'],
   },
   search: {
-    route: 'texts',
+    route: 'smells',
     allowTextSearch: true,
     allowImageSearch: false,
     placeholderImage: '/images/placeholder.jpg',
@@ -58,7 +58,7 @@ module.exports = {
     permalinkUrl: (uri) => `https://data.odeuropa.eu/resource?uri=${uri}`,
   },
   routes: {
-    texts: texts,
+    smells,
     'smell-sources': smellSources,
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
