@@ -94,7 +94,7 @@ module.exports = {
               ?place crm:P137_exemplifies ?id .
               {
                   # Visual items use schema:about
-                  ?item schema:about ?place .
+                  ?item crm:P138_represents|schema:about ?place .
               }
               UNION
               {

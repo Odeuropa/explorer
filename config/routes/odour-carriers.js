@@ -96,7 +96,7 @@ module.exports = {
               {
                 # Visual items
                 ?source crm:P67_refers_to ?emission .
-                ?source crm:P138_represents ?object .
+                ?source crm:P138_represents|schema:about ?object .
                 ?object crm:P137_exemplifies ?id .
               }
               UNION
