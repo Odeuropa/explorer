@@ -14,17 +14,19 @@ export default withRequestValidation({
     return;
   }
 
-  const visualsQuery = JSON.parse(
-    JSON.stringify(
-      getQueryObject(route.plugins['odeuropa-vocabulary'].visuals.query, {
-        language: query.locale,
-      })
-    )
+  const plugin = route.plugins['odeuropa-vocabulary'].visuals;
+  const { baseWhere, key } = plugin;
+  const originalRoute = config.routes[plugin.route];
+
+  const originalQuery = JSON.parse(
+    JSON.stringify(getQueryObject(originalRoute.query, { language: query.locale }))
   );
-  if (!visualsQuery.$values) {
-    visualsQuery.$values = {};
-  }
-  visualsQuery.$values['?id'] = [query.id];
+
+  const visualsQuery = {
+    ...originalQuery,
+    $where: [...baseWhere, ...originalQuery.$where],
+    $values: { [`?${key || '_vocab'}`]: [query.id] },
+  };
 
   const visualsQueryRes = await SparqlClient.query(visualsQuery, {
     endpoint: config.api.endpoint,

@@ -172,175 +172,21 @@ module.exports = {
         }),
       },
       visuals: {
-        query: () => ({
-          '@graph': [
-            {
-              '@id': '?smell',
-              label: '?imageLabel',
-              image: '?imageUrl',
-              time: {
-                '@id': '?time',
-                label: '?timeLabel',
-                begin: '?timeBegin',
-                end: '?timeEnd',
-              },
-            },
-          ],
-          $where: [
-            `
-            ?emission od:F1_generated ?smell .
-            ?source crm:P67_refers_to ?emission .
-            ?source crm:P138_represents ?object .
-            ?object crm:P137_exemplifies ?id .
-            ?source schema:image ?imageUrl .
-            FILTER(STRSTARTS(STR(?imageUrl), "https://data.odeuropa.eu"))
-            {
-              OPTIONAL {
-                ?source rdfs:label ?imageLabel .
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?source schema:dateCreated ?time .
-                ?time rdfs:label ?timeLabel .
-                {
-                  OPTIONAL {
-                    ?time time:hasBeginning ?timeBegin .
-                  }
-                }
-                UNION
-                {
-                  OPTIONAL {
-                    ?time time:hasEnd ?timeEnd .
-                  }
-                }
-              }
-            }
-            `,
-          ],
-          $langTag: 'hide',
-        }),
+        route: 'smells',
+        baseWhere: [
+          '?emission od:F1_generated ?id',
+          '?source crm:P67_refers_to ?emission',
+          '?source crm:P138_represents|schema:about ?object',
+          '?object crm:P137_exemplifies ?_vocab',
+        ],
       },
       texts: {
-        query: ({ language }) => ({
-          '@graph': [
-            {
-              '@id': '?smell',
-              label: '?label',
-              smellSource: {
-                '@id': '?smellSource',
-                label: '?smellSourceLabel',
-              },
-              carrier: {
-                '@id': '?carrier',
-                label: '?carrierLabel',
-                exemplifies: '?carrierExemplifies',
-              },
-              time: {
-                '@id': '?time',
-                label: '?timeLabel',
-                begin: '?timeBegin',
-                end: '?timeEnd',
-              },
-              place: {
-                '@id': '?place',
-                label: '?placeLabel',
-              },
-              adjective: '?adjective',
-              emotion: {
-                '@id': '?emotion',
-                label: '?emotionLabel',
-                type: '?emotionType',
-              },
-            },
-          ],
-          $where: [
-            `
-            ?emission od:F3_had_source/crm:P137_exemplifies ?id .
-            ?emission od:F1_generated ?smell .
-            ?smell crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object .
-            {
-              ?smell rdfs:label ?label .
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
-                ?smellSource skos:prefLabel ?smellSourceLabel .
-                FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?emission od:F4_had_carrier ?carrier .
-                ?carrier rdfs:label ?carrierLabel .
-                OPTIONAL {
-                  ?carrier crm:P137_exemplifies ?carrierExemplifies .
-                }
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?emission time:hasTime ?time .
-                ?time rdfs:label ?timeLabel .
-                {
-                  OPTIONAL {
-                    ?time time:hasBeginning ?timeBegin .
-                  }
-                }
-                UNION
-                {
-                  OPTIONAL {
-                    ?time time:hasEnd ?timeEnd .
-                  }
-                }
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?experience od:F2_perceived ?smell .
-                {
-                  OPTIONAL {
-                    ?experience od:F5_involved_gesture ?gesture .
-                    ?gesture rdfs:label ?gestureLabel .
-                    FILTER(LANG(?gestureLabel) = "${language}" || LANG(?gestureLabel) = "")
-                  }
-                }
-                UNION
-                {
-                  OPTIONAL {
-                    ?experience crm:P7_took_place_at ?place .
-                    ?place rdfs:label ?placeLabel .
-                  }
-                }
-                UNION
-                {
-                  OPTIONAL {
-                    ?emotion reo:readP27 ?experience .
-                    OPTIONAL {
-                      ?emotion rdfs:label ?emotionLabel .
-                      ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
-                    }
-                  }
-                }
-              }
-            }
-            UNION
-            {
-              OPTIONAL {
-                ?assignment a crm:E13_Attribute_Assignment .
-                ?assignment crm:P141_assigned/rdfs:label ?adjective .
-                ?assignment crm:P140_assigned_attribute_to ?smell .
-              }
-            }
-            `,
-          ],
-          $langTag: 'hide',
-        }),
+        route: 'smells',
+        baseWhere: [
+          '?emission od:F3_had_source/crm:P137_exemplifies ?_vocab',
+          '?emission od:F1_generated ?id',
+          '?id crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object',
+        ],
       },
     },
   },
