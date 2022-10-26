@@ -347,25 +347,31 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           />
         )}
 
-        <Element display="flex" padding="1em">
-          <Element minWidth={350}>
-            {typeof wordCloud === 'undefined' && (
-              <Element display="flex" alignItems="center">
-                <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-                {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
-              </Element>
-            )}
-            {wordCloud === null && (
-              <span style={{ color: 'red' }}>
-                {t('project:odeuropa-vocabulary-details.wordCloud.error')}
-              </span>
-            )}
-            {wordCloud && (
-              <Element display="flex" alignItems="center" justifyContent="center" height="100%">
-                <TagCloud minSize={8} maxSize={35} tags={wordCloud} />
-              </Element>
-            )}
-          </Element>
+        <Element display="flex" alignItems="center" padding="1em">
+          {typeof wordCloud === 'undefined' && (
+            <Element display="flex" alignItems="center" paddingRight="1em">
+              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+              {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+            </Element>
+          )}
+          {wordCloud === null && (
+            <span style={{ color: 'red', paddingRight: '1em' }}>
+              {t('project:odeuropa-vocabulary-details.wordCloud.error')}
+            </span>
+          )}
+          {wordCloud && (
+            <Element
+              display="flex"
+              justifyContent="center"
+              width="25%"
+              height="100%"
+              paddingRight="1em"
+              style={{ textAlign: 'center' }}
+            >
+              <TagCloud minSize={8} maxSize={35} tags={wordCloud} />
+            </Element>
+          )}
+
           {mapMarkers.length > 0 && (
             <Element flex="1" height={500}>
               <OdeuropaMap markers={mapMarkers} />
