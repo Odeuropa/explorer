@@ -37,5 +37,5 @@ export default withRequestValidation({
     wordCloud.push(...removeEmptyObjects(wordCloudQueryRes['@graph'][0]).word);
   }
 
-  res.status(500).json(wordCloud);
+  res.status(200).json(wordCloud);
 });
