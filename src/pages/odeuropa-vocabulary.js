@@ -22,44 +22,7 @@ import SparqlClient from '@helpers/sparql';
 import { getQueryObject, removeEmptyObjects, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import config from '~/config';
-import theme from '~/theme';
-
-const selectTheme = (base) => ({
-  ...base,
-  ...theme.select,
-  colors: {
-    ...base.colors,
-    primary: '#000',
-    neutral0: '#eee',
-    primary25: '#ddd',
-    ...theme.select?.colors,
-  },
-});
-
-const selectStyles = {
-  control: (provided) => ({
-    ...provided,
-    border: 'none',
-    border: '1px solid #b9d59b',
-    backgroundColor: '#fff',
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    color: 'hsl(0,0%,20%)',
-    '&:hover': {
-      color: 'hsl(0,0%,20%)',
-    },
-  }),
-  option: (base) => ({
-    ...base,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  }),
-  placeholder: (base) => ({
-    ...base,
-    color: '#b9d59b',
-  }),
-};
+import { selectStyles, selectTheme } from '~/theme';
 
 const Hero = styled.div`
   width: 100%;

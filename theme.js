@@ -41,9 +41,6 @@ const theme = {
     minHeight: '150px',
     backgroundColor: '#464C5A',
   },
-  select: {
-    borderRadius: '16px',
-  },
   components: {
     Header: {
       Container: {
@@ -91,6 +88,54 @@ const theme = {
       },
     },
   },
+};
+
+export const selectTheme = (base) => ({
+  ...base,
+  ...theme.select,
+  colors: {
+    ...base.colors,
+    primary: '#000',
+    neutral0: '#eee',
+    primary25: '#ddd',
+    ...theme.select?.colors,
+  },
+});
+
+export const selectStyles = {
+  control: (provided) => ({
+    ...provided,
+    border: 'none',
+    border: '1px solid #b9d59b',
+    borderRadius: 16,
+    backgroundColor: '#fff',
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: 'hsl(0,0%,20%)',
+    '&:hover': {
+      color: 'hsl(0,0%,20%)',
+    },
+  }),
+  menu: (base) => ({
+    ...base,
+    borderRadius: 16,
+  }),
+  menuList: (base) => ({
+    ...base,
+    paddingTop: 0,
+    paddingBottom: 0,
+    borderRadius: 16,
+  }),
+  option: (base) => ({
+    ...base,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: '#b9d59b',
+  }),
 };
 
 export default theme;

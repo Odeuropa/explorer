@@ -31,22 +31,9 @@ import AppContext from '@helpers/context';
 import { search, getFilters } from '@pages/api/search';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import config from '~/config';
-import mainTheme from '~/theme';
+import { selectStyles, selectTheme } from '~/theme';
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
-
-const selectTheme = (theme) => ({
-  ...theme,
-  borderRadius: 0,
-  ...mainTheme.select,
-  colors: {
-    ...theme.colors,
-    primary: '#000',
-    neutral0: '#eee',
-    primary25: '#ddd',
-    ...mainTheme.select?.colors,
-  },
-});
 
 const StyledSelect = styled(Select)`
   min-width: 200px;
@@ -458,6 +445,7 @@ const BrowsePage = ({ initialData, filters }) => {
                   options={displayOptions}
                   value={displayOptions.find((o) => o.value === query.display) || displayOptions[0]}
                   onChange={onDisplayChange}
+                  styles={selectStyles}
                   theme={selectTheme}
                 />
               </Option>
@@ -471,6 +459,7 @@ const BrowsePage = ({ initialData, filters }) => {
                   options={sortOptions}
                   value={sortOptions.find((o) => o.value === query.sort)}
                   onChange={onSortChange}
+                  styles={selectStyles}
                   theme={selectTheme}
                 />
               </Option>
