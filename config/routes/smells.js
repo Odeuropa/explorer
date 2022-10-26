@@ -316,6 +316,14 @@ module.exports = {
           location: {
             '@id': '?sourceLocation',
             label: '?sourceLocationName',
+            lat: '?sourceLocationLat',
+            long: '?sourceLocationLong',
+          },
+          createdLocation: {
+            '@id': '?sourceCreatedLocation',
+            label: '?sourceCreatedLocationName',
+            lat: '?sourceCreatedLocationLat',
+            long: '?sourceCreatedLocationLong',
           },
         },
         smellSource: {
@@ -414,6 +422,21 @@ module.exports = {
         OPTIONAL {
           ?source crm:P53_has_former_or_current_location ?sourceLocation .
           ?sourceLocation gn:name ?sourceLocationName .
+          OPTIONAL {
+            ?sourceLocation wgs:lat ?sourceLocationLat .
+            ?sourceLocation wgs:long ?sourceLocationLong .
+          }
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:locationCreated ?sourceCreatedLocation .
+          ?sourceCreatedLocation gn:name ?sourceCreatedLocationName .
+          OPTIONAL {
+            ?sourceCreatedLocation wgs:lat ?sourceCreatedLocationLat .
+            ?sourceCreatedLocation wgs:long ?sourceCreatedLocationLong .
+          }
         }
       }
       UNION

@@ -53,6 +53,7 @@ module.exports = {
       skos: 'http://www.w3.org/2004/02/skos/core#',
       time: 'http://www.w3.org/2006/time#',
       voc: 'http://data.odeuropa.eu/vocabulary/',
+      wgs: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
       xsd: 'http://www.w3.org/2001/XMLSchema#',
     },
     permalinkUrl: (uri) => `https://data.odeuropa.eu/resource?uri=${uri}`,

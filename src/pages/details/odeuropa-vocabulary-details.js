@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -22,6 +23,7 @@ import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
+
 import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { absoluteUrl, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
@@ -93,6 +95,8 @@ const ShowMore = styled.div`
   }
 `;
 
+const OdeuropaMap = dynamic(() => import('@components/OdeuropaMap'), { ssr: false });
+
 const TIMELINE_INTERVAL = 20; // years
 
 const filterItemWithDate = (item, targetDate) => {
@@ -112,6 +116,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [filteredTexts, setFilteredTexts] = useState();
   const [filteredVisuals, setFilteredVisuals] = useState();
   const [timelineDates, setTimelineDates] = useState({});
+  const [mapMarkers, setMapMarkers] = useState([]);
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
   const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
@@ -135,6 +140,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     }, timelineDates);
 
     setTimelineDates(newTimelineDates);
+  };
+
+  const updateMapMarkersWithResults = (results) => {
+    if (!Array.isArray(results)) return;
+
+    const markers = results
+      .map((result) =>
+        []
+          .concat(result.source?.createdLocation, result.source?.location)
+          .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
+          .filter((x) => x)
+      )
+      .flat();
+
+    setMapMarkers((prevMarkers) => [...prevMarkers, ...markers]);
   };
 
   useEffect(() => {
@@ -167,6 +187,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       ).json();
       setTexts(results.error ? null : results);
       updateTimelineWithResults(results);
+      updateMapMarkersWithResults(results);
     })();
 
     (async () => {
@@ -175,6 +196,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       ).json();
       setVisuals(results.error ? null : results);
       updateTimelineWithResults(results);
+      updateMapMarkersWithResults(results);
     })();
   }, [result]);
 
@@ -325,19 +347,30 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           />
         )}
 
-        <Element style={{ padding: '1em', width: 350, textAlign: 'center' }}>
-          {typeof wordCloud === 'undefined' && (
-            <Element display="flex" alignItems="center">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-              {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+        <Element display="flex" padding="1em">
+          <Element minWidth={350}>
+            {typeof wordCloud === 'undefined' && (
+              <Element display="flex" alignItems="center">
+                <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+                {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+              </Element>
+            )}
+            {wordCloud === null && (
+              <span style={{ color: 'red' }}>
+                {t('project:odeuropa-vocabulary-details.wordCloud.error')}
+              </span>
+            )}
+            {wordCloud && (
+              <Element display="flex" alignItems="center" justifyContent="center" height="100%">
+                <TagCloud minSize={8} maxSize={35} tags={wordCloud} />
+              </Element>
+            )}
+          </Element>
+          {mapMarkers.length > 0 && (
+            <Element flex="1" height={500}>
+              <OdeuropaMap markers={mapMarkers} />
             </Element>
           )}
-          {wordCloud === null && (
-            <span style={{ color: 'red' }}>
-              {t('project:odeuropa-vocabulary-details.wordCloud.error')}
-            </span>
-          )}
-          {wordCloud && <TagCloud minSize={8} maxSize={35} tags={wordCloud} />}
         </Element>
 
         <Element style={{ padding: '1em', color: 'gray' }}>

@@ -4,7 +4,12 @@ services:
     build:
       context: /Users/thibaultehrhart/Projects/D2KLab/explorer
       dockerfile: ./Dockerfile
-    command: npm run dev
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm install react-leaflet @changey/react-leaflet-markercluster leaflet-gesture-handling
+        npm run dev
     ports:
       - '3001:3001'
     volumes:
@@ -35,6 +40,7 @@ services:
       - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
+      - ./src/components/OdeuropaMap.js:/usr/src/app/src/components/OdeuropaMap.js
       - ./src/components/OdeuropaPagination.js:/usr/src/app/src/components/OdeuropaPagination.js
       - ./src/components/OdeuropaTimeline.js:/usr/src/app/src/components/OdeuropaTimeline.js
       - ./src/helpers/odeuropa.js:/usr/src/app/src/helpers/odeuropa.js
