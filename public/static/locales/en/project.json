@@ -34,6 +34,7 @@
     "odour-carriers": "Objects and substances which are recognised to carry an odour"
   },
   "filters": {
+    "type": "",
     "source": "Smell Source",
     "carrier": "Carrier",
     "adjective": "Adjective",

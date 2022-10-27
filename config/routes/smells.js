@@ -513,6 +513,32 @@ module.exports = {
   }),
   filters: [
     {
+      id: 'type',
+      isToggle: true,
+      options: [
+        { label: 'In text', value: 'text' },
+        { label: 'In images', value: 'image' },
+        { label: 'Both', value: '' },
+      ],
+      defaultOption: 2,
+      whereFunc: (val) => {
+        if (val === 'text') {
+          return [
+            '?emission od:F1_generated ?id',
+            '?source crm:P67_refers_to ?emission',
+            '?source a crm:E33_Linguistic_Object',
+          ];
+        } else if (val === 'image') {
+          return [
+            '?emission od:F1_generated ?id',
+            '?source crm:P67_refers_to ?emission',
+            '?source a crm:E36_Visual_Item',
+          ];
+        }
+        return [];
+      },
+    },
+    {
       id: 'time',
       isMulti: true,
       isSortable: {
@@ -620,7 +646,7 @@ module.exports = {
         ],
         $langTag: 'hide',
       }),
-      whereFunc: (index) => [
+      whereFunc: (_val, index) => [
         '?emission od:F1_generated ?id',
         `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
       ],

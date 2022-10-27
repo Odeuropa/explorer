@@ -34,6 +34,7 @@
     "odour-carriers": "Objets et substances reconnus comme porteurs d'une odeur"
   },
   "filters": {
+    "type": "",
     "source": "Source de l'odeur",
     "carrier": "Porteur",
     "adjective": "Adjectif",
