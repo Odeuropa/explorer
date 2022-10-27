@@ -121,7 +121,7 @@ const PaginationContainer = styled.div`
       display: inline-block;
       padding: 7px 12px;
       transition: color 250ms cubic-bezier(0.23, 1, 0.32, 1) 0s;
-      color: ${({ theme }) => theme.colors.primary};
+      color: ${({ theme }) => theme.colors.link};
 
       &:hover {
         font-weight: 700;
@@ -132,7 +132,7 @@ const PaginationContainer = styled.div`
     }
 
     &.active {
-      background-color: ${({ theme }) => theme.colors.primary};
+      background-color: #333;
       a {
         color: #fff;
       }

@@ -22,8 +22,9 @@ const theme = {
   colors: {
     text: '#333',
     background: '#fff',
-    primary: '#464C5A',
-    secondary: '#144168',
+    primary: '#B9D59B',
+    secondary: '#333',
+    link: '#464C5A',
     linkHover: '#0d3e50',
     light: '#87ceeb',
   },
@@ -86,6 +87,35 @@ const theme = {
         width: 350,
         backgroundColor: '#D6CFE1',
       },
+      ClearButton: {
+        backgroundColor: '#E3E3E3',
+        color: '#333',
+        fontSize: '1.2em',
+        borderRadius: 16,
+        '&:hover': {
+          color: 'inherit',
+        },
+      },
+      FilterButton: {
+        backgroundColor: '#b9d59b',
+        color: '#333',
+        fontSize: '1.2em',
+        borderRadius: 16,
+        '&:hover': {
+          color: 'inherit',
+        },
+      },
+      Field: {
+        label: {
+          color: '#333',
+          fontSize: '1.1em',
+        },
+      },
+      StyledInput: {
+        border: '1px solid #333',
+        borderRadius: 16,
+        backgroundColor: '#fff',
+      },
     },
   },
 };
@@ -105,7 +135,6 @@ export const selectTheme = (base) => ({
 export const selectStyles = {
   control: (provided) => ({
     ...provided,
-    border: 'none',
     border: '1px solid #b9d59b',
     borderRadius: 16,
     backgroundColor: '#fff',
@@ -136,6 +165,44 @@ export const selectStyles = {
     ...base,
     color: '#b9d59b',
   }),
+};
+
+theme.sidebar = {
+  selectTheme,
+  selectStyles: {
+    control: (provided) => ({
+      ...provided,
+      borderRadius: 16,
+      backgroundColor: '#fff',
+      fontSize: '0.9em',
+      border: '1px solid #333',
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: 'hsl(0,0%,20%)',
+      '&:hover': {
+        color: 'hsl(0,0%,20%)',
+      },
+    }),
+    menu: (base) => ({
+      ...base,
+      borderRadius: 16,
+    }),
+    menuList: (base) => ({
+      ...base,
+      paddingTop: 0,
+      paddingBottom: 0,
+      borderRadius: 16,
+    }),
+    option: (base) => ({
+      ...base,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    }),
+    placeholder: (base) => ({
+      ...base,
+    }),
+  },
 };
 
 export default theme;
