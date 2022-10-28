@@ -145,16 +145,24 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const updateMapMarkersWithResults = (results) => {
     if (!Array.isArray(results)) return;
 
-    const markers = results
-      .map((result) =>
-        []
-          .concat(result.source?.createdLocation, result.source?.location)
-          .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
-          .filter((x) => x)
-      )
-      .flat();
+    setMapMarkers((prevMarkers) => {
+      const flatMarkers = results
+        .map((result) =>
+          []
+            .concat(result.source?.createdLocation, result.source?.location)
+            .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
+            .filter((x) => x)
+        )
+        .flat();
+      flatMarkers.push(...prevMarkers);
 
-    setMapMarkers((prevMarkers) => [...prevMarkers, ...markers]);
+      const markers = flatMarkers.reduce((acc, cur) => {
+        acc[cur.id] = cur;
+        return acc;
+      }, {});
+
+      return Object.values(markers);
+    });
   };
 
   useEffect(() => {
