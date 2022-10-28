@@ -51,6 +51,7 @@ services:
       - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
       - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
       - ./src/pages/index.js:/usr/src/app/src/pages/index.js
+      - ./src/pages/lists/[listId].js:/usr/src/app/src/pages/lists/[listId].js
       - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
       - ./theme.js:/usr/src/app/theme.js
     environment:
