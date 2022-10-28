@@ -609,33 +609,25 @@ module.exports = {
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?place',
-            label: '?placeLabel',
+            '@id': '?country',
+            label: '?countryName',
           },
         ],
         $where: [
           `
-          {
-            SELECT DISTINCT ?place WHERE {
-              ?id a od:L11_Smell .
-              ?emission od:F1_generated ?id .
-              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-
-              ?experience od:F2_perceived ?id .
-              ?experience crm:P7_took_place_at ?place .
-            }
-          }
-          ?place rdfs:label ?placeLabel .
-          FILTER(LANG(?placeLabel) = "${language}" || LANG(?placeLabel) = "")
+          ?id a od:L11_Smell .
+          ?experience od:F2_perceived ?id .
+          ?experience crm:P7_took_place_at / gn:parentCountry ?country .
+          ?country gn:name ?countryName .
           `,
         ],
         $langTag: 'hide',
       }),
       whereFunc: () => [
         '?experience od:F2_perceived ?id',
-        '?experience crm:P7_took_place_at ?place',
+        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
       ],
-      filterFunc: (val) => `?place = <${val}>`,
+      filterFunc: (val) => `?placeCountry = <${val}>`,
     },
     {
       id: 'source',

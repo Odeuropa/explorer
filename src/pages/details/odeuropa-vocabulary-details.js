@@ -258,7 +258,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       <Header />
       <Body>
         <Element>
-          <div style={{ display: 'flex', padding: '1em' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', padding: '1em' }}>
             <div style={{ marginRight: '2em' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -296,34 +296,36 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             {related.length > 0 && (
               <div
                 style={{
+                  flex: '1 1 300px',
                   display: 'flex',
                   flexDirection: 'column',
                   marginLeft: 'auto',
                   marginRight: '1em',
                   marginTop: '2.5em',
-                  width: 300,
                   textAlign: 'right',
                 }}
               >
                 <div style={{ textTransform: 'uppercase', color: 'gray', fontWeight: 'bold' }}>
                   {t('project:odeuropa-vocabulary-details.related')}
                 </div>
-                <div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                   {related.map((rel, i) => (
-                    <Link
-                      key={rel['@id']}
-                      href={`/details/${route.details.view}?id=${encodeURIComponent(
-                        uriToId(rel['@id'], {
-                          base: route.uriBase,
-                        })
-                      )}&type=${query.type}`}
-                      passHref
-                    >
-                      <a style={{ fontWeight: 'bold' }}>
-                        <span style={{ margin: '0 1em' }}>{rel.label}</span>
-                        {i < related.length - 1 && <>&middot;</>}
-                      </a>
-                    </Link>
+                    <>
+                      <Link
+                        key={rel['@id']}
+                        href={`/details/${route.details.view}?id=${encodeURIComponent(
+                          uriToId(rel['@id'], {
+                            base: route.uriBase,
+                          })
+                        )}&type=${query.type}`}
+                        passHref
+                      >
+                        <a style={{ fontWeight: 'bold' }}>
+                          <span style={{ margin: '0 1em' }}>{rel.label}</span>
+                        </a>
+                      </Link>
+                      {i < related.length - 1 && <>&middot;</>}
+                    </>
                   ))}
                 </div>
               </div>
