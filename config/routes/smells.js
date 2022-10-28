@@ -260,6 +260,8 @@ module.exports = {
                 ?emotion reo:readP27 ?experience .
                 OPTIONAL {
                   ?emotion rdfs:label ?emotionLabel .
+                }
+                OPTIONAL {
                   ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
                 }
               }
