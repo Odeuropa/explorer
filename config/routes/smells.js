@@ -523,17 +523,9 @@ module.exports = {
       defaultOption: 2,
       whereFunc: (val) => {
         if (val === 'text') {
-          return [
-            '?emission od:F1_generated ?id',
-            '?source crm:P67_refers_to ?emission',
-            '?source a crm:E33_Linguistic_Object',
-          ];
+          return ['?source crm:P67_refers_to ?id', '?source a crm:E33_Linguistic_Object'];
         } else if (val === 'image') {
-          return [
-            '?emission od:F1_generated ?id',
-            '?source crm:P67_refers_to ?emission',
-            '?source a crm:E36_Visual_Item',
-          ];
+          return ['?source crm:P67_refers_to ?id', '?source a crm:E36_Visual_Item'];
         }
         return [];
       },
