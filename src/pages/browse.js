@@ -24,7 +24,6 @@ import PageTitle from '@components/PageTitle';
 import ScrollDetector from '@components/ScrollDetector';
 import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
-import { start, done } from '@components/NProgress';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import AppContext from '@helpers/context';
@@ -157,37 +156,19 @@ const BrowsePage = ({ initialData, filters }) => {
   const { req, query, pathname } = router;
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
-  const [isPageLoading, setIsPageLoading] = useState(false);
-  const currentPage = parseInt(query.page, 10) || 1;
+  const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
   const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
-
-  // Store the initial start page on load, because `currentPage`
-  // gets updated during infinite scroll.
-  const [initialPage, setInitialPage] = useState(currentPage);
 
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.results.length) return null; // reached the end
-    const q = { ...query, page: pageIndex + initialPage, hl: i18n.language };
+    const q = { ...query, page: (parseInt(query.page, 10) || 1) + pageIndex, hl: i18n.language };
     return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
-  useEffect(() => {
-    if (isPageLoading) start();
-    else done();
-  }, [isPageLoading]);
-
-  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, {
-    fallbackData: [initialData],
-    onSuccess: () => {
-      setIsPageLoading(false);
-    },
-    onError: () => {
-      setIsPageLoading(false);
-    },
-  });
+  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher);
 
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData || (data && typeof data[size - 1] === 'undefined');
@@ -220,43 +201,23 @@ const BrowsePage = ({ initialData, filters }) => {
     const newQuery = {
       type: query.type,
       ...fields,
-      page: '1',
     };
 
-    if (Object.entries(newQuery).toString() === Object.entries(query).toString()) {
-      // Prevent querying if query is the same
-      return;
-    }
-
-    // Reset page index
-    setInitialPage(1);
-
-    setIsPageLoading(true);
-    Router.push(
-      {
-        pathname,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
+    Router.push({
+      pathname,
+      query: newQuery,
+    });
   };
 
   const loadPage = (pageNumber) => {
     setSize(1);
-    setInitialPage(pageNumber);
-    setIsPageLoading(true);
-    return Router.replace(
-      {
-        pathname,
-        query: {
-          ...query,
-          page: pageNumber,
-        },
+    return Router.push({
+      pathname,
+      query: {
+        ...query,
+        page: pageNumber,
       },
-      undefined,
-      { shallow: true }
-    );
+    });
   };
 
   const onPageChange = (pageItem) => {
@@ -279,22 +240,16 @@ const BrowsePage = ({ initialData, filters }) => {
     const newQuery = {
       ...query,
       sort: value,
+      page: 1,
     };
 
     // Reset page index
     setSize(1);
-    setInitialPage(1);
-    delete newQuery.page;
 
-    setIsPageLoading(true);
-    return Router.replace(
-      {
-        pathname,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
+    return Router.push({
+      pathname,
+      query: newQuery,
+    });
   };
 
   const onDisplayChange = (selectedOption) => {
@@ -305,14 +260,10 @@ const BrowsePage = ({ initialData, filters }) => {
       display: value,
     };
 
-    return Router.replace(
-      {
-        pathname,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
+    return Router.push({
+      pathname,
+      query: newQuery,
+    });
   };
 
   const loadMore = () => {
@@ -326,6 +277,10 @@ const BrowsePage = ({ initialData, filters }) => {
   useEffect(() => {
     if (isOnScreen) loadMore();
   }, [isOnScreen]);
+
+  useEffect(() => {
+    setCurrentPage(parseInt(query.page, 10) || 1);
+  }, [query.page]);
 
   const route = config.routes[query.type];
 
@@ -388,18 +343,14 @@ const BrowsePage = ({ initialData, filters }) => {
     });
 
   const onScrollToPage = (pageIndex) => {
-    if (pageIndex !== query.page) {
-      Router.replace(
-        {
-          pathname,
-          query: {
-            ...query,
-            page: pageIndex,
-          },
-        },
-        undefined,
-        { shallow: true }
-      );
+    if (isLoadingMore) return;
+    if (pageIndex !== currentPage) {
+      const url = new URL(window.history.state.url, window.location.origin);
+      url.searchParams.set('page', pageIndex.toString());
+
+      const newUrl = `${url.pathname}${url.search}`;
+      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+      setCurrentPage(pageIndex);
     }
   };
 
@@ -430,7 +381,7 @@ const BrowsePage = ({ initialData, filters }) => {
         <Content>
           <TitleBar>
             <StyledTitle>
-              {isPageLoading
+              {isLoadingMore
                 ? t('search:labels.loading')
                 : t('search:labels.searchResults', { count: totalResults })}
             </StyledTitle>
@@ -465,12 +416,12 @@ const BrowsePage = ({ initialData, filters }) => {
               </Option>
             </OptionsBar>
           </TitleBar>
-          {isEmpty && !isPageLoading ? (
+          {isEmpty && !isLoadingMore ? (
             renderEmptyResults()
           ) : (
             <>
               {data?.map((page, i) => {
-                const pageNumber = initialPage + i;
+                const pageNumber = (parseInt(query.page, 10) || 1) + i;
                 return (
                   <Fragment key={pageNumber}>
                     {page.results.length > 0 && (
@@ -482,7 +433,7 @@ const BrowsePage = ({ initialData, filters }) => {
                       onAppears={() => onScrollToPage(pageNumber)}
                       rootMargin="0px 0px -50% 0px"
                     />
-                    <Results loading={isPageLoading ? 1 : 0}>
+                    <Results loading={isLoadingMore ? 1 : 0}>
                       {renderResults(page.results, pageNumber)}
                     </Results>
                   </Fragment>
