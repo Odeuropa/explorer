@@ -546,6 +546,7 @@ module.exports = {
       isMulti: false,
       isSortable: {
         reverse: true,
+        variable: 'timeBegin',
       },
       query: ({ language }) => ({
         '@graph': [
