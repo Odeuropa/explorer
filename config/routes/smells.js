@@ -675,6 +675,35 @@ module.exports = {
         `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
     },
     {
+      id: 'carrier',
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?carrierExemplifies',
+            label: '?carrierExemplifiesLabel',
+          },
+        ],
+        $where: [
+          `
+          ?emission od:F4_had_carrier ?carrier .
+          ?carrier crm:P137_exemplifies ?carrierExemplifies .
+          olfactory-objects:carrier skos:member ?carrierExemplifies .
+          ?carrierExemplifies skos:prefLabel ?carrierExemplifiesLabel .
+          FILTER(LANG(?carrierExemplifiesLabel) = "${language}" || LANG(?carrierExemplifiesLabel) = "")
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?emission od:F1_generated ?id',
+        '?emission od:F4_had_carrier ?carrier',
+        '?carrier crm:P137_exemplifies ?carrierExemplifies',
+      ],
+      filterFunc: (val) => `?carrierExemplifies = <${val}>`,
+    },
+    {
       id: 'emotion',
       isMulti: true,
       isSortable: false,
