@@ -86,6 +86,8 @@ module.exports = {
           time: {
             '@id': '?time',
             label: '?timeLabel',
+            begin: '?timeBegin',
+            end: '?timeEnd',
           },
           place: {
             '@id': '?place',
@@ -236,6 +238,8 @@ module.exports = {
               OPTIONAL {
                 ?emission time:hasTime ?time .
                 ?time rdfs:label ?timeLabel .
+                ?time time:hasBeginning ?timeBegin .
+                ?time time:hasEnd ?timeEnd .
               }
             }
           }
@@ -338,6 +342,8 @@ module.exports = {
         time: {
           '@id': '?time',
           label: '?timeLabel',
+          begin: '?timeBegin',
+          end: '?timeEnd',
         },
         place: {
           '@id': '?place',
@@ -473,6 +479,8 @@ module.exports = {
             OPTIONAL {
               ?emission time:hasTime ?time .
               ?time rdfs:label ?timeLabel .
+              ?time time:hasBeginning ?timeBegin .
+              ?time time:hasEnd ?timeEnd .
             }
           }
         }
