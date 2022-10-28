@@ -158,6 +158,7 @@ const BrowsePage = ({ initialData, filters }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
   const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
@@ -196,6 +197,23 @@ const BrowsePage = ({ initialData, filters }) => {
       window?.removeEventListener('resize', debouncedHandleResize);
     };
   });
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setIsPageLoading(true);
+    };
+    const handleRouteDone = () => {
+      setIsPageLoading(false);
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    router.events.on('routeChangeComplete', handleRouteDone);
+    router.events.on('routeChangeError', handleRouteDone);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+      router.events.off('routeChangeComplete', handleRouteDone);
+      router.events.off('routeChangeError', handleRouteDone);
+    };
+  }, []);
 
   const onSearch = (fields) => {
     const newQuery = {
@@ -381,7 +399,7 @@ const BrowsePage = ({ initialData, filters }) => {
         <Content>
           <TitleBar>
             <StyledTitle>
-              {isLoadingMore
+              {isLoadingMore || isPageLoading
                 ? t('search:labels.loading')
                 : t('search:labels.searchResults', { count: totalResults })}
             </StyledTitle>
@@ -433,7 +451,7 @@ const BrowsePage = ({ initialData, filters }) => {
                       onAppears={() => onScrollToPage(pageNumber)}
                       rootMargin="0px 0px -50% 0px"
                     />
-                    <Results loading={isLoadingMore ? 1 : 0}>
+                    <Results loading={isLoadingMore || isPageLoading ? 1 : 0}>
                       {renderResults(page.results, pageNumber)}
                     </Results>
                   </Fragment>
