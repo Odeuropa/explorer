@@ -68,11 +68,17 @@ module.exports = {
     'http://data.odeuropa.eu/eebo': {
       label: 'EEBO',
     },
+    'http://data.odeuropa.eu/gallica': {
+      label: 'Gallica',
+    },
     'http://data.odeuropa.eu/gutenberg': {
       label: 'Gutenberg',
     },
+    'http://data.odeuropa.eu/image-annotation': {
+      label: 'Odeuropa Image Benchmark',
+    },
     'http://data.odeuropa.eu/text-annotation': {
-      label: 'Odeuropa Benchmark',
+      label: 'Odeuropa Text Benchmark',
     },
     'http://data.odeuropa.eu/old-bailey-corpus': {
       label: 'Old Bailey Corpus',
