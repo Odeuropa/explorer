@@ -39,6 +39,8 @@
     "carrier": "Carrier",
     "adjective": "Adjective",
     "time": "Time",
+    "time-start": "Start year",
+    "time-end": "End year",
     "place": "Place",
     "gesture": "Gesture",
     "emotion": "Emotion",

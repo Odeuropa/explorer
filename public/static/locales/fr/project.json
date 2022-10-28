@@ -39,6 +39,8 @@
     "carrier": "Porteur",
     "adjective": "Adjectif",
     "time": "Temps",
+    "time-start": "Année de début",
+    "time-end": "Année de fin",
     "place": "Lieux",
     "gesture": "Geste",
     "emotion": "Émotion",

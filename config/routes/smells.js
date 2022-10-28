@@ -542,29 +542,25 @@ module.exports = {
     },
     {
       id: 'time',
-      isMulti: true,
+      placeholder: 'time-start',
+      isMulti: false,
       isSortable: {
         reverse: true,
       },
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?timeLabel',
-            label: '?timeLabel',
+            '@id': '?timeBegin',
+            label: '?timeBegin',
           },
         ],
         $where: [
           `
-          {
-            SELECT DISTINCT ?time WHERE {
-              ?id a od:L11_Smell .
-              ?emission od:F1_generated ?id .
-              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-              ?emission time:hasTime ?time .
-            }
-          }
-          ?time rdfs:label ?timeLabel .
-          FILTER(LANG(?timeLabel) = "${language}" || LANG(?timeLabel) = "")
+          ?id a od:L11_Smell .
+          ?emission od:F1_generated ?id .
+          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          ?emission time:hasTime ?time .
+          ?time time:hasBeginning ?timeBegin .
           `,
         ],
         $langTag: 'hide',
@@ -572,9 +568,38 @@ module.exports = {
       whereFunc: () => [
         '?emission od:F1_generated ?id',
         '?emission time:hasTime ?time',
-        '?time rdfs:label ?timeLabel',
+        '?time time:hasBeginning ?timeBegin',
       ],
-      filterFunc: (val) => `STR(?timeLabel) = ${JSON.stringify(val)}`,
+      filterFunc: (val) => `?timeBegin >= ${JSON.stringify(val)}^^xsd:gYear`,
+    },
+    {
+      id: 'time-end',
+      placeholder: 'time-end',
+      hideLabel: true,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?timeEnd',
+            label: '?timeEnd',
+          },
+        ],
+        $where: [
+          `
+          ?id a od:L11_Smell .
+          ?emission od:F1_generated ?id .
+          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          ?emission time:hasTime ?time .
+          ?time time:hasEnd ?timeEnd .
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?emission od:F1_generated ?id',
+        '?emission time:hasTime ?time',
+        '?time time:hasEnd ?timeEnd',
+      ],
+      filterFunc: (val) => `?timeEnd <= ${JSON.stringify(val)}^^xsd:gYear`,
     },
     {
       id: 'place',
