@@ -65,6 +65,9 @@ module.exports = {
     'fragrant-spaces': fragrantSpaces,
   },
   graphs: {
+    'http://data.odeuropa.eu/dbnl': {
+      label: 'DBNL',
+    },
     'http://data.odeuropa.eu/eebo': {
       label: 'EEBO',
     },
@@ -74,11 +77,11 @@ module.exports = {
     'http://data.odeuropa.eu/gutenberg': {
       label: 'Gutenberg',
     },
-    'http://data.odeuropa.eu/image-annotation': {
-      label: 'Odeuropa Image Benchmark',
-    },
     'http://data.odeuropa.eu/text-annotation': {
-      label: 'Odeuropa Text Benchmark',
+      label: 'Odeuropa benchmark',
+    },
+    'http://data.odeuropa.eu/image-annotation': {
+      label: 'ODOR Dataset',
     },
     'http://data.odeuropa.eu/old-bailey-corpus': {
       label: 'Old Bailey Corpus',
