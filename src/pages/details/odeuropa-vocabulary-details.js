@@ -150,23 +150,23 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const updateMapMarkersWithResults = (results) => {
     if (!Array.isArray(results)) return;
 
+    const targetDate = parseInt(query.date, 10);
+
     setMapMarkers((prevMarkers) => {
-      const flatMarkers = results
-        .map((result) =>
-          []
-            .concat(result.source?.createdLocation, result.source?.location)
-            .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
-            .filter((x) => x)
-        )
-        .flat();
-      flatMarkers.push(...prevMarkers);
+      const flatMarkers = [
+        ...prevMarkers,
+        ...results
+          .filter((result) => filterItemWithDate(result, targetDate))
+          .map((result) =>
+            []
+              .concat(result.source?.createdLocation, result.source?.location)
+              .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
+              .filter((x) => x)
+          )
+          .flat(),
+      ];
 
-      const markers = flatMarkers.reduce((acc, cur) => {
-        acc[cur.id] = cur;
-        return acc;
-      }, {});
-
-      return Object.values(markers);
+      return [...new Set(Object.values(flatMarkers))];
     });
   };
 
@@ -179,6 +179,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       locale: i18n.language,
     };
     const qs = queryString.stringify(q);
+
+    setMapMarkers([]);
 
     (async () => {
       const results = await (
