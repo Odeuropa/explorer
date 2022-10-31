@@ -100,6 +100,7 @@ const OdeuropaMap = dynamic(() => import('@components/OdeuropaMap'), { ssr: fals
 const TIMELINE_INTERVAL = 20; // years
 
 const filterItemWithDate = (item, targetDate) => {
+  if (!targetDate) return true;
   const time = [].concat(item.time).filter((x) => x)[0];
   const timeBegin = parseInt(time?.begin, 10);
   return timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL;
