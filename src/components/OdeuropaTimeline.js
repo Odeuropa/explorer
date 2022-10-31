@@ -51,8 +51,19 @@ const Item = styled.li`
   }
   position: relative;
 
-  ${({ active, label }) =>
+  ${({ active, value, label }) =>
     css`
+      &::before {
+        content: '${value}';
+        color: ${active ? '#735dae' : '#a6bf8b'};
+        font-size: 0.9em;
+        font-weight: bold;
+        display: ${value > 0 ? 'block' : 'none'};
+        transition: opacity 250ms ease-in-out;
+        text-align: center;
+        margin-top: -20px;
+      }
+
       &::after {
         content: ${JSON.stringify(label)};
         color: ${active ? '#735dae' : '#a6bf8b'};
@@ -61,14 +72,15 @@ const Item = styled.li`
         opacity: ${active ? 1 : 0};
         transition: opacity 250ms ease-in-out;
         position: absolute;
-        top: -20px;
+        bottom: -40px;
         margin-left: -10px;
+        background-color: #f5f5f5;
+        padding-bottom: 10px;
       }
     `}
 
   &:hover::after {
     opacity: 1;
-    display: block;
   }
 `;
 
@@ -96,6 +108,7 @@ const OdeuropaTimeline = ({ values, defaultValue, interval = 20, onChange, ...pr
       <Item
         key={label}
         label={label}
+        value={value}
         active={label === defaultValue}
         onClick={() => onChange(label === defaultValue ? undefined : label)}
         style={{ height: `${height}%`, pointerEvents: value === 0 ? 'none' : 'auto' }}
