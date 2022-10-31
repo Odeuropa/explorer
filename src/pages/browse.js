@@ -174,7 +174,9 @@ const BrowsePage = ({ initialData, filters }) => {
     return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
-  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher);
+  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, {
+    fallbackData: [initialData],
+  });
 
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData || (data && typeof data[size - 1] === 'undefined');
