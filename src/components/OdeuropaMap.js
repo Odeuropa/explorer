@@ -47,7 +47,9 @@ const OdeuropaMap = ({ markers, renderPopup, popupContentWrapperStyle, ...props 
       <MarkerClusterGroup>
         {markers.map((marker) => (
           <Marker key={marker.id} position={[marker.lat, marker.long]}>
-            {typeof renderPopup === 'function' && <Popup>{renderPopup(marker)}</Popup>}
+            {typeof renderPopup === 'function' && (
+              <Popup autoPan={false}>{renderPopup(marker)}</Popup>
+            )}
           </Marker>
         ))}
       </MarkerClusterGroup>
