@@ -7,41 +7,29 @@ const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 2em 2em 4em;
-
-  ${breakpoints.mobile`
-    padding-left: 4em;
-    padding-right: 4em;
-  `}
-
-  ${breakpoints.tablet`
-    padding-left: 6em;
-    padding-right: 6em;
-  `}
-
-  ${breakpoints.desktop`
-    padding-left: 8em;
-    padding-right: 8em;
-  `}
 `;
 
 const Line = styled.div`
   width: 100%;
   height: 2px;
   background-color: #b9d59b;
+  position: absolute;
+  bottom: calc(5em - 2px);
 `;
 
 const Chart = styled.ul`
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 20px;
-  align-items: end;
-  list-style-type: none;
-  height: 100px;
+  grid-template-columns: unset;
+  grid-template-rows: unset;
+  align-items: flex-end;
+  overflow-x: scroll;
+  padding: 4em;
+  height: calc(100px + 4em * 2);
 `;
 
 const Item = styled.li`
-  width: 100%;
+  width: 20px;
   transition: background-color 250ms ease-in-out;
   cursor: pointer;
   background-color: ${({ active }) => (active ? '#735dae' : '#b9d59b')};
@@ -129,9 +117,7 @@ const OdeuropaTimeline = ({ values, defaultValue, interval = 20, onChange, ...pr
 
   return (
     <Container {...props}>
-      <Chart style={{ gridColumnGap: `calc(${100 / histogram.length - 1}% - 20px)` }}>
-        {histogram}
-      </Chart>
+      <Chart>{histogram}</Chart>
       <Line />
     </Container>
   );
