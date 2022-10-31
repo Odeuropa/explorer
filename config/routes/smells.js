@@ -39,6 +39,7 @@ module.exports = {
   uriBase: 'http://data.odeuropa.eu/smell',
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
   filterByGraph: true,
+  hideFilterButton: true,
   details: {
     view: 'odeuropa-texts',
     showPermalink: true,
@@ -524,7 +525,12 @@ module.exports = {
   filters: [
     {
       id: 'type',
+      isBeforeTextSearch: true,
       isToggle: true,
+      style: {
+        paddingBottom: 24,
+        borderBottom: '1px solid #b5afbe',
+      },
       options: [
         { label: 'In text', value: 'text' },
         { label: 'In images', value: 'image' },
@@ -538,6 +544,14 @@ module.exports = {
           return ['?source crm:P67_refers_to ?id', '?source a crm:E36_Visual_Item'];
         }
         return [];
+      },
+    },
+    {
+      id: 'search-by-concept',
+      style: {
+        fontWeight: 'bold',
+        marginTop: 24,
+        borderTop: '1px solid #b5afbe',
       },
     },
     {

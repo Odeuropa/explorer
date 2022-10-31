@@ -35,6 +35,8 @@
   },
   "filters": {
     "type": "",
+    "q": "Full text search",
+    "search-by-concept": "Search by concept",
     "source": "Smell Source",
     "carrier": "Carrier",
     "adjective": "Adjective",

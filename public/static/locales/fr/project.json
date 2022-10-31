@@ -35,6 +35,8 @@
   },
   "filters": {
     "type": "",
+    "q": "Recherche plein texte",
+    "search-by-concept": "Rechercher par concept",
     "source": "Source de l'odeur",
     "carrier": "Porteur",
     "adjective": "Adjectif",
