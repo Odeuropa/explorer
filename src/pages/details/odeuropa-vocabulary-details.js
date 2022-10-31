@@ -116,6 +116,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [filteredTexts, setFilteredTexts] = useState();
   const [filteredVisuals, setFilteredVisuals] = useState();
   const [timelineDates, setTimelineDates] = useState({});
+  const [resultToDateMapping, setResultToDateMapping] = useState({});
   const [mapMarkers, setMapMarkers] = useState([]);
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
@@ -124,20 +125,24 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const updateTimelineWithResults = (results) => {
     if (!Array.isArray(results)) return;
 
-    const dates = results
-      .map((result) =>
-        []
-          .concat(result.time)
-          .map((time) => time?.begin)
-          .filter((x) => x)
-      )
-      .flat();
-
-    const newTimelineDates = dates.reduce((acc, cur) => {
-      const rounded = Math.floor(cur / TIMELINE_INTERVAL) * TIMELINE_INTERVAL;
-      acc[rounded] = (acc[rounded] || 0) + 1;
+    // Map dates into a `{ "id": "date" }` object to prevent duplicates
+    // when loading additional results
+    const resultToDate = results.reduce((acc, result) => {
+      acc[result['@id']] = []
+        .concat(result.time)
+        .map((time) => time?.begin)
+        .filter((x) => x);
       return acc;
-    }, timelineDates);
+    }, resultToDateMapping);
+    setResultToDateMapping(resultToDate);
+
+    const newTimelineDates = Object.values(resultToDate)
+      .flat()
+      .reduce((acc, cur) => {
+        const rounded = Math.floor(cur / TIMELINE_INTERVAL) * TIMELINE_INTERVAL;
+        acc[rounded] = (acc[rounded] || 0) + 1;
+        return acc;
+      }, {});
 
     setTimelineDates(newTimelineDates);
   };
