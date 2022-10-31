@@ -41,6 +41,7 @@ const StyledSelect = styled(Select)`
 const TitleBar = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const StyledTitle = styled.h1`
@@ -53,6 +54,8 @@ const OptionsBar = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 12px;
 `;
 
 const Option = styled.div`
@@ -86,7 +89,7 @@ const StyledSidebar = styled(Sidebar)`
 
 const Results = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, 350px);
+  grid-template-columns: repeat(auto-fit, minmax(350px, auto));
   grid-gap: 2.5rem;
   margin: 1rem 0;
 
@@ -100,11 +103,13 @@ const PaginationContainer = styled.div`
   bottom: 0;
   z-index: 999;
   background-color: ${({ theme }) => theme.colors.background};
-  padding-bottom: 20px;
-  padding-top: 20px;
+  margin: 0 -24px;
+  padding: 20px 24px;
 
-  margin-left: -48px;
-  padding-left: 48px;
+  ${breakpoints.mobile`
+    margin: 0 -48px;
+    padding: 20px 48px;
+  `};
 
   li {
     display: inline-block;

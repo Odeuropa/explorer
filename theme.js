@@ -84,7 +84,6 @@ const theme = {
     },
     Sidebar: {
       Container: {
-        width: 350,
         backgroundColor: '#D6CFE1',
       },
       ClearButton: {
