@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import styled from 'styled-components';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 import { GestureHandling } from 'leaflet-gesture-handling';
 import L from 'leaflet';
@@ -8,6 +9,12 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import '@changey/react-leaflet-markercluster/dist/styles.min.css';
 import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
+
+const StyledMapContainer = styled(MapContainer)`
+  .leaflet-popup-content-wrapper {
+    ${({ popupContentWrapperStyle }) => popupContentWrapperStyle}
+  }
+`;
 
 // eslint-disable-next-line no-underscore-dangle
 delete L.Icon.Default.prototype._getIconUrl;
@@ -20,15 +27,16 @@ L.Icon.Default.mergeOptions({
 // Prevent zooming while scrolling by using leaflet-gesture-handling
 L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
 
-const OdeuropaMap = ({ markers, ...props }) => {
+const OdeuropaMap = ({ markers, renderPopup, popupContentWrapperStyle, ...props }) => {
   return (
-    <MapContainer
+    <StyledMapContainer
       center={[51.0, 19.0]}
       zoom={4}
       maxZoom={18}
       scrollWheelZoom={false}
       doubleClickZoom={true}
       gestureHandling={true}
+      popupContentWrapperStyle={popupContentWrapperStyle}
       {...props}
       style={{ width: '100%', height: '100%', ...props.style }}
     >
@@ -38,10 +46,12 @@ const OdeuropaMap = ({ markers, ...props }) => {
       />
       <MarkerClusterGroup>
         {markers.map((marker) => (
-          <Marker key={marker.id} position={[marker.lat, marker.long]} />
+          <Marker key={marker.id} position={[marker.lat, marker.long]}>
+            {typeof renderPopup === 'function' && <Popup>{renderPopup(marker)}</Popup>}
+          </Marker>
         ))}
       </MarkerClusterGroup>
-    </MapContainer>
+    </StyledMapContainer>
   );
 };
 

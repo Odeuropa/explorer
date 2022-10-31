@@ -23,10 +23,9 @@ import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
-
 import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { absoluteUrl, uriToId } from '@helpers/utils';
-import { getEntityMainLabel } from '@helpers/explorer';
+import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
 import AppContext from '@helpers/context';
 import { useTranslation } from 'next-i18next';
 import config from '~/config';
@@ -392,7 +391,32 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
           {mapMarkers.length > 0 && (
             <Element flex="1" height={500}>
-              <OdeuropaMap markers={mapMarkers} />
+              <OdeuropaMap
+                markers={mapMarkers}
+                popupContentWrapperStyle={{
+                  background: 'none',
+                  boxShadow: 'none',
+                }}
+                renderPopup={(marker) => {
+                  const result = []
+                    .concat(visuals, texts)
+                    .find((result) => result['@id'] === marker.id);
+
+                  if (!result) return null;
+
+                  const [, targetRoute] = findRouteByRDFType(result['@type']);
+                  if (!targetRoute) return null;
+
+                  return (
+                    <OdeuropaCard
+                      key={result['@id']}
+                      item={result}
+                      route={targetRoute}
+                      type={route.details.route}
+                    />
+                  );
+                }}
+              />
             </Element>
           )}
         </Element>
