@@ -154,6 +154,59 @@ const ResultPage = styled.h3`
   margin-bottom: 1rem;
 `;
 
+const Chips = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 0.5em;
+  column-gap: 0.5em;
+  margin-bottom: 1rem;
+`;
+
+const Chip = styled.div`
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  border: none;
+  outline: none;
+  background: #eee;
+  cursor: default;
+  font-size: 0.8em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 0.75em;
+`;
+
+Chip.Label = styled.span`
+  padding-right: 0.75em;
+  border-right: 1px solid #a6a6a6;
+  font-weight: bold;
+`;
+
+Chip.Value = styled.span``;
+
+const CrossIcon = (props) => (
+  <svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" {...props}>
+    <path d="M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z" />
+  </svg>
+);
+
+Chip.Cross = styled(CrossIcon)`
+  display: inline-block;
+  fill: currentColor;
+  line-height: 1;
+  stroke: currentColor;
+  stroke-width: 0;
+  cursor: pointer;
+  border-radius: 100%;
+  background-color: #a6a6a6;
+  color: #e0e0e0;
+  transition: background-color 150ms ease-in-out;
+
+  &:hover {
+    background-color: #bbb;
+  }
+`;
+
 const PAGE_SIZE = 20;
 
 const BrowsePage = ({ initialData, filters }) => {
@@ -405,6 +458,63 @@ const BrowsePage = ({ initialData, filters }) => {
           />
         </Element>
         <Content>
+          <Chips>
+            {Object.entries(query).map(([fieldKey, fieldValue]) => {
+              const fieldValues = [].concat(fieldValue).filter((x) => x);
+              if (fieldKey === 'q') {
+                return (
+                  <Chip key={fieldKey}>
+                    <Chip.Label>{t('project:filters.q', t('search:fields.q'))}</Chip.Label>
+                    <Chip.Value>{fieldValues.join(', ')}</Chip.Value>
+                    <Chip.Cross
+                      onClick={() => {
+                        const newQuery = {
+                          ...query,
+                          page: 1,
+                        };
+                        delete newQuery.q;
+
+                        Router.push({
+                          pathname,
+                          query: newQuery,
+                        });
+                      }}
+                    />
+                  </Chip>
+                );
+              }
+
+              const filter = filters.find((filter) => `field_filter_${filter.id}` === fieldKey);
+              if (!filter) return null;
+              return fieldValues.map((fieldValue) => {
+                const label = t(`project:filters.${filter.id}`, null);
+                return (
+                  <Chip key={`${fieldKey}-${fieldValue}`}>
+                    {label && <Chip.Label>{label}</Chip.Label>}
+                    <Chip.Value>
+                      {filter.values.find((v) => v.value === fieldValue)?.label}
+                    </Chip.Value>
+                    <Chip.Cross
+                      onClick={() => {
+                        const newQuery = {
+                          ...query,
+                          page: 1,
+                          [`field_filter_${filter.id}`]: []
+                            .concat(query[`field_filter_${filter.id}`])
+                            .filter((x) => x && x !== fieldValue),
+                        };
+
+                        Router.push({
+                          pathname,
+                          query: newQuery,
+                        });
+                      }}
+                    />
+                  </Chip>
+                );
+              });
+            })}
+          </Chips>
           <TitleBar>
             <StyledTitle>
               {isLoadingMore || isPageLoading
