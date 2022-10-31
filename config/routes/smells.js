@@ -555,6 +555,33 @@ module.exports = {
       },
     },
     {
+      id: 'place',
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?country',
+            label: '?countryName',
+          },
+        ],
+        $where: [
+          `
+          ?id a od:L11_Smell .
+          ?experience od:F2_perceived ?id .
+          ?experience crm:P7_took_place_at / gn:parentCountry ?country .
+          ?country gn:name ?countryName .
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?experience od:F2_perceived ?id',
+        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
+      ],
+      filterFunc: (val) => `?placeCountry = <${val}>`,
+    },
+    {
       id: 'time',
       placeholder: 'time-start',
       isMulti: false,
@@ -615,33 +642,6 @@ module.exports = {
         '?time time:hasEnd ?timeEnd',
       ],
       filterFunc: (val) => `?timeEnd <= ${JSON.stringify(val)}^^xsd:gYear`,
-    },
-    {
-      id: 'place',
-      isMulti: true,
-      isSortable: false,
-      query: ({ language }) => ({
-        '@graph': [
-          {
-            '@id': '?country',
-            label: '?countryName',
-          },
-        ],
-        $where: [
-          `
-          ?id a od:L11_Smell .
-          ?experience od:F2_perceived ?id .
-          ?experience crm:P7_took_place_at / gn:parentCountry ?country .
-          ?country gn:name ?countryName .
-          `,
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: () => [
-        '?experience od:F2_perceived ?id',
-        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
-      ],
-      filterFunc: (val) => `?placeCountry = <${val}>`,
     },
     {
       id: 'source',
