@@ -531,7 +531,7 @@ module.exports = {
         paddingBottom: 24,
         borderBottom: '1px solid #b5afbe',
       },
-      options: [
+      values: [
         { label: 'In text', value: 'text' },
         { label: 'In images', value: 'image' },
         { label: 'Both', value: '' },
