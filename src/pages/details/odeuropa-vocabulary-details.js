@@ -400,6 +400,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 renderPopup={(marker) => {
                   const result = []
                     .concat(visuals, texts)
+                    .filter((x) => x)
                     .find((result) => result['@id'] === marker.id);
 
                   if (!result) return null;
