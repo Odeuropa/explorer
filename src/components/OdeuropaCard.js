@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 
-import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
+import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
 import { getHighlightedText } from '@helpers/odeuropa';
 import config from '~/config';
@@ -13,6 +13,7 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.28) 0px 0px 8px;
 `;
 
