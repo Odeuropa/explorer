@@ -385,7 +385,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               paddingRight="1em"
               style={{ textAlign: 'center' }}
             >
-              <TagCloud minSize={8} maxSize={35} tags={wordCloud} />
+              <TagCloud minSize={12} maxSize={35} tags={wordCloud} />
             </Element>
           )}
 
