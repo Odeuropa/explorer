@@ -275,7 +275,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
               <label style={{ display: 'flex', flexDirection: 'column' }}>
                 <StyledInput
                   name="q"
-                  type="text"
+                  type="search"
                   placeholder={t('project:odeuropa-vocabulary.search')}
                   value={searchText}
                   onChange={handleSearchTextChange}
