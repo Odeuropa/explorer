@@ -33,6 +33,7 @@ module.exports = {
     endpoint: 'https://data.odeuropa.eu/repositories/odeuropa',
     params: {
       sameAs: false,
+      infer: false,
     },
     queryLink: (query) => `https://data.odeuropa.eu/sparql?query=${encodeURIComponent(query)}`,
     prefixes: {

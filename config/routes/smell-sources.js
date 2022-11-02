@@ -180,7 +180,8 @@ module.exports = {
         baseWhere: [
           '?emission od:F3_had_source/crm:P137_exemplifies ?_vocab',
           '?emission od:F1_generated ?id',
-          '?id crm:P67i_is_referred_to_by/a crm:E33_Linguistic_Object',
+          '?source crm:P67_refers_to ?id',
+          '?source a crm:E33_Linguistic_Object',
         ],
       },
     },
