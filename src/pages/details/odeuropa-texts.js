@@ -251,8 +251,8 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         );
       }
     });
-    if (typeof result.place?.label === 'string') {
-      subtitles.push(<>{result.place.label}</>);
+    if (typeof result.smellPlace?.label === 'string') {
+      subtitles.push(<>{result.smellPlace.label}</>);
     }
 
     return (
@@ -561,7 +561,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     renderPanelRow('source', result.smellSource, 'smell-sources', '@id'),
     renderPanelRow('carrier', result.carrier, 'odour-carriers', 'exemplifies'),
     renderPanelRow('date', result.time),
-    renderPanelRow('place', result.place, 'fragrant-spaces', 'exemplifies'),
+    renderPanelRow('place', result.smellPlace, 'fragrant-spaces', 'exemplifies'),
   ].filter((x) => x);
 
   const olfactoryExperienceRows = [

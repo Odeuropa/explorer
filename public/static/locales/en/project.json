@@ -12,7 +12,7 @@
     "carrier": "Carrier",
     "adjective": "Adjective",
     "time": "Time",
-    "place": "Place",
+    "smellPlace": "Place",
     "gesture": "Gesture",
     "emotion": "Emotion",
     "date": "Creation date",

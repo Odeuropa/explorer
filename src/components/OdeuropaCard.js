@@ -202,7 +202,7 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
       renderCardRow('source', item.smellSource, 'smell-sources', '@id'),
       renderCardRow('carrier', item.carrier, 'odour-carriers', 'exemplifies'),
       renderCardRow('date', item.time),
-      renderCardRow('place', item.place, 'fragrant-spaces', 'exemplifies'),
+      renderCardRow('smellPlace', item.place, 'fragrant-spaces', 'exemplifies'),
       renderCardRow('author', item.source?.author),
     ].filter((x) => x);
 
