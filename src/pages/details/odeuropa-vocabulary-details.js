@@ -376,7 +376,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               {t('project:odeuropa-vocabulary-details.wordCloud.error')}
             </span>
           )}
-          {wordCloud && (
+          {wordCloud?.length > 0 && (
             <Element
               display="flex"
               justifyContent="center"
