@@ -252,7 +252,7 @@ module.exports = {
             {
               OPTIONAL {
                 ?experience crm:P7_took_place_at ?place .
-                ?place rdfs:label ?placeLabel .
+                ?place gn:name|rdfs:label ?placeLabel .
               }
             }
             UNION
@@ -495,7 +495,7 @@ module.exports = {
           {
             OPTIONAL {
               ?experience crm:P7_took_place_at ?place .
-              ?place rdfs:label ?placeLabel .
+              ?place gn:name|rdfs:label ?placeLabel .
             }
           }
           UNION
