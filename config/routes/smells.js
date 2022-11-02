@@ -732,8 +732,12 @@ module.exports = {
           `
           ?emotion reo:readP27 ?experience .
           ?emotion crm:P137_exemplifies ?emotionType .
-          ?emotionType rdfs:label ?emotionTypeLabel .
-          FILTER(LANG(?emotionTypeLabel) = "${language}" || LANG(?emotionTypeLabel) = "")
+          {
+            OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+            OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+            OPTIONAL { ?emotionType rdfs:label ?original_label . }
+            BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionTypeLabel)
+          }
           `,
         ],
         $langTag: 'hide',
