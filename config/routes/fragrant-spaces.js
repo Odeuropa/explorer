@@ -43,7 +43,7 @@ module.exports = {
         }
         UNION
         {
-          ?place crm:P2_has_type ?id .
+          ?place crm:P137_exemplifies ?id .
           ?emission crm:P7_took_place_at ?place .
           ?emission od:F1_generated ?smell .
           OPTIONAL {
@@ -73,8 +73,8 @@ module.exports = {
     $where: [
       `
       {
-        ?id <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
-        ?place crm:P2_has_type ?id .
+        ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
+        ?place crm:P137_exemplifies ?id .
         ?emission crm:P7_took_place_at ?place .
 
         ${
@@ -131,7 +131,7 @@ module.exports = {
       UNION
       {
         SELECT DISTINCT ?date WHERE {
-          ?place crm:P2_has_type ?id .
+          ?place crm:P137_exemplifies ?id .
           { # Nested select because of an issue with GraphDB optimization engine
             SELECT DISTINCT ?emission WHERE {
               ?emission crm:P7_took_place_at ?place .
@@ -157,7 +157,7 @@ module.exports = {
           ],
           $where: [
             `
-            ?place crm:P2_has_type ?id .
+            ?place crm:P137_exemplifies ?id .
             ?emission crm:P7_took_place_at ?place .
 
             ?emission od:F1_generated ?smell .
