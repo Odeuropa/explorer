@@ -649,7 +649,6 @@ module.exports = {
       isSortable: false,
       condition: 'user-defined',
       query: ({ language }) => ({
-        $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning implicit values
         '@graph': [
           {
             '@id': '?source',

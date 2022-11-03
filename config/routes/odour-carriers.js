@@ -8,7 +8,6 @@ module.exports = {
     excludedMetadata: [],
     route: 'smells',
     query: ({ language }) => ({
-      $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning Wikidata entities
       '@graph': [
         {
           '@id': '?id',
@@ -60,7 +59,6 @@ module.exports = {
     }),
   },
   query: ({ language, params }) => ({
-    $from: 'http://www.ontotext.com/disable-sameAs', // Prevent returning Wikidata entities
     '@graph': [
       {
         items: {
