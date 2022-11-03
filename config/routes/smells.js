@@ -659,12 +659,8 @@ module.exports = {
         ],
         $where: [
           `
-          {
-            SELECT DISTINCT ?source WHERE {
-              ?emission od:F1_generated ?smell .
-              ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-            }
-          }
+          ?emission od:F1_generated ?id .
+          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
           {
             ?source skos:prefLabel ?sourceLabel .
             FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
