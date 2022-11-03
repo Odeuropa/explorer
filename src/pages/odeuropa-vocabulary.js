@@ -167,9 +167,10 @@ const FilterBar = styled.div`
 `;
 
 const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
-  const { t, i18n } = useTranslation(['common', 'project']);
+  const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const router = useRouter();
   const query = { ...router.query };
+  const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchDateFrom, setSearchDateFrom] = useState(query.from);
   const [searchDateTo, setSearchDateTo] = useState(query.to);
@@ -237,10 +238,15 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      router.push({
-        pathname: query.type,
-        query: { ...query, from: searchDateFrom, to: searchDateTo },
-      });
+      setIsLoading(true);
+      router
+        .push({
+          pathname: query.type,
+          query: { ...query, from: searchDateFrom, to: searchDateTo },
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [searchDateFrom, searchDateTo]);
 
@@ -260,6 +266,55 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
       },
       undefined,
       { shallow: true }
+    );
+  };
+
+  const renderResults = () => {
+    if (isLoading) return <h1>{t('search:labels.loading')}</h1>;
+    return (
+      <Results>
+        {resultsWithLabel
+          .filter((result) =>
+            result.mainLabel
+              ?.trim()
+              .toLocaleLowerCase()
+              .includes(searchText.trim().toLocaleLowerCase())
+          )
+          .map((result) => (
+            <Result key={result['@id']} id={result['@id']}>
+              <Link
+                href={`/details/${route.details.view}?id=${encodeURIComponent(
+                  uriToId(result['@id'], {
+                    base: route.uriBase,
+                  })
+                )}&type=${query.type}`}
+                passHref
+              >
+                <a>
+                  <Item key={result['@id']} id={result['@id']}>
+                    <ItemImage>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={
+                          result.image ||
+                          `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
+                        }
+                        alt=""
+                        loading="lazy"
+                      />
+                    </ItemImage>
+                    <ItemTitle>
+                      <h2>
+                        {result.mainLabel} <span>({result.count})</span>
+                      </h2>
+                    </ItemTitle>
+                    {result.description && <p>{result.description}</p>}
+                  </Item>
+                </a>
+              </Link>
+            </Result>
+          ))}
+      </Results>
     );
   };
 
@@ -382,51 +437,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
             </div>
           </FilterBar>
 
-          <Container>
-            <Results>
-              {resultsWithLabel
-                .filter((result) =>
-                  result.mainLabel
-                    ?.trim()
-                    .toLocaleLowerCase()
-                    .includes(searchText.trim().toLocaleLowerCase())
-                )
-                .map((result) => (
-                  <Result key={result['@id']} id={result['@id']}>
-                    <Link
-                      href={`/details/${route.details.view}?id=${encodeURIComponent(
-                        uriToId(result['@id'], {
-                          base: route.uriBase,
-                        })
-                      )}&type=${query.type}`}
-                      passHref
-                    >
-                      <a>
-                        <Item key={result['@id']} id={result['@id']}>
-                          <ItemImage>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={
-                                result.image ||
-                                `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
-                              }
-                              alt=""
-                              loading="lazy"
-                            />
-                          </ItemImage>
-                          <ItemTitle>
-                            <h2>
-                              {result.mainLabel} <span>({result.count})</span>
-                            </h2>
-                          </ItemTitle>
-                          {result.description && <p>{result.description}</p>}
-                        </Item>
-                      </a>
-                    </Link>
-                  </Result>
-                ))}
-            </Results>
-          </Container>
+          <Container>{renderResults()}</Container>
           <Debug>
             <Metadata label="HTTP Parameters">
               <pre>{JSON.stringify(query, null, 2)}</pre>
