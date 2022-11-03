@@ -19,7 +19,7 @@ import Input from '@components/Input';
 import Select from '@components/Select';
 import breakpoints from '@styles/breakpoints';
 import SparqlClient from '@helpers/sparql';
-import { getQueryObject, removeEmptyObjects, uriToId } from '@helpers/utils';
+import { generateMediaUrl, getQueryObject, removeEmptyObjects, uriToId } from '@helpers/utils';
 import { getEntityMainLabel } from '@helpers/explorer';
 import config from '~/config';
 import { selectStyles, selectTheme } from '~/theme';
@@ -166,6 +166,17 @@ const FilterBar = styled.div`
   `}
 `;
 
+export const getImageUrl = (image, placeholder) => {
+  if (!image) return placeholder;
+  if (
+    ['.gif', '.svg', '.tiff'].some((ext) =>
+      image.toLocaleLowerCase().trim().endsWith(ext.toLocaleLowerCase().trim())
+    )
+  )
+    return image;
+  return generateMediaUrl(image, 300);
+};
+
 const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const router = useRouter();
@@ -295,10 +306,10 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
                     <ItemImage>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={
-                          result.image ||
+                        src={getImageUrl(
+                          result.image,
                           `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
-                        }
+                        )}
                         alt=""
                         loading="lazy"
                       />

@@ -10,8 +10,10 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { TagCloud } from 'react-tagcloud';
 import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';
 import { ChevronUp } from '@styled-icons/boxicons-regular/ChevronUp';
+import { useTranslation } from 'next-i18next';
 
 import NotFoundPage from '@pages/404';
+import { getImageUrl } from '@pages/odeuropa-vocabulary';
 import Header from '@components/Header';
 import Footer from '@components/Footer';
 import Layout from '@components/Layout';
@@ -27,7 +29,6 @@ import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { absoluteUrl, uriToId } from '@helpers/utils';
 import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
 import AppContext from '@helpers/context';
-import { useTranslation } from 'next-i18next';
 import config from '~/config';
 
 const Results = styled.div`
@@ -277,7 +278,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             <div style={{ marginRight: '2em' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={result.image || `/images/odeuropa-vocabularies/placeholder_${query.type}.png`}
+                src={getImageUrl(
+                  result.image,
+                  `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
+                )}
                 alt=""
                 width="300"
                 height="180"
