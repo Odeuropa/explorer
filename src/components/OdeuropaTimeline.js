@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import breakpoints from '@styles/breakpoints';
 
 const Container = styled.div`
   width: 100%;
@@ -9,12 +8,12 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Line = styled.div`
+const Line = styled.li`
   width: 100%;
   height: 2px;
   background-color: #b9d59b;
   position: absolute;
-  bottom: calc(5em - 2px);
+  bottom: 60px;
 `;
 
 const Chart = styled.ul`
@@ -24,8 +23,9 @@ const Chart = styled.ul`
   grid-template-rows: unset;
   align-items: flex-end;
   overflow-x: scroll;
-  padding: 4em;
-  height: calc(100px + 4em * 2);
+  padding: 60px;
+  height: 220px;
+  position: relative;
 `;
 
 const Item = styled.li`
@@ -134,8 +134,10 @@ const OdeuropaTimeline = ({
 
   return (
     <Container {...props}>
-      <Chart>{histogram}</Chart>
-      <Line />
+      <Chart>
+        {histogram}
+        <Line />
+      </Chart>
     </Container>
   );
 };
