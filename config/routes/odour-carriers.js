@@ -61,13 +61,10 @@ module.exports = {
   query: ({ language, params }) => ({
     '@graph': [
       {
-        items: {
-          '@id': '?id',
-          label: '?bestLabel',
-          image: '?image',
-          count: '?count',
-        },
-        dates: '?date',
+        '@id': '?id',
+        label: '?bestLabel',
+        image: '?image',
+        count: '?count',
       },
     ],
     $where: [
@@ -76,31 +73,33 @@ module.exports = {
         olfactory-objects:carrier skos:member ?id .
         ?emission od:F4_had_carrier / crm:P137_exemplifies ?id .
 
-        ${
-          params.date
-            ? `
-          ?emission_source crm:P67_refers_to ?emission .
-          ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
-            params.date
-          )}^^xsd:gYear .
-          `
-            : ''
-        }
-
         {
           OPTIONAL {
             SELECT DISTINCT ?id (COUNT(DISTINCT ?smell) AS ?count) WHERE {
               ?emission od:F1_generated ?smell .
+
+              ${
+                params.from || params.to
+                  ? `
+                ?emission_source crm:P67_refers_to ?emission .
+                ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                ?emission_source schema:dateCreated/time:hasEnd ?end .
+              `
+                  : ''
+              }
+              ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+              ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
+
               {
-                # Visual items
-                ?source crm:P67_refers_to ?emission .
-                ?source crm:P138_represents|schema:about ?object .
+                # Textual items
+                ?emission od:F3_had_source ?object .
                 ?object crm:P137_exemplifies ?id .
               }
               UNION
               {
-                # Textual items
-                ?emission od:F3_had_source ?object .
+                # Visual items
+                ?source crm:P67_refers_to ?emission .
+                ?source crm:P138_represents|schema:about ?object .
                 ?object crm:P137_exemplifies ?id .
               }
             }
@@ -129,25 +128,33 @@ module.exports = {
           }
         }
       }
-      UNION
-      {
-        SELECT DISTINCT ?date WHERE {
-          olfactory-objects:carrier skos:member ?id .
-          { # Nested select because of an issue with GraphDB optimization engine
-            SELECT DISTINCT ?emission WHERE {
-                ?emission od:F4_had_carrier / crm:P137_exemplifies ?id .
-            }
-          }
-          ?source crm:P67_refers_to ?emission .
-          ?source schema:dateCreated/time:hasBeginning ?date .
-        }
-      }
       `,
     ],
     $langTag: 'hide',
   }),
   plugins: {
     'odeuropa-vocabulary': {
+      dates: {
+        query: () => ({
+          '@graph': [
+            {
+              date: '?date',
+            },
+          ],
+          $where: [
+            `
+            olfactory-objects:carrier skos:member ?id .
+            { # Nested select because of an issue with GraphDB optimization engine
+              SELECT DISTINCT ?emission WHERE {
+                  ?emission od:F4_had_carrier / crm:P137_exemplifies ?id .
+              }
+            }
+            ?source crm:P67_refers_to ?emission .
+            ?source schema:dateCreated/time:hasBeginning ?date .
+            `,
+          ],
+        }),
+      },
       wordCloud: {
         query: () => ({
           '@graph': [

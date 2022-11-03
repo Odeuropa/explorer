@@ -177,7 +177,7 @@ export const getImageUrl = (image, placeholder) => {
   return generateMediaUrl(image, 300);
 };
 
-const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
+const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const router = useRouter();
   const query = { ...router.query };
@@ -193,8 +193,8 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
 
   useEffect(() => {
     const resultsWithLabel = [];
-    if (Array.isArray(results[0]?.items)) {
-      results[0].items.forEach((item) => {
+    if (Array.isArray(results)) {
+      results.forEach((item) => {
         resultsWithLabel.push({
           ...item,
           mainLabel: getEntityMainLabel(item, { route, language: i18n.language }),
@@ -213,7 +213,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   }, [results, searchOrder]);
 
   useEffect(() => {
-    const dates = [].concat(results[0]?.dates).filter((x) => x);
+    const dates = [].concat(datesFilter).filter((x) => x);
     dates.sort((a, b) => a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()));
     setDateOptions(
       dates.map((date) => ({
@@ -221,7 +221,7 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
         value: date,
       }))
     );
-  }, [results]);
+  }, [datesFilter]);
 
   const useWith = [];
   if (route && Array.isArray(route.useWith)) {
@@ -475,6 +475,7 @@ export async function getServerSideProps({ query, locale }) {
 
   const debugSparqlQuery = {};
   const results = [];
+  const datesFilter = [];
 
   if (route) {
     const mainQuery = getQueryObject(route.query, {
@@ -493,7 +494,20 @@ export async function getServerSideProps({ query, locale }) {
       params: config.api.params,
     });
     if (res) {
-      results.push(...removeEmptyObjects(res['@graph']));
+      results.push(...removeEmptyObjects(res['@graph']).filter((result) => result.count));
+    }
+
+    // Get dates with another query
+    const datesQuery = getQueryObject(route.plugins['odeuropa-vocabulary'].dates.query, {
+      language: locale,
+    });
+    const resDates = await SparqlClient.query(datesQuery, {
+      endpoint: config.api.endpoint,
+      debug: config.debug,
+      params: config.api.params,
+    });
+    if (resDates) {
+      datesFilter.push(...removeEmptyObjects(resDates['@graph'])[0].date);
     }
   }
 
@@ -501,6 +515,7 @@ export async function getServerSideProps({ query, locale }) {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
       results,
+      datesFilter,
       debugSparqlQuery,
     },
   };

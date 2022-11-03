@@ -59,13 +59,10 @@ module.exports = {
   query: ({ language, params }) => ({
     '@graph': [
       {
-        items: {
-          '@id': '?id',
-          label: '?bestLabel',
-          image: '?image',
-          count: '?count',
-        },
-        dates: '?date',
+        '@id': '?id',
+        label: '?bestLabel',
+        image: '?image',
+        count: '?count',
       },
     ],
     $where: [
@@ -75,31 +72,41 @@ module.exports = {
         ?place crm:P137_exemplifies ?id .
         ?emission crm:P7_took_place_at ?place .
 
-        ${
-          params.date
-            ? `
-          ?emission_source crm:P67_refers_to ?emission .
-          ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
-            params.date
-          )}^^xsd:gYear .
-          `
-            : ''
-        }
-
         {
           OPTIONAL {
             SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
               ?place crm:P137_exemplifies ?id .
               {
-                  # Visual items use schema:about
-                  ?item crm:P138_represents|schema:about ?place .
+                # Textual items use emissions
+                ?emission crm:P7_took_place_at ?place .
+                ?emission od:F1_generated ?item .
+
+                ${
+                  params.from || params.to
+                    ? `
+                  ?emission_source crm:P67_refers_to ?emission .
+                  ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                  ?emission_source schema:dateCreated/time:hasEnd ?end .
+                `
+                    : ''
+                }
               }
               UNION
               {
-                  # Textual items use emissions
-                  ?emission crm:P7_took_place_at ?place .
-                  ?emission od:F1_generated ?item .
+                # Visual items use schema:about
+                ?item crm:P138_represents|schema:about ?place .
+
+                ${
+                  params.from || params.to
+                    ? `
+                  ?item schema:dateCreated/time:hasBeginning ?begin .
+                  ?item schema:dateCreated/time:hasEnd ?end .
+                `
+                    : ''
+                }
               }
+              ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+              ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
             }
             GROUP BY ?id
           }
@@ -126,26 +133,34 @@ module.exports = {
           }
         }
       }
-      UNION
-      {
-        SELECT DISTINCT ?date WHERE {
-          ?place crm:P137_exemplifies ?id .
-          { # Nested select because of an issue with GraphDB optimization engine
-            SELECT DISTINCT ?emission WHERE {
-              ?emission crm:P7_took_place_at ?place .
-            }
-          }
-          ?emission crm:P7_took_place_at ?place .
-          ?source crm:P67_refers_to ?emission .
-          ?source schema:dateCreated/time:hasBeginning ?date .
-        }
-      }
       `,
     ],
     $langTag: 'hide',
   }),
   plugins: {
     'odeuropa-vocabulary': {
+      dates: {
+        query: () => ({
+          '@graph': [
+            {
+              date: '?date',
+            },
+          ],
+          $where: [
+            `
+            ?place crm:P137_exemplifies ?id .
+            { # Nested select because of an issue with GraphDB optimization engine
+              SELECT DISTINCT ?emission WHERE {
+                ?emission crm:P7_took_place_at ?place .
+              }
+            }
+            ?emission crm:P7_took_place_at ?place .
+            ?source crm:P67_refers_to ?emission .
+            ?source schema:dateCreated/time:hasBeginning ?date .
+            `,
+          ],
+        }),
+      },
       wordCloud: {
         query: () => ({
           '@graph': [

@@ -58,108 +58,75 @@ module.exports = {
   query: ({ language, params }) => ({
     '@graph': [
       {
-        items: {
-          '@id': '?id',
-          label: '?bestLabel',
-          image: '?image',
-          count: '?count',
-        },
-        dates: '?date',
+        '@id': '?id',
+        label: '?bestLabel',
+        image: '?image',
+        count: '?count',
       },
     ],
     $where: [
       `
+      ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
+      ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+
       {
-        ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
-        ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+        SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
+          ?object crm:P137_exemplifies ?id .
+          {
+            # Textual items
+            ?emission od:F3_had_source ?object .
+            ?emission od:F1_generated ?item .
+            ?source crm:P67_refers_to ?emission .
+            ?source a crm:E33_Linguistic_Object .
 
-        ${
-          params.from || params.to
-            ? `
-          ?emission_source crm:P67_refers_to ?emission .
-          ?emission_source schema:dateCreated/time:hasBeginning ?begin .
-          ?emission_source schema:dateCreated/time:hasEnd ?end .
-        `
-            : ''
-        }
-        ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
-        ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
-
-        {
-          OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
-              ?object crm:P137_exemplifies ?id .
-              {
-                # Textual items
-                ?emission od:F3_had_source ?object .
-                ?emission od:F1_generated ?item .
-                ?source crm:P67_refers_to ?emission .
-                ?source a crm:E33_Linguistic_Object .
-
-                ${
-                  params.from || params.to
-                    ? `
-                  ?emission_source crm:P67_refers_to ?emission .
-                  ?emission_source schema:dateCreated/time:hasBeginning ?begin .
-                  ?emission_source schema:dateCreated/time:hasEnd ?end .
-                `
-                    : ''
-                }
-                ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
-                ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
-              }
-              UNION
-              {
-                # Visual items
-                ?item crm:P138_represents|schema:about ?object .
-
-                ${
-                  params.from || params.to
-                    ? `
-                  ?item schema:dateCreated/time:hasBeginning ?begin .
-                  ?item schema:dateCreated/time:hasEnd ?end .
-                `
-                    : ''
-                }
-                ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
-                ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
-              }
+            ${
+              params.from || params.to
+                ? `
+              ?emission_source crm:P67_refers_to ?emission .
+              ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+              ?emission_source schema:dateCreated/time:hasEnd ?end .
+            `
+                : ''
             }
-            GROUP BY ?id
           }
-        }
-        UNION
-        {
-          OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
-          OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          BIND(COALESCE(?label_hl, ?label_unk, ?label_en) AS ?bestKnownLabel)
-          OPTIONAL {
-              SELECT ?label_default WHERE {
-                  ?id skos:prefLabel ?label_default
-              }
-              ORDER BY ASC(?label_default)
-              LIMIT 1
+          UNION
+          {
+            # Visual items
+            ?item crm:P138_represents|schema:about ?object .
+
+            ${
+              params.from || params.to
+                ? `
+              ?item schema:dateCreated/time:hasBeginning ?begin .
+              ?item schema:dateCreated/time:hasEnd ?end .
+            `
+                : ''
+            }
           }
-          BIND(COALESCE(?bestKnownLabel, ?label_default) AS ?bestLabel)
+          ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+          ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
         }
-        UNION
-        {
-          OPTIONAL {
-            ?id schema:image ?image .
-          }
-        }
+        GROUP BY ?id
       }
       UNION
       {
-        SELECT DISTINCT ?date WHERE {
-          { # Nested select because of an issue with GraphDB optimization engine
-            SELECT DISTINCT ?emission WHERE {
-                ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+        OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+        OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
+        OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+        BIND(COALESCE(?label_hl, ?label_unk, ?label_en) AS ?bestKnownLabel)
+        OPTIONAL {
+            SELECT ?label_default WHERE {
+                ?id skos:prefLabel ?label_default
             }
-          }
-          ?source crm:P67_refers_to ?emission .
-          ?source schema:dateCreated/time:hasBeginning ?date .
+            ORDER BY ASC(?label_default)
+            LIMIT 1
+        }
+        BIND(COALESCE(?bestKnownLabel, ?label_default) AS ?bestLabel)
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?id schema:image ?image .
         }
       }
       `,
@@ -168,6 +135,26 @@ module.exports = {
   }),
   plugins: {
     'odeuropa-vocabulary': {
+      dates: {
+        query: () => ({
+          '@graph': [
+            {
+              date: '?date',
+            },
+          ],
+          $where: [
+            `
+            { # Nested select because of an issue with GraphDB optimization engine
+              SELECT DISTINCT ?emission WHERE {
+                  ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+              }
+            }
+            ?source crm:P67_refers_to ?emission .
+            ?source schema:dateCreated/time:hasBeginning ?date .
+            `,
+          ],
+        }),
+      },
       wordCloud: {
         query: () => ({
           '@graph': [
