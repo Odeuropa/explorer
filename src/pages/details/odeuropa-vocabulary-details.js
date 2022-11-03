@@ -356,6 +356,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           <OdeuropaTimeline
             values={timelineDates}
             interval={TIMELINE_INTERVAL}
+            minValue={1000}
+            maxValue={2000}
             onChange={(date) => {
               router.push({
                 query: {

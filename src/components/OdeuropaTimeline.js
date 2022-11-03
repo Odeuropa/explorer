@@ -72,11 +72,28 @@ const Item = styled.li`
   }
 `;
 
-const OdeuropaTimeline = ({ values, defaultValue, interval = 20, onChange, ...props }) => {
-  const histogramItems = { ...values };
+const OdeuropaTimeline = ({
+  values,
+  defaultValue,
+  interval = 20,
+  minValue,
+  maxValue,
+  onChange,
+  ...props
+}) => {
+  const limitedValues = Object.fromEntries(
+    Object.entries(values).filter(([date]) => {
+      if (minValue && maxValue) return date >= minValue && date <= maxValue;
+      if (minValue) return date >= minValue;
+      if (maxValue) return date <= maxValue;
+      return false;
+    })
+  );
 
-  const min = Math.min(...Object.keys(values));
-  const max = Math.max(...Object.keys(values));
+  const histogramItems = { ...limitedValues };
+
+  const min = Math.min(...Object.keys(limitedValues));
+  const max = Math.max(...Object.keys(limitedValues));
 
   for (let i = min - interval * 2; i < max + interval * 2; i += interval) {
     if (!histogramItems[i]) histogramItems[i] = 0;
@@ -87,10 +104,10 @@ const OdeuropaTimeline = ({ values, defaultValue, interval = 20, onChange, ...pr
 
   const histogramValues = Object.values(histogramItems);
 
-  const maxValue = Math.max(...histogramValues);
+  const maxHistogramValues = Math.max(...histogramValues);
 
   const histogram = Object.entries(histogramItems).reduce((acc, [label, value]) => {
-    const height = Math.ceil((value / maxValue) * 100);
+    const height = Math.ceil((value / maxHistogramValues) * 100);
     return [
       ...acc,
       <Item
