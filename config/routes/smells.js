@@ -678,7 +678,7 @@ module.exports = {
       whereFunc: (_val, index) => [
         '?emission od:F1_generated ?id',
         `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
-        `OPTIONAL { ?source_${index} skos:narrower* ?source_${index}_narrower }`,
+        `OPTIONAL { ?source_${index} skos:broader* ?source_${index}_narrower }`,
       ],
       filterFunc: (val, index) =>
         `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
