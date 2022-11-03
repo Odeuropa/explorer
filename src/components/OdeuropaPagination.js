@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 import Element from '@components/Element';
 import Spinner from '@components/Spinner';
@@ -9,15 +10,10 @@ import AppContext from '@helpers/context';
 import { uriToId } from '@helpers/utils';
 import config from '~/config';
 
-const loader = (
-  <>
-    <Spinner size="20" style={{ marginRight: '0.5em' }} /> Loading...
-  </>
-);
-
 const PAGE_SIZE = 20;
 
 function OdeuropaPagination({ result, ...props }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { searchData, setSearchData, searchQuery, setSearchQuery, searchPath } =
     useContext(AppContext);
@@ -39,6 +35,13 @@ function OdeuropaPagination({ result, ...props }) {
 
   const page = parseInt(searchParams.get('page'), 10) || 1;
   const currentIndex = (page - 1) * PAGE_SIZE + i + 1;
+
+  const loader = (
+    <>
+      <Spinner size="20" style={{ marginRight: '0.5em' }} />{' '}
+      {t('project:odeuropa-pagination.loading')}
+    </>
+  );
 
   const renderDisabled = (children) => (
     <span style={{ color: '#aaa', cursor: 'not-allowed' }}>{children}</span>
@@ -104,7 +107,7 @@ function OdeuropaPagination({ result, ...props }) {
   };
 
   const renderPrevious = () => {
-    const prevLabel = <>&laquo; Previous result</>;
+    const prevLabel = <>&laquo; {t('project:odeuropa-pagination.previous')}</>;
     if (previousItem) {
       return renderDetailsLink(previousItem['@id'], prevLabel);
     }
@@ -124,7 +127,7 @@ function OdeuropaPagination({ result, ...props }) {
   };
 
   const renderNext = () => {
-    const nextLabel = <>Next result &raquo;</>;
+    const nextLabel = <>{t('project:odeuropa-pagination.next')} &raquo;</>;
     if (nextItem) {
       return renderDetailsLink(nextItem['@id'], nextLabel);
     }
@@ -143,7 +146,7 @@ function OdeuropaPagination({ result, ...props }) {
     <Element display="flex" flexDirection="column" {...props}>
       <Element alignSelf="center" marginBottom={24}>
         <Link href={`${window.location.origin}/${searchPath}?${searchParams?.toString()}`} passHref>
-          <a>Back to search</a>
+          <a>{t('project:odeuropa-pagination.back')}</a>
         </Link>
       </Element>
       <Element

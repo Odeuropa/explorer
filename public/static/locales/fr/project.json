@@ -95,5 +95,11 @@
     },
     "showMore": "Afficher tout",
     "showLess": "Afficher moins"
+  },
+  "odeuropa-pagination": {
+    "back": "Retour à la recherche",
+    "previous": "Résultat précédent",
+    "next": "Résultat suivant",
+    "loading": "Chargement…"
   }
 }
