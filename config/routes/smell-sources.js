@@ -74,16 +74,18 @@ module.exports = {
       {
         ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
         ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+
         ${
-          params.date
+          params.from || params.to
             ? `
           ?emission_source crm:P67_refers_to ?emission .
-          ?emission_source schema:dateCreated/time:hasBeginning ${JSON.stringify(
-            params.date
-          )}^^xsd:gYear .
-          `
+          ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+          ?emission_source schema:dateCreated/time:hasEnd ?end .
+        `
             : ''
         }
+        ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+        ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
 
         {
           OPTIONAL {
@@ -95,11 +97,34 @@ module.exports = {
                 ?emission od:F1_generated ?item .
                 ?source crm:P67_refers_to ?emission .
                 ?source a crm:E33_Linguistic_Object .
+
+                ${
+                  params.from || params.to
+                    ? `
+                  ?emission_source crm:P67_refers_to ?emission .
+                  ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                  ?emission_source schema:dateCreated/time:hasEnd ?end .
+                `
+                    : ''
+                }
+                ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+                ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
               }
               UNION
               {
                 # Visual items
                 ?item crm:P138_represents|schema:about ?object .
+
+                ${
+                  params.from || params.to
+                    ? `
+                  ?item schema:dateCreated/time:hasBeginning ?begin .
+                  ?item schema:dateCreated/time:hasEnd ?end .
+                `
+                    : ''
+                }
+                ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
+                ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
               }
             }
             GROUP BY ?id

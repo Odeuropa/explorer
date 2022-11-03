@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -81,6 +81,10 @@ const StyledSelect = styled(Select)`
   min-width: 200px;
 `;
 
+const DateSelect = styled(Select)`
+  min-width: 100px;
+`;
+
 const Results = styled.div`
   flex: 1;
   justify-content: center;
@@ -152,6 +156,8 @@ const StyledInput = styled(Input)`
 
 const FilterBar = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
   margin-bottom: 24px;
 
   ${breakpoints.weirdMedium`
@@ -165,7 +171,8 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
   const router = useRouter();
   const query = { ...router.query };
   const [searchText, setSearchText] = useState('');
-  const [searchDate, setSearchDate] = useState(query.date);
+  const [searchDateFrom, setSearchDateFrom] = useState(query.from);
+  const [searchDateTo, setSearchDateTo] = useState(query.to);
   const [searchOrder, setSearchOrder] = useState(query.order);
   const [resultsWithLabel, setResultsWithLabel] = useState([]);
   const [dateOptions, setDateOptions] = useState([]);
@@ -213,14 +220,29 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
     setSearchText(e.target.value);
   };
 
-  const onSelectDate = (selectedOption) => {
-    setSearchDate(selectedOption?.value);
-
-    router.push({
-      pathname: query.type,
-      query: { ...query, date: selectedOption?.value },
-    });
+  const onSelectDate = (selectedOption, { name }) => {
+    const value = selectedOption?.value;
+    if (name === 'from') {
+      setSearchDateFrom(value);
+      if (parseInt(searchDateTo, 10) < parseInt(value, 10)) {
+        setSearchDateTo(undefined);
+      }
+    } else if (name === 'to') {
+      setSearchDateTo(value);
+    }
   };
+
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      router.push({
+        pathname: query.type,
+        query: { ...query, from: searchDateFrom, to: searchDateTo },
+      });
+    }
+  }, [searchDateFrom, searchDateTo]);
 
   const onSelectOrder = (selectedOption) => {
     setSearchOrder(selectedOption?.value);
@@ -270,46 +292,77 @@ const OdeuropaVocabularyPage = ({ results, debugSparqlQuery }) => {
         </Hero>
         <Content>
           <FilterBar>
-            <div style={{ marginRight: '1em' }}>
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label style={{ display: 'flex', flexDirection: 'column' }}>
-                <StyledInput
-                  name="q"
-                  type="search"
-                  placeholder={t('project:odeuropa-vocabulary.search')}
-                  value={searchText}
-                  onChange={handleSearchTextChange}
-                />
-              </label>
-            </div>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
+              <StyledInput
+                name="q"
+                type="search"
+                placeholder={t('project:odeuropa-vocabulary.search')}
+                value={searchText}
+                onChange={handleSearchTextChange}
+              />
+            </label>
 
-            <div style={{ marginLeft: 'auto', display: 'flex' }}>
+            <div style={{ marginLeft: 'auto', display: 'flex', flexWrap: 'wrap', gap: '1em' }}>
               {dateOptions.length > 0 && (
-                <div style={{ marginRight: '1em' }}>
+                <>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>
-                      {t('project:odeuropa-vocabulary.presentIn')}
+                  <label
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '1em',
+                    }}
+                  >
+                    <span style={{ textTransform: 'uppercase' }}>
+                      {t('project:odeuropa-vocabulary.presentFrom')}
                     </span>
-                    <StyledSelect
-                      id="select_date"
-                      instanceId="select_date"
-                      name="date"
+                    <DateSelect
+                      id="select_date_from"
+                      instanceId="select_date_from"
+                      name="from"
                       placeholder={t('search:labels.select')}
                       options={dateOptions}
-                      value={dateOptions.find((o) => o.value === searchDate)}
+                      value={dateOptions.find((o) => o.value === searchDateFrom)}
                       onChange={onSelectDate}
                       styles={selectStyles}
                       theme={selectTheme}
                       isClearable
                     />
                   </label>
-                </div>
+                  <label
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '1em',
+                    }}
+                  >
+                    <span style={{ textTransform: 'uppercase' }}>
+                      {t('project:odeuropa-vocabulary.presentTo')}
+                    </span>
+                    <DateSelect
+                      id="select_date_to"
+                      instanceId="select_date_to"
+                      name="to"
+                      placeholder={t('search:labels.select')}
+                      options={dateOptions.filter(
+                        (o) => !searchDateFrom || o.value >= searchDateFrom
+                      )}
+                      value={dateOptions.find((o) => o.value === searchDateTo) || null}
+                      onChange={onSelectDate}
+                      styles={selectStyles}
+                      theme={selectTheme}
+                      isClearable
+                    />
+                  </label>
+                </>
               )}
               <div>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ marginRight: '1em', textTransform: 'uppercase' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
+                  <span style={{ textTransform: 'uppercase' }}>
                     {t('project:odeuropa-vocabulary.orderBy')}
                   </span>
                   <StyledSelect
@@ -404,7 +457,7 @@ export async function getServerSideProps({ query, locale }) {
   if (route) {
     const mainQuery = getQueryObject(route.query, {
       language: locale,
-      params: { date: query.date },
+      params: { from: query.from, to: query.to },
     });
 
     if (config.debug) {

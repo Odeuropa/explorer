@@ -67,7 +67,8 @@
   },
   "odeuropa-vocabulary": {
     "search": "Recherche",
-    "presentIn": "Présent dans",
+    "presentFrom": "Présent de",
+    "presentTo": "à",
     "orderBy": "Trier par",
     "sort": {
       "name": "Alphabétique",
