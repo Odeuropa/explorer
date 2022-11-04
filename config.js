@@ -69,6 +69,9 @@ module.exports = {
     'http://data.odeuropa.eu/dbnl': {
       label: 'DBNL',
     },
+    'http://data.odeuropa.eu/dta': {
+      label: 'Deutsches Textarchiv',
+    },
     'http://data.odeuropa.eu/eebo': {
       label: 'EEBO',
     },
@@ -77,6 +80,9 @@ module.exports = {
     },
     'http://data.odeuropa.eu/gutenberg': {
       label: 'Gutenberg',
+    },
+    'http://data.odeuropa.eu/liberliber': {
+      label: 'Liber Liber',
     },
     'http://data.odeuropa.eu/text-annotation': {
       label: 'Odeuropa benchmark',
@@ -89,6 +95,9 @@ module.exports = {
     },
     'http://data.odeuropa.eu/royal-society-corpus': {
       label: 'Royal Society Corpus',
+    },
+    'http://data.odeuropa.eu/wikisource': {
+      label: 'Wikisource',
     },
   },
   vocabularies: {},
