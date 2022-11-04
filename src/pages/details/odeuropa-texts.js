@@ -95,8 +95,6 @@ Panel.Label = styled.div`
   margin-right: 1rem;
   padding-top: 0.25rem;
   text-transform: uppercase;
-  display: flex;
-  align-items: center;
 `;
 
 Panel.Value = styled.div`

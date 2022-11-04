@@ -40,7 +40,7 @@ const Date = styled.div`
 
 const Visual = styled.div`
   width: 100%;
-  height: 300px;
+  height: 250px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -48,6 +48,8 @@ const Visual = styled.div`
 
 const Body = styled.div`
   padding: 0.75em;
+  overflow-y: auto;
+  max-height: 250px;
 `;
 
 const Row = styled.div`
@@ -57,7 +59,7 @@ const Row = styled.div`
 const Label = styled.div`
   flex-shrink: 0;
   font-size: 0.9rem;
-  width: 80px;
+  width: 110px;
   margin-right: 1rem;
   padding-top: 0.25rem;
   text-transform: uppercase;
@@ -65,6 +67,8 @@ const Label = styled.div`
 
 const Value = styled.div`
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
 `;
 
 const Separator = styled.div`
@@ -186,7 +190,9 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
     return (
       <Row key={label}>
         <Label>{label}</Label>
-        <Value>{renderedValue}</Value>
+        <Value>
+          <div>{renderedValue}</div>
+        </Value>
       </Row>
     );
   };
