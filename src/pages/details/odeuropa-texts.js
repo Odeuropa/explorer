@@ -20,7 +20,6 @@ import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaPagination from '@components/OdeuropaPagination';
 import GraphLink from '@components/GraphLink';
-import MetadataList from '@components/MetadataList';
 import SaveButton from '@components/SaveButton';
 import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
@@ -43,8 +42,6 @@ const Columns = styled.div`
 `;
 
 const Primary = styled.div`
-  flex: auto;
-  min-width: 50%;
   padding-right: 24px;
   margin-bottom: 24px;
 
@@ -53,7 +50,7 @@ const Primary = styled.div`
 `;
 
 const Secondary = styled.div`
-  flex: auto;
+  flex: 1;
 
   ${breakpoints.desktop`
     margin-left: 0;
@@ -94,14 +91,18 @@ Panel.Row = styled.div`
 Panel.Label = styled.div`
   flex-shrink: 0;
   font-size: 0.9rem;
-  width: 80px;
+  width: 120px;
   margin-right: 1rem;
   padding-top: 0.25rem;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
 `;
 
 Panel.Value = styled.div`
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
 `;
 
 const ExcerptPreview = styled.span`
@@ -160,6 +161,17 @@ const AnnotationContainer = styled.div`
   }
 `;
 
+const Annotation = styled.span`
+  position: relative;
+  top: -27px;
+  left: -4px;
+  padding: 4px;
+  line-height: 24px;
+  font-size: 14px;
+  background-color: #fff;
+  white-space: nowrap;
+`;
+
 const MAX_TITLE_LENGTH = 50;
 
 const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
@@ -171,6 +183,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const [isItemSaved, setIsItemSaved] = useState(inList);
   const [excerpts, setExcerpts] = useState([]);
   const [openedExcerpts, setOpenedExcerpts] = useState([]);
+  const [fragmentsList, setFragmentsList] = useState([]);
   const [fragmentsFilter, setFragmentsFilter] = useState([]);
   const [visibleFragments, setVisibleFragments] = useState([]);
   const [highlightedFragment, setHighlightedFragment] = useState(undefined);
@@ -188,11 +201,14 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     });
     setExcerpts(excerptsList);
 
-    const fragmentsFilter = []
+    const fragmentsList = []
       .concat(result.fragment)
       .filter((x) => x)
-      .map((fragment) => fragment.label)
-      .filter((v, i, a) => a.indexOf(v) === i);
+      .map((fragment) => fragment.label);
+    setFragmentsList(fragmentsList);
+    fragmentsList.sort((a, b) => a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()));
+
+    const fragmentsFilter = fragmentsList.filter((v, i, a) => a.indexOf(v) === i);
     setFragmentsFilter(fragmentsFilter);
     setVisibleFragments(fragmentsFilter);
   }, [result]);
@@ -419,52 +435,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
     return (
       <Columns>
         <Primary>
-          <Element marginBottom={12}>
-            <h4>
-              Annotations |{' '}
-              <label>
-                <input
-                  type="checkbox"
-                  checked={fragmentsFilter.length === visibleFragments.length}
-                  onChange={(ev) => {
-                    setVisibleFragments(ev.target.checked ? fragmentsFilter : []);
-                  }}
-                  style={{ verticalAlign: 'middle' }}
-                />{' '}
-                select all
-              </label>
-            </h4>
-            <Element display="flex" flexWrap="wrap">
-              {fragmentsFilter.map((fragment) => (
-                <Element
-                  key={fragment}
-                  onMouseEnter={() => {
-                    setHighlightedFragment(fragment);
-                  }}
-                  onMouseLeave={() => {
-                    setHighlightedFragment(undefined);
-                  }}
-                >
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={visibleFragments.includes(fragment)}
-                      onChange={() => {
-                        setVisibleFragments((prev) =>
-                          prev.includes(fragment)
-                            ? prev.filter((x) => x !== fragment)
-                            : [...prev, fragment]
-                        );
-                      }}
-                      style={{ verticalAlign: 'middle' }}
-                    />{' '}
-                    {fragment}
-                  </label>
-                </Element>
-              ))}
-            </Element>
-          </Element>
-
           <Element>
             <div style={{ position: 'relative' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -482,21 +452,10 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
                     }}
                     highlighted={highlightedFragment === fragment.label}
                   >
-                    <span
-                      style={{
-                        position: 'relative',
-                        top: -27,
-                        left: -4,
-                        padding: 4,
-                        lineHeight: '24px',
-                        fontSize: '14px',
-                        backgroundColor: '#fff',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <Annotation>
                       {fragment.label}{' '}
                       <span style={{ fontSize: '8px' }}>({parseFloat(fragment.score) * 100}%)</span>
-                    </span>
+                    </Annotation>
                   </AnnotationContainer>
                 ))}
             </div>
@@ -504,8 +463,50 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         </Primary>
         <Secondary>
           <Element marginBottom={24}>
-            <h4>Metadata</h4>
-            <MetadataList metadata={result} query={query} route={route} />
+            <h4>
+              Annotations |{' '}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={fragmentsFilter.length === visibleFragments.length}
+                  onChange={(ev) => {
+                    setVisibleFragments(ev.target.checked ? fragmentsFilter : []);
+                  }}
+                  style={{ verticalAlign: 'middle' }}
+                />{' '}
+                select all <small>({fragmentsList.length})</small>
+              </label>
+            </h4>
+            <Element display="flex" flexDirection="column" flexWrap="wrap">
+              {fragmentsFilter.map((fragment) => (
+                <Element
+                  key={fragment}
+                  onMouseEnter={() => {
+                    setHighlightedFragment(fragment);
+                  }}
+                  onMouseLeave={() => {
+                    setHighlightedFragment(undefined);
+                  }}
+                  style={{ marginTop: 6, marginBottom: 6 }}
+                >
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={visibleFragments.includes(fragment)}
+                      onChange={() => {
+                        setVisibleFragments((prev) =>
+                          prev.includes(fragment)
+                            ? prev.filter((x) => x !== fragment)
+                            : [...prev, fragment]
+                        );
+                      }}
+                      style={{ verticalAlign: 'middle' }}
+                    />{' '}
+                    {fragment} <small>({fragmentsList.filter((x) => x === fragment).length})</small>
+                  </label>
+                </Element>
+              ))}
+            </Element>
           </Element>
         </Secondary>
       </Columns>
@@ -582,10 +583,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
         <Element marginLeft={48} marginRight={48}>
           {renderHeader()}
 
-          {result.image ? renderVisualObject() : renderTextualObject()}
-
-          <Separator />
-
           <Element>
             {(smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) && (
               <Element display="flex">
@@ -605,6 +602,10 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
               </Element>
             )}
           </Element>
+
+          <Separator />
+
+          {result.image ? renderVisualObject() : renderTextualObject()}
 
           <Debug>
             <Separator />
