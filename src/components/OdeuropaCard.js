@@ -243,11 +243,24 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
         </Header>
       )}
       {item.image && (
-        <Visual
-          style={{
-            backgroundImage: `url(${item.image})`,
-          }}
-        />
+        <Link
+          key={item['@id']}
+          href={`/details/${route.details.view}?id=${encodeURIComponent(
+            uriToId(item['@id'], {
+              base: route.uriBase,
+            })
+          )}&type=${type}`}
+          as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
+          passHref
+        >
+          <a onClick={onSeeMore}>
+            <Visual
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            />
+          </a>
+        </Link>
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>
