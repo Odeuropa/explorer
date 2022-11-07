@@ -199,7 +199,10 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
 
   const renderBody = (item, highlightKeyword) => {
     if (highlightKeyword && item.text) {
-      const { text } = item;
+      const text = []
+        .concat(item.text)
+        .filter((x) => x)
+        .join(' ');
       const truncatedText = text.length < 200 ? text : text.substring(0, 200) + '…';
       return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
     }

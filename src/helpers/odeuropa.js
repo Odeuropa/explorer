@@ -1,4 +1,7 @@
 export const getHighlightedText = (text, highlight) => {
+  if (typeof text === 'undefined' || text === null) {
+    return;
+  }
   if (typeof highlight === 'undefined' || highlight === null) {
     return <span>{text}</span>;
   }
