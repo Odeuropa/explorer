@@ -763,7 +763,7 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: () => [
-        '?textualObject crm:P67_refers_to ?id .',
+        '?textualObject crm:P67_refers_to ?id',
         '?textualObject schema:inLanguage ?language',
       ],
       filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
