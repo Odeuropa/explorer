@@ -178,7 +178,6 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
   const { query } = router;
   const { data: session } = useSession();
   const route = config.routes[query.type];
-  const [isItemSaved, setIsItemSaved] = useState(inList);
   const [excerpts, setExcerpts] = useState([]);
   const [openedExcerpts, setOpenedExcerpts] = useState([]);
   const [fragmentsList, setFragmentsList] = useState([]);
@@ -237,8 +236,8 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
 
   const mainLabel = getEntityMainLabel(result, { route, language: i18n.language });
 
-  const onItemSaveChange = (status) => {
-    setIsItemSaved(status);
+  const onItemSaveChange = () => {
+    router.replace(router.asPath);
   };
 
   const renderHeader = () => {
@@ -306,7 +305,7 @@ const OdeuropaDetailsPage = ({ result, inList, debugSparqlQuery }) => {
             <SaveButton
               type={query.type}
               item={result}
-              saved={isItemSaved}
+              saved={inList}
               onChange={onItemSaveChange}
             />
           )}
