@@ -9,6 +9,9 @@ module.exports = {
     title: 'Odeuropa Explorer',
     logo: '/images/logo.png',
   },
+  head: {
+    styles: ['https://fonts.googleapis.com/css?family=Libre+Caslon+Text'],
+  },
   home: {
     hero: {
       showHeadline: true,

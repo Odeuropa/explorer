@@ -18,7 +18,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  font-family: Garamond;
+  font-family: 'Libre Caslon Text';
   font-weight: bold;
   background-color: #b9d59b;
   padding: 0.25rem 0.75rem;
@@ -28,7 +28,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

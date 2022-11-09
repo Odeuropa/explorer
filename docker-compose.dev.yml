@@ -19,7 +19,6 @@ services:
       - ./config:/usr/src/app/config
       - ./config.js:/usr/src/app/config.js
       - ./public/fonts/FuturaStdBook.woff:/usr/src/app/public/fonts/FuturaStdBook.woff
-      - ./public/fonts/Garamond.woff:/usr/src/app/public/fonts/Garamond.woff
       - ./public/images/eu-logo.png:/usr/src/app/public/images/eu-logo.png
       - ./public/images/favicon.png:/usr/src/app/public/images/favicon.png
       - ./public/images/flowers.jpg:/usr/src/app/public/images/flowers.jpg
