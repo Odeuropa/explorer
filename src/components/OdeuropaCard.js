@@ -26,6 +26,11 @@ const Header = styled.div`
   text-transform: uppercase;
   display: flex;
   align-items: center;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 const Title = styled.div`
@@ -69,7 +74,7 @@ const Label = styled.div`
 const Value = styled.div`
   font-size: 1.2rem;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
 `;
 
 const Separator = styled.div`
@@ -104,6 +109,11 @@ const Footer = styled.div`
   padding: 0.5em 0.75em;
   text-transform: uppercase;
   margin-top: auto;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 export const renderRowValues = (
@@ -162,7 +172,7 @@ export const renderRowValues = (
 
       return <Fragment key={v['@id']}>{inner}</Fragment>;
     })
-    .reduce((prev, curr) => [prev, ', ', curr]);
+    .reduce((prev, curr) => [prev, <>,&nbsp;</>, curr]);
 };
 
 const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMore, ...props }) => {
@@ -192,9 +202,7 @@ const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMo
     return (
       <Row key={label}>
         <Label>{label}</Label>
-        <Value>
-          <div>{renderedValue}</div>
-        </Value>
+        <Value>{renderedValue}</Value>
       </Row>
     );
   };
