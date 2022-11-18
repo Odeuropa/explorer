@@ -478,7 +478,7 @@ const BrowsePage = ({ initialData, filters }) => {
                 );
               }
 
-              const filter = filters.find((filter) => `field_filter_${filter.id}` === fieldKey);
+              const filter = filters.find((filter) => `filter_${filter.id}` === fieldKey);
               if (!filter) return null;
               return fieldValues.map((fieldValue) => {
                 const label = t(`project:filters.${filter.id}`, null);
@@ -493,8 +493,8 @@ const BrowsePage = ({ initialData, filters }) => {
                         const newQuery = {
                           ...query,
                           page: 1,
-                          [`field_filter_${filter.id}`]: []
-                            .concat(query[`field_filter_${filter.id}`])
+                          [`filter_${filter.id}`]: []
+                            .concat(query[`filter_${filter.id}`])
                             .filter((x) => x && x !== fieldValue),
                         };
 

@@ -143,7 +143,7 @@ export const renderRowValues = (
           const filter =
             route && Array.isArray(route.filters) && route.filters.find((f) => f.id === metaName);
           if (filter && idValue) {
-            url = `/${queryType}?field_filter_${metaName}=${encodeURIComponent(idValue)}`;
+            url = `/${queryType}?filter_${metaName}=${encodeURIComponent(idValue)}`;
           }
         }
 
