@@ -6,7 +6,7 @@ export const getHighlightedText = (text, highlight) => {
     return <span>{text}</span>;
   }
   // Split on highlight term and include term into parts, ignore case
-  const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+  const parts = text.split(new RegExp(`\\b(${highlight})\\b`, 'gi'));
   return (
     <span>
       {parts.map((part, i) => (
