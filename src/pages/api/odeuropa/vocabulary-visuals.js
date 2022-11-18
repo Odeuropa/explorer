@@ -36,5 +36,8 @@ export default withRequestValidation({
 
   const visuals = [].concat(removeEmptyObjects(visualsQueryRes['@graph']));
 
-  res.status(200).json(visuals);
+  res.status(200).json({
+    results: visuals,
+    totalResults: visuals.length,
+  });
 });

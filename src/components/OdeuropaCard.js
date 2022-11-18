@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
 import { getEntityMainLabel } from '@helpers/explorer';
@@ -164,8 +165,9 @@ export const renderRowValues = (
     .reduce((prev, curr) => [prev, ', ', curr]);
 };
 
-const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) => {
+const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMore, ...props }) => {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
 
   if (!item || !item['@id']) return null;
 
@@ -237,25 +239,42 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
     }
   };
 
+  const [spath, sparams] = router.asPath.split('?');
+  const searchParams = new URLSearchParams(sparams);
+  if (typeof page !== 'undefined' && page !== null) {
+    searchParams.set('page', page);
+  }
+  if (searchParams.get('id') !== null) {
+    searchParams.set('sid', searchParams.get('id'));
+  }
+  if (searchParams.get('type') !== null) {
+    searchParams.set('stype', searchParams.get('type'));
+  } else if (type) {
+    searchParams.set('stype', type);
+  }
+  searchParams.delete('id');
+  searchParams.delete('type');
+  searchParams.set('sapi', searchApi);
+  searchParams.set('spath', spath);
+
+  const linkProps = {
+    href: `/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}?${searchParams}`,
+  };
+
   return (
     <Container {...props}>
       {(mainLabel || item.time?.label) && (
         <Header>
-          <Title title={mainLabel}>{mainLabel}</Title>
-          {item.time && <Date>{item.time.label}</Date>}
+          <Link key={item['@id']} passHref {...linkProps}>
+            <a onClick={onSeeMore}>
+              <Title title={mainLabel}>{mainLabel}</Title>
+              {item.time && <Date>{item.time.label}</Date>}
+            </a>
+          </Link>
         </Header>
       )}
       {item.image && (
-        <Link
-          key={item['@id']}
-          href={`/details/${route.details.view}?id=${encodeURIComponent(
-            uriToId(item['@id'], {
-              base: route.uriBase,
-            })
-          )}&type=${type}`}
-          as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
-          passHref
-        >
+        <Link key={item['@id']} passHref {...linkProps}>
           <a onClick={onSeeMore}>
             <Visual
               style={{
@@ -267,16 +286,7 @@ const OdeuropaCard = ({ item, route, type, displayText, onSeeMore, ...props }) =
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>
-        <Link
-          key={item['@id']}
-          href={`/details/${route.details.view}?id=${encodeURIComponent(
-            uriToId(item['@id'], {
-              base: route.uriBase,
-            })
-          )}&type=${type}`}
-          as={`/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}`}
-          passHref
-        >
+        <Link key={item['@id']} passHref {...linkProps}>
           <a onClick={onSeeMore}>{t('project:buttons.seeMore')}</a>
         </Link>
       </Footer>

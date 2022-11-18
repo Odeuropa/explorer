@@ -36,5 +36,8 @@ export default withRequestValidation({
 
   const texts = [].concat(removeEmptyObjects(textsQueryRes['@graph']));
 
-  res.status(200).json(texts);
+  res.status(200).json({
+    results: texts,
+    totalResults: texts.length,
+  });
 });

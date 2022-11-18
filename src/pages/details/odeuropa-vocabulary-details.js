@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -28,7 +28,6 @@ import OdeuropaCard from '@components/OdeuropaCard';
 import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { absoluteUrl, uriToId } from '@helpers/utils';
 import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
-import AppContext from '@helpers/context';
 import config from '~/config';
 
 const Results = styled.div`
@@ -121,7 +120,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [mapMarkers, setMapMarkers] = useState([]);
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
-  const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
 
   const updateTimelineWithResults = (results) => {
     if (!Array.isArray(results)) return;
@@ -198,7 +196,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     })();
 
     (async () => {
-      const results = await (
+      const { results } = await (
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
       setTexts(results.error ? null : results);
@@ -207,7 +205,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     })();
 
     (async () => {
-      const results = await (
+      const { results } = await (
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
       setVisuals(results.error ? null : results);
@@ -420,6 +418,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                       item={result}
                       route={targetRoute}
                       type={route.details.route}
+                      searchApi="/api/search"
                     />
                   );
                 }}
@@ -460,14 +459,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     item={item}
                     route={cardRoute}
                     type={route.details.route}
-                    onSeeMore={() => {
-                      setSearchQuery(query);
-                      setSearchPath(window.location.pathname);
-                      setSearchData({
-                        totalResults: filteredTexts.length,
-                        results: filteredTexts,
-                      });
-                    }}
+                    searchApi="/api/odeuropa/vocabulary-texts"
                   />
                 </Result>
               ))}
@@ -520,14 +512,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     item={item}
                     route={cardRoute}
                     type={route.details.route}
-                    onSeeMore={() => {
-                      setSearchQuery(query);
-                      setSearchPath(window.location.pathname);
-                      setSearchData({
-                        totalResults: filteredVisuals.length,
-                        results: filteredVisuals,
-                      });
-                    }}
+                    searchApi="/api/odeuropa/vocabulary-visuals"
                   />
                 </Result>
               ))}

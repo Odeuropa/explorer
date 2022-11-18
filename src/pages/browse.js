@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import styled from 'styled-components';
 import Router, { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
@@ -26,7 +26,6 @@ import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
-import AppContext from '@helpers/context';
 import { search, getFilters } from '@pages/api/search';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import config from '~/config';
@@ -215,7 +214,6 @@ const BrowsePage = ({ initialData, filters }) => {
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
-  const { setSearchData, setSearchQuery, setSearchPath } = useContext(AppContext);
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   // A function to get the SWR key of each page,
@@ -401,12 +399,6 @@ const BrowsePage = ({ initialData, filters }) => {
       const onSeeMore = () => {
         // Make sure the page number is correct if it hasn't been updated yet
         onScrollToPage(pageNumber);
-        setSearchQuery({
-          ...query,
-          page: pageNumber,
-        });
-        setSearchPath(query.type);
-        setSearchData(data[0]);
       };
 
       return (
@@ -414,8 +406,10 @@ const BrowsePage = ({ initialData, filters }) => {
           key={result['@id']}
           item={result}
           route={route}
+          page={pageNumber}
           type={route.details.route}
           displayText={displayText}
+          searchApi="/api/search"
           onSeeMore={onSeeMore}
         />
       );

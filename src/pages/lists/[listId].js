@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import queryString from 'query-string';
+import { useTranslation, Trans } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { unstable_getServerSession } from 'next-auth';
 
+import { authOptions } from '@pages/api/auth/[...nextauth]';
 import Header from '@components/Header';
 import Footer from '@components/Footer';
 import Layout from '@components/Layout';
@@ -17,12 +20,7 @@ import { Navbar, NavItem } from '@components/Navbar';
 import OdeuropaCard from '@components/OdeuropaCard';
 import { absoluteUrl, uriToId, slugify } from '@helpers/utils';
 import { getSessionUser, getListById } from '@helpers/database';
-import { getEntityMainImage, getEntityMainLabel } from '@helpers/explorer';
-import { useTranslation, Trans } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import config from '~/config';
-import { authOptions } from '@pages/api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth';
 
 const Results = styled.div`
   display: grid;
@@ -58,6 +56,7 @@ function ListsPage({ isOwner, list, shareLink, error }) {
                   item={result}
                   route={route}
                   type={route.details.route}
+                  searchApi="/api/search"
                 />
               );
             })}
@@ -228,7 +227,7 @@ export async function getServerSideProps(ctx) {
     if (route) {
       const entity = await (
         await fetch(
-          `${absoluteUrl(req)}/api/entity?${queryString.stringify({
+          `${absoluteUrl(req)}/api/entity?${new URLSearchParams({
             id: uriToId(item.uri, { base: route.uriBase }),
             type: item.type,
           })}`,
