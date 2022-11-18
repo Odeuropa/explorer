@@ -38,8 +38,8 @@ const Columns = styled.div`
   margin-bottom: 24px;
 
   ${breakpoints.desktop`
-    flex-direction: row;
-  `}
+		flex-direction: row;
+	`}
 `;
 
 const Primary = styled.div`
@@ -54,9 +54,9 @@ const Secondary = styled.div`
   flex: 1;
 
   ${breakpoints.desktop`
-    margin-left: 0;
-    padding: 0 24px;
-  `}
+		margin-left: 0;
+		padding: 0 24px;
+	`}
 `;
 
 const Separator = styled.div`
@@ -101,7 +101,7 @@ Panel.Label = styled.div`
 Panel.Value = styled.div`
   font-size: 1.2rem;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
 `;
 
 const ExcerptPreview = styled.span`
