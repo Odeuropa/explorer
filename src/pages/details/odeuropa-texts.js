@@ -416,7 +416,9 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                     overflow: 'hidden',
                   }}
                 >
-                  <span style={{ marginLeft: 12, marginRight: 12 }}>Excerpt {i + 1}</span>
+                  <span style={{ marginLeft: 12, marginRight: 12 }}>
+                    {t('project:details.excerpt', { num: i + 1 })}
+                  </span>
                   <ExcerptPreview>
                     {getHighlightedText(
                       excerpt.value,
@@ -446,6 +448,12 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                 )}
             </ExcerptContainer>
             {i < excerpts.length - 1 && <Separator />}
+            {i === 0 && excerpts.length > 1 && (
+              <>
+                <h3>{t('project:details.exploreMore')}</h3>
+                <Separator />
+              </>
+            )}
           </Element>
         ))}
       </Element>

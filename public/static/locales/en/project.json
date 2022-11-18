@@ -63,7 +63,9 @@
   },
   "details": {
     "textualResource": "Textual resource",
-    "visualResource": "Visual resource"
+    "visualResource": "Visual resource",
+    "excerpt": "Excerpt {{num}}",
+    "exploreMore": "Explore Smell Extracts from the same source:"
   },
   "odeuropa-vocabulary": {
     "search": "Search",

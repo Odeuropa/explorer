@@ -63,7 +63,9 @@
   },
   "details": {
     "textualResource": "Ressource textuelle",
-    "visualResource": "Ressource visuelle"
+    "visualResource": "Ressource visuelle",
+    "excerpt": "Extrait {{num}}",
+    "exploreMore": "Extraits d'odeurs provenant de la même source :"
   },
   "odeuropa-vocabulary": {
     "search": "Recherche",
