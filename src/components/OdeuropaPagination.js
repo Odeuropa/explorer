@@ -187,7 +187,6 @@ function OdeuropaPagination({ searchData, result, ...props }) {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            paddingBottom: 24,
             marginBottom: 24,
           }}
         >
