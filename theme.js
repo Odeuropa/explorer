@@ -6,13 +6,6 @@ const theme = {
       font-weight: normal;
       src: local('Futura Std Book'), url('/fonts/FuturaStdBook.woff') format('woff');
     }
-
-    @font-face {
-      font-family: 'Garamond';
-      font-style: normal;
-      font-weight: normal;
-      src: local('Garamond'), url('/fonts/Garamond.woff') format('woff');
-    }
   `,
   fontFamily: {
     sansSerif:
