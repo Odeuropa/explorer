@@ -476,6 +476,29 @@ const BrowsePage = ({ initialData, filters }) => {
                     />
                   </Chip>
                 );
+              } else if (fieldKey === 'graph') {
+                return (
+                  <Chip key={fieldKey}>
+                    <Chip.Label>{t('project:filters.graph', t('search:fields.graph'))}</Chip.Label>
+                    <Chip.Value>
+                      {fieldValues.map((v) => config.graphs[v].label).join(', ')}
+                    </Chip.Value>
+                    <Chip.Cross
+                      onClick={() => {
+                        const newQuery = {
+                          ...query,
+                          page: 1,
+                        };
+                        delete newQuery.graph;
+
+                        Router.push({
+                          pathname,
+                          query: newQuery,
+                        });
+                      }}
+                    />
+                  </Chip>
+                );
               }
 
               const filter = filters.find((filter) => `filter_${filter.id}` === fieldKey);
