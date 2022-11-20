@@ -50,12 +50,23 @@ const Title = styled.h1`
   text-align: left;
   color: #735dae;
   line-height: 100%;
-  margin: 0 auto;
-  padding: 0 1em;
+  padding: 0 3rem;
   font-size: 5rem;
   white-space: pre-line;
+  margin-bottom: 1rem;
 
   ${({ theme }) => theme?.pages?.HomePage?.Title};
+`;
+
+const SubTitle = styled.h2`
+  text-align: left;
+  color: #735dae;
+  line-height: 100%;
+  padding: 0 3rem;
+  font-size: 3rem;
+  white-space: pre-line;
+
+  ${({ theme }) => theme?.pages?.HomePage?.SubTitle};
 `;
 
 const Logo = styled.div`
@@ -260,11 +271,16 @@ const HomePage = () => {
               style={{
                 flex: '1',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
+                flexDirection: 'column',
               }}
             >
-              {config.home.hero.showHeadline && <Title>{t('home:hero.headline')}</Title>}
+              {config.home.hero.showHeadline && (
+                <>
+                  <Title>{t('home:hero.headline')}</Title>
+                  <SubTitle>{t('home:hero.subheading')}</SubTitle>
+                </>
+              )}
               {config.home.hero.showLogo && <Logo />}
             </div>
             <TopBlock>
