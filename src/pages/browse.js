@@ -275,25 +275,28 @@ const BrowsePage = ({ initialData, filters }) => {
 
   const onSearch = (fields) => {
     const newQuery = {
-      type: query.type,
       ...fields,
       sort: query.sort,
     };
 
     Router.push({
-      pathname,
+      pathname: query.type,
       query: newQuery,
     });
   };
 
   const loadPage = (pageNumber) => {
     setSize(1);
+
+    const newQuery = {
+      ...query,
+      page: pageNumber,
+    };
+    delete newQuery.type;
+
     return Router.push({
-      pathname,
-      query: {
-        ...query,
-        page: pageNumber,
-      },
+      pathname: query.type,
+      query: newQuery,
     });
   };
 
@@ -319,12 +322,13 @@ const BrowsePage = ({ initialData, filters }) => {
       sort: value,
       page: 1,
     };
+    delete newQuery.type;
 
     // Reset page index
     setSize(1);
 
     return Router.push({
-      pathname,
+      pathname: query.type,
       query: newQuery,
     });
   };
@@ -336,9 +340,10 @@ const BrowsePage = ({ initialData, filters }) => {
       ...query,
       display: value,
     };
+    delete newQuery.type;
 
     return Router.push({
-      pathname,
+      pathname: query.type,
       query: newQuery,
     });
   };
@@ -467,9 +472,10 @@ const BrowsePage = ({ initialData, filters }) => {
                           page: 1,
                         };
                         delete newQuery.q;
+                        delete newQuery.type;
 
                         Router.push({
-                          pathname,
+                          pathname: query.type,
                           query: newQuery,
                         });
                       }}
@@ -489,10 +495,11 @@ const BrowsePage = ({ initialData, filters }) => {
                           ...query,
                           page: 1,
                         };
+                        delete newQuery.type;
                         delete newQuery.graph;
 
                         Router.push({
-                          pathname,
+                          pathname: query.type,
                           query: newQuery,
                         });
                       }}
@@ -520,9 +527,10 @@ const BrowsePage = ({ initialData, filters }) => {
                             .concat(query[`filter_${filter.id}`])
                             .filter((x) => x && x !== fieldValue),
                         };
+                        delete newQuery.type;
 
                         Router.push({
-                          pathname,
+                          pathname: query.type,
                           query: newQuery,
                         });
                       }}
