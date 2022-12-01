@@ -208,9 +208,9 @@ Chip.Cross = styled(CrossIcon)`
 
 const PAGE_SIZE = 20;
 
-const BrowsePage = ({ initialData, filters }) => {
+const OdeuropaBrowsePage = ({ initialData, filters }) => {
   const router = useRouter();
-  const { req, query, pathname } = router;
+  const { req, query } = router;
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
@@ -683,4 +683,4 @@ export async function getServerSideProps({ query, locale }) {
   };
 }
 
-export default BrowsePage;
+export default OdeuropaBrowsePage;

@@ -33,7 +33,7 @@ function characterReplacer(character) {
 }
 
 module.exports = {
-  view: 'browse',
+  view: 'odeuropa-browse',
   showInNavbar: true,
   showInHome: false,
   uriBase: 'http://data.odeuropa.eu/smell',

@@ -46,7 +46,7 @@ services:
       - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js
       - ./src/pages/api/odeuropa/vocabulary-visuals.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-visuals.js
       - ./src/pages/api/odeuropa/vocabulary-wordcloud.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-wordcloud.js
-      - ./src/pages/browse.js:/usr/src/app/src/pages/browse.js
+      - ./src/pages/odeuropa-browse.js:/usr/src/app/src/pages/odeuropa-browse.js
       - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
       - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
       - ./src/pages/index.js:/usr/src/app/src/pages/index.js
