@@ -318,7 +318,7 @@ const HomePage = () => {
                   >
                     {t('project:home.searchTitle')}
                   </span>
-                  <SearchForm method="GET" action="/browse">
+                  <SearchForm method="GET" action={`/${config.search.route}`}>
                     <input type="hidden" name="type" value={config.search.route} />
                     <StyledSearchInput name="q" placeholder={t('home:search.placeholder')} />
                     <SearchButton aria-label={t('common:buttons.searchByText')} type="submit">
