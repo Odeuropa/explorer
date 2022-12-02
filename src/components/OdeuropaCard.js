@@ -1,9 +1,10 @@
 import { Fragment } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
+import Element from '@components/Element';
+import SaveButton from '@components/SaveButton';
 import PaginatedLink from '@components/PaginatedLink';
 import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
@@ -17,6 +18,16 @@ const Container = styled.div`
   flex-direction: column;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.28) 0px 0px 8px;
+`;
+
+const SaveButtonContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8px 0.25em;
+  margin: 8px;
+  background-color: #e7e7e7;
+  border-radius: 16px;
 `;
 
 const Header = styled.div`
@@ -34,9 +45,12 @@ const Header = styled.div`
   }
 `;
 
+const VisualHeader = styled.div`
+  position: relative;
+`;
+
 const Title = styled.div`
   font-size: 1.3rem;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -176,9 +190,19 @@ export const renderRowValues = (
     .reduce((prev, curr) => [prev, <>,&nbsp;</>, curr]);
 };
 
-const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMore, ...props }) => {
+const OdeuropaCard = ({
+  item,
+  route,
+  type,
+  page,
+  displayText,
+  searchApi,
+  onSeeMore,
+  isFavorite,
+  onToggleFavorite,
+  ...props
+}) => {
   const { t, i18n } = useTranslation();
-  const router = useRouter();
 
   if (!item || !item['@id']) return null;
 
@@ -260,24 +284,47 @@ const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMo
     <Container {...props}>
       {(mainLabel || item.time?.label) && (
         <Header>
-          <PaginatedLink {...linkProps}>
-            <a onClick={onSeeMore}>
-              <Title title={mainLabel}>{mainLabel}</Title>
-              {item.time && <Date>{item.time.label}</Date>}
-            </a>
-          </PaginatedLink>
+          <Element style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+            <PaginatedLink {...linkProps}>
+              <a onClick={onSeeMore}>
+                <Title title={mainLabel}>{mainLabel}</Title>
+                {item.time && <Date>{item.time.label}</Date>}
+              </a>
+            </PaginatedLink>
+          </Element>
+          <Element marginLeft="auto">
+            <SaveButton
+              type={type}
+              item={item}
+              saved={isFavorite}
+              onChange={onToggleFavorite}
+              hideLabel
+              style={{ padding: 8 }}
+            />
+          </Element>
         </Header>
       )}
       {item.image && (
-        <PaginatedLink {...linkProps}>
-          <a onClick={onSeeMore}>
-            <Visual
-              style={{
-                backgroundImage: `url(${item.image})`,
-              }}
+        <VisualHeader>
+          <PaginatedLink {...linkProps}>
+            <a onClick={onSeeMore}>
+              <Visual
+                style={{
+                  backgroundImage: `url(${item.image})`,
+                }}
+              />
+            </a>
+          </PaginatedLink>
+          <SaveButtonContainer>
+            <SaveButton
+              type={type}
+              item={item}
+              saved={isFavorite}
+              onChange={onToggleFavorite}
+              hideLabel
             />
-          </a>
-        </PaginatedLink>
+          </SaveButtonContainer>
+        </VisualHeader>
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>

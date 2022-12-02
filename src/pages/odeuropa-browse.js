@@ -217,6 +217,7 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
@@ -243,6 +244,17 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
     totalResults = data[0].totalResults;
     debugSparqlQuery = data[0].debugSparqlQuery;
   }
+
+  useEffect(() => {
+    setFavorites(
+      data.reduce((acc, cur) => {
+        console.log('cur:', cur);
+        acc.push(...cur.favorites);
+        return acc;
+      }, [])
+    );
+  }, [data]);
+
   totalPages = Math.ceil(totalResults / PAGE_SIZE);
 
   const debouncedHandleResize = useDebounce(() => {
@@ -418,6 +430,12 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
           displayText={displayText}
           searchApi="/api/search"
           onSeeMore={onSeeMore}
+          isFavorite={favorites.includes(result['@id'])}
+          onToggleFavorite={(saved) =>
+            setFavorites((prev) =>
+              saved ? [...prev, result['@id']] : prev.filter((item) => item !== result['@id'])
+            )
+          }
         />
       );
     });
@@ -680,6 +698,7 @@ export async function getServerSideProps(context) {
       initialData: {
         results: searchData.results,
         totalResults: searchData.totalResults,
+        favorites: searchData.favorites,
         debugSparqlQuery: searchData.debugSparqlQuery,
       },
       filters,
