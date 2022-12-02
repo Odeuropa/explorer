@@ -115,6 +115,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [visuals, setVisuals] = useState();
   const [filteredTexts, setFilteredTexts] = useState();
   const [filteredVisuals, setFilteredVisuals] = useState();
+  const [favorites, setFavorites] = useState([]);
   const [timelineDates, setTimelineDates] = useState({});
   const [resultToDateMapping, setResultToDateMapping] = useState({});
   const [mapMarkers, setMapMarkers] = useState([]);
@@ -196,19 +197,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     })();
 
     (async () => {
-      const { results } = await (
+      const { results, favorites } = await (
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
       setTexts(results.error ? null : results);
+      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
       updateMapMarkersWithResults(results);
     })();
 
     (async () => {
-      const { results } = await (
+      const { results, favorites } = await (
         await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
       setVisuals(results.error ? null : results);
+      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
       updateMapMarkersWithResults(results);
     })();
@@ -419,6 +422,14 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                       route={targetRoute}
                       type={route.details.route}
                       searchApi="/api/search"
+                      isFavorite={favorites.includes(result['@id'])}
+                      onToggleFavorite={(saved) => {
+                        setFavorites((prev) =>
+                          saved
+                            ? [...prev, result['@id']]
+                            : prev.filter((id) => id !== result['@id'])
+                        );
+                      }}
                     />
                   );
                 }}
@@ -460,6 +471,12 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     route={cardRoute}
                     type={route.details.route}
                     searchApi="/api/odeuropa/vocabulary-texts"
+                    isFavorite={favorites.includes(item['@id'])}
+                    onToggleFavorite={(saved) => {
+                      setFavorites((prev) =>
+                        saved ? [...prev, item['@id']] : prev.filter((id) => id !== item['@id'])
+                      );
+                    }}
                   />
                 </Result>
               ))}
@@ -513,6 +530,12 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     route={cardRoute}
                     type={route.details.route}
                     searchApi="/api/odeuropa/vocabulary-visuals"
+                    isFavorite={favorites.includes(item['@id'])}
+                    onToggleFavorite={(saved) => {
+                      setFavorites((prev) =>
+                        saved ? [...prev, item['@id']] : prev.filter((id) => id !== item['@id'])
+                      );
+                    }}
                   />
                 </Result>
               ))}
@@ -554,11 +577,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 };
 
 export async function getServerSideProps({ req, res, query, locale }) {
-  const {
-    result = null,
-    inList = false,
-    debugSparqlQuery = null,
-  } = await (
+  const { result = null, debugSparqlQuery = null } = await (
     await fetch(`${absoluteUrl(req)}/api/entity?${queryString.stringify(query)}`, {
       headers: {
         ...req.headers,
@@ -575,7 +594,6 @@ export async function getServerSideProps({ req, res, query, locale }) {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
       result,
-      inList,
       debugSparqlQuery,
     },
   };

@@ -1,6 +1,10 @@
+import { unstable_getServerSession } from 'next-auth';
+
 import SparqlClient from '@helpers/sparql';
 import { getQueryObject, removeEmptyObjects } from '@helpers/utils';
 import { withRequestValidation } from '@helpers/api';
+import { getSessionUser, getUserLists } from '@helpers/database';
+import { authOptions } from '@pages/api/auth/[...nextauth]';
 import config from '~/config';
 
 export default withRequestValidation({
@@ -34,10 +38,27 @@ export default withRequestValidation({
     params: config.api.params,
   });
 
-  const texts = [].concat(removeEmptyObjects(textsQueryRes['@graph']));
+  const results = [].concat(removeEmptyObjects(textsQueryRes['@graph']));
+
+  const favorites = [];
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (session) {
+    const user = await getSessionUser(session);
+    if (user) {
+      const loadedLists = await getUserLists(user);
+      favorites.push(
+        ...results
+          .filter((result) =>
+            loadedLists.some((list) => list.items.some((it) => it.uri === result['@id']))
+          )
+          .map((result) => result['@id'])
+      );
+    }
+  }
 
   res.status(200).json({
-    results: texts,
-    totalResults: texts.length,
+    results,
+    favorites,
+    totalResults: results.length,
   });
 });

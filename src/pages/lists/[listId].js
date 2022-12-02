@@ -57,6 +57,7 @@ function ListsPage({ isOwner, list, shareLink, error }) {
                   route={route}
                   type={route.details.route}
                   searchApi="/api/search"
+                  showFavorite={false}
                 />
               );
             })}

@@ -200,6 +200,7 @@ const OdeuropaCard = ({
   onSeeMore,
   isFavorite,
   onToggleFavorite,
+  showFavorite = true,
   ...props
 }) => {
   const { t, i18n } = useTranslation();
@@ -292,16 +293,18 @@ const OdeuropaCard = ({
               </a>
             </PaginatedLink>
           </Element>
-          <Element marginLeft="auto">
-            <SaveButton
-              type={type}
-              item={item}
-              saved={isFavorite}
-              onChange={onToggleFavorite}
-              hideLabel
-              style={{ padding: 8 }}
-            />
-          </Element>
+          {showFavorite && (
+            <Element marginLeft="auto">
+              <SaveButton
+                type={type}
+                item={item}
+                saved={isFavorite}
+                onChange={onToggleFavorite}
+                hideLabel
+                style={{ padding: 8 }}
+              />
+            </Element>
+          )}
         </Header>
       )}
       {item.image && (
@@ -315,15 +318,17 @@ const OdeuropaCard = ({
               />
             </a>
           </PaginatedLink>
-          <SaveButtonContainer>
-            <SaveButton
-              type={type}
-              item={item}
-              saved={isFavorite}
-              onChange={onToggleFavorite}
-              hideLabel
-            />
-          </SaveButtonContainer>
+          {showFavorite && (
+            <SaveButtonContainer>
+              <SaveButton
+                type={type}
+                item={item}
+                saved={isFavorite}
+                onChange={onToggleFavorite}
+                hideLabel
+              />
+            </SaveButtonContainer>
+          )}
         </VisualHeader>
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
