@@ -325,14 +325,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
         </Element>
 
         <Element display="flex" alignItems="center" justifyContent="space-between">
-          {session && (
-            <SaveButton
-              type={query.type}
-              item={result}
-              saved={inList}
-              onChange={onItemSaveChange}
-            />
-          )}
+          <SaveButton type={query.type} item={result} saved={inList} onChange={onItemSaveChange} />
         </Element>
 
         <Element marginBottom={12} display="flex">
