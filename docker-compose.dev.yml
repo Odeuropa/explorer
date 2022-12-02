@@ -40,7 +40,6 @@ services:
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
       - ./src/components/OdeuropaMap.js:/usr/src/app/src/components/OdeuropaMap.js
-      - ./src/components/OdeuropaPagination.js:/usr/src/app/src/components/OdeuropaPagination.js
       - ./src/components/OdeuropaTimeline.js:/usr/src/app/src/components/OdeuropaTimeline.js
       - ./src/helpers/odeuropa.js:/usr/src/app/src/helpers/odeuropa.js
       - ./src/pages/api/odeuropa/vocabulary-texts.js:/usr/src/app/src/pages/api/odeuropa/vocabulary-texts.js

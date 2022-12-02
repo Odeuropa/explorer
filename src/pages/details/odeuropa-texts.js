@@ -19,13 +19,13 @@ import Metadata from '@components/Metadata';
 import Debug from '@components/Debug';
 import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
-import OdeuropaPagination from '@components/OdeuropaPagination';
+import Pagination from '@components/Pagination';
 import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
 import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
-import { getEntityMainLabel, generatePermalink } from '@helpers/explorer';
-import { slugify, uriToId } from '@helpers/utils';
+import { getEntityMainLabel, generatePermalink, getSearchData } from '@helpers/explorer';
+import { absoluteUrl, slugify, uriToId } from '@helpers/utils';
 import { getHighlightedText } from '@helpers/odeuropa';
 import config from '~/config';
 
@@ -608,7 +608,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
       <PageTitle title={`${result.source?.label || mainLabel}`} />
       <Header />
       <Body>
-        <OdeuropaPagination searchData={searchData} result={result} style={{ marginTop: 24 }} />
+        <Pagination searchData={searchData} result={result} />
         <Element marginLeft={48} marginRight={48}>
           {renderHeader()}
 
@@ -659,13 +659,15 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
   );
 };
 
-export async function getServerSideProps({ req, res, query, locale }) {
+export async function getServerSideProps(context) {
+  const { req, res, query, locale } = context;
+
   const {
     result = null,
     inList = false,
     debugSparqlQuery,
   } = await (
-    await fetch(`${process.env.SITE}/api/entity?${queryString.stringify(query)}`, {
+    await fetch(`${absoluteUrl(req)}/api/entity?${queryString.stringify(query)}`, {
       headers: {
         ...req.headers,
         'accept-language': locale,
@@ -673,28 +675,11 @@ export async function getServerSideProps({ req, res, query, locale }) {
     })
   ).json();
 
-  let searchData = null;
-  if (query.sapi) {
-    const searchParams = new URLSearchParams(query);
-    searchParams.set('type', searchParams.get('stype'));
-    searchParams.set('id', searchParams.get('sid'));
-    searchParams.delete('sid');
-    searchParams.delete('stype');
-    searchParams.delete('sapi');
-    searchParams.delete('spath');
-    searchData = await (
-      await fetch(`${process.env.SITE}${query.sapi}?${searchParams}`, {
-        headers: {
-          ...req.headers,
-          'accept-language': locale,
-        },
-      })
-    ).json();
-  }
-
   if (!result && res) {
     res.statusCode = 404;
   }
+
+  const searchData = await getSearchData(context);
 
   return {
     props: {

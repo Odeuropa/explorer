@@ -98,11 +98,5 @@
     },
     "showMore": "Show all",
     "showLess": "Show less"
-  },
-  "odeuropa-pagination": {
-    "back": "Back to search results",
-    "previous": "Previous result",
-    "next": "Next result",
-    "loading": "Loading…"
   }
 }

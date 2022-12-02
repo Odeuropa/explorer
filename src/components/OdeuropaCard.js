@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
+import PaginatedLink from '@components/PaginatedLink';
 import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
 import { getHighlightedText } from '@helpers/odeuropa';
@@ -247,42 +248,28 @@ const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMo
     }
   };
 
-  const [spath, sparams] = router.asPath.split('?');
-  const searchParams = new URLSearchParams(sparams);
-  if (typeof page !== 'undefined' && page !== null) {
-    searchParams.set('page', page);
-  }
-  if (searchParams.get('id') !== null) {
-    searchParams.set('sid', searchParams.get('id'));
-  }
-  if (searchParams.get('type') !== null) {
-    searchParams.set('stype', searchParams.get('type'));
-  } else if (type) {
-    searchParams.set('stype', type);
-  }
-  searchParams.delete('id');
-  searchParams.delete('type');
-  searchParams.set('sapi', searchApi);
-  searchParams.set('spath', spath);
-
   const linkProps = {
-    href: `/${type}/${encodeURI(uriToId(item['@id'], { base: route.uriBase }))}?${searchParams}`,
+    id: item['@id'],
+    type,
+    page,
+    searchApi,
+    passHref: true,
   };
 
   return (
     <Container {...props}>
       {(mainLabel || item.time?.label) && (
         <Header>
-          <Link key={item['@id']} passHref {...linkProps}>
+          <PaginatedLink {...linkProps}>
             <a onClick={onSeeMore}>
               <Title title={mainLabel}>{mainLabel}</Title>
               {item.time && <Date>{item.time.label}</Date>}
             </a>
-          </Link>
+          </PaginatedLink>
         </Header>
       )}
       {item.image && (
-        <Link key={item['@id']} passHref {...linkProps}>
+        <PaginatedLink {...linkProps}>
           <a onClick={onSeeMore}>
             <Visual
               style={{
@@ -290,13 +277,13 @@ const OdeuropaCard = ({ item, route, type, page, displayText, searchApi, onSeeMo
               }}
             />
           </a>
-        </Link>
+        </PaginatedLink>
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>
-        <Link key={item['@id']} passHref {...linkProps}>
+        <PaginatedLink {...linkProps}>
           <a onClick={onSeeMore}>{t('project:buttons.seeMore')}</a>
-        </Link>
+        </PaginatedLink>
       </Footer>
     </Container>
   );
