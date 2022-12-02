@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate';
 import useSWRInfinite from 'swr/infinite';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { unstable_getServerSession } from 'next-auth';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -27,6 +28,7 @@ import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import { search, getFilters } from '@pages/api/search';
+import { authOptions } from '@pages/api/auth/[...nextauth]';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import config from '~/config';
 import { selectStyles, selectTheme } from '~/theme';
@@ -666,9 +668,11 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
   );
 };
 
-export async function getServerSideProps({ query, locale }) {
+export async function getServerSideProps(context) {
+  const { req, res, query, locale } = context;
   const filters = await getFilters(query, { language: locale });
-  const searchData = await search(query, locale);
+  const session = await unstable_getServerSession(req, res, authOptions);
+  const searchData = await search(query, session, locale);
 
   return {
     props: {
