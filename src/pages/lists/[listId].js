@@ -194,14 +194,14 @@ export async function getServerSideProps(ctx) {
   const session = await unstable_getServerSession(req, res, authOptions);
   const list = await getListById(query.listId.split('-').pop());
 
+  const props = {
+    ...(await serverSideTranslations(ctx.locale, ['common', 'project', 'search'])),
+  };
+
   if (!list) {
     // List not found
     res.statusCode = 404;
-    return {
-      props: {
-        error: 'List not found',
-      },
-    };
+    return { props };
   }
 
   // Get current user
@@ -213,7 +213,7 @@ export async function getServerSideProps(ctx) {
     res.setHeader('location', '/auth/signin');
     res.statusCode = 302;
     res.end();
-    return { props: {} };
+    return { props };
   }
 
   // Get details (title, image, ...) for each item in the list
@@ -245,13 +245,12 @@ export async function getServerSideProps(ctx) {
     }
   }
 
+  props.list = JSON.parse(JSON.stringify(list)); // serialize the list;
+  props.shareLink = `${absoluteUrl(req)}/lists/${slugify(list.name)}-${list._id}`;
+  props.isOwner = isOwner;
+
   return {
-    props: {
-      ...(await serverSideTranslations(ctx.locale, ['common', 'project', 'search'])),
-      list: JSON.parse(JSON.stringify(list)), // serialize the list
-      isOwner,
-      shareLink: `${absoluteUrl(req)}/lists/${slugify(list.name)}-${list._id}`,
-    },
+    props,
   };
 }
 
