@@ -68,44 +68,17 @@ module.exports = {
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
   },
-  graphs: {
-    'http://data.odeuropa.eu/dbnl': {
-      label: 'DBNL',
-    },
-    'http://data.odeuropa.eu/dta': {
-      label: 'Deutsches Textarchiv',
-    },
-    'http://data.odeuropa.eu/dlib': {
-      label: 'Digital Library of Slovenia',
-    },
-    'http://data.odeuropa.eu/eebo': {
-      label: 'EEBO',
-    },
-    'http://data.odeuropa.eu/gallica': {
-      label: 'Gallica',
-    },
-    'http://data.odeuropa.eu/gutenberg': {
-      label: 'Gutenberg',
-    },
-    'http://data.odeuropa.eu/liberliber': {
-      label: 'Liber Liber',
-    },
-    'http://data.odeuropa.eu/text-annotation': {
-      label: 'Odeuropa benchmark',
-    },
-    'http://data.odeuropa.eu/image-annotation': {
-      label: 'ODOR Dataset',
-    },
-    'http://data.odeuropa.eu/old-bailey-corpus': {
-      label: 'Old Bailey Corpus',
-    },
-    'http://data.odeuropa.eu/royal-society-corpus': {
-      label: 'Royal Society Corpus',
-    },
-    'http://data.odeuropa.eu/wikisource': {
-      label: 'Wikisource',
-    },
-  },
+  graphs: () => ({
+    '@context': 'http://schema.org/',
+    '@graph': [
+      {
+        '@id': '?g',
+        label: '?label',
+      },
+    ],
+    $where: ['GRAPH ?g { ?id a od:L11_Smell }', '?g rdfs:label ?label'],
+    $orderby: 'ASC(?label)',
+  }),
   vocabularies: {},
   plugins: {},
 };

@@ -27,6 +27,7 @@ import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
+import { useGraphs } from '@helpers/useGraphs';
 import { search, getFilters } from '@pages/api/search';
 import { authOptions } from '@pages/api/auth/[...nextauth]';
 import breakpoints, { sizes } from '@styles/breakpoints';
@@ -218,6 +219,7 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
   const [currentPage, setCurrentPage] = useState(parseInt(query.page, 10) || 1);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const graphs = useGraphs();
 
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
@@ -506,9 +508,7 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
                 return (
                   <Chip key={fieldKey}>
                     <Chip.Label>{t('project:filters.graph', t('search:fields.graph'))}</Chip.Label>
-                    <Chip.Value>
-                      {fieldValues.map((v) => config.graphs[v].label).join(', ')}
-                    </Chip.Value>
+                    <Chip.Value>{fieldValues.map((v) => graphs[v].label).join(', ')}</Chip.Value>
                     <Chip.Cross
                       onClick={() => {
                         const newQuery = {
