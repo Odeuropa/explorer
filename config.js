@@ -75,6 +75,9 @@ module.exports = {
     'http://data.odeuropa.eu/dta': {
       label: 'Deutsches Textarchiv',
     },
+    'http://data.odeuropa.eu/dlib': {
+      label: 'Digital Library of Slovenia',
+    },
     'http://data.odeuropa.eu/eebo': {
       label: 'EEBO',
     },
