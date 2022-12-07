@@ -250,7 +250,6 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
   useEffect(() => {
     setFavorites(
       data.reduce((acc, cur) => {
-        console.log('cur:', cur);
         acc.push(...cur.favorites);
         return acc;
       }, [])
