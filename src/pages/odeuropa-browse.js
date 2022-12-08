@@ -478,6 +478,30 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
           />
         </Element>
         <Content>
+          <Debug>
+            <Metadata label="HTTP Parameters">
+              <pre>{JSON.stringify(query, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="Results">
+              <pre>
+                {Array.isArray(data) &&
+                  JSON.stringify(
+                    data.reduce((prev, curr) => {
+                      prev.push(...curr.results);
+                      return prev;
+                    }, []),
+                    null,
+                    2
+                  )}
+              </pre>
+            </Metadata>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={debugSparqlQuery}>
+                {t('common:buttons.editQuery')}
+              </SPARQLQueryLink>
+              <pre>{debugSparqlQuery}</pre>
+            </Metadata>
+          </Debug>
           <Chips>
             {Object.entries(query).map(([fieldKey, fieldValue]) => {
               const fieldValues = [].concat(fieldValue).filter((x) => x);
@@ -654,30 +678,6 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
               </PaginationContainer>
             </>
           )}
-          <Debug>
-            <Metadata label="HTTP Parameters">
-              <pre>{JSON.stringify(query, null, 2)}</pre>
-            </Metadata>
-            <Metadata label="Results">
-              <pre>
-                {Array.isArray(data) &&
-                  JSON.stringify(
-                    data.reduce((prev, curr) => {
-                      prev.push(...curr.results);
-                      return prev;
-                    }, []),
-                    null,
-                    2
-                  )}
-              </pre>
-            </Metadata>
-            <Metadata label="SPARQL Query">
-              <SPARQLQueryLink query={debugSparqlQuery}>
-                {t('common:buttons.editQuery')}
-              </SPARQLQueryLink>
-              <pre>{debugSparqlQuery}</pre>
-            </Metadata>
-          </Debug>
         </Content>
       </Body>
       <Footer />
