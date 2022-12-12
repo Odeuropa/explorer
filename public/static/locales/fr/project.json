@@ -21,7 +21,8 @@
     "consistsOf": "Consiste de",
     "about": "Mots-clés",
     "author": "Auteur",
-    "definedAs": "Définie comme"
+    "definedAs": "Définie comme",
+    "language": "Langue"
   },
   "routes": {
     "smells": "Recherche",

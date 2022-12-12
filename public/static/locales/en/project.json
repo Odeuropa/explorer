@@ -21,7 +21,8 @@
     "consistsOf": "Consists of",
     "about": "Keywords",
     "author": "Author",
-    "definedAs": "Defined as"
+    "definedAs": "Defined as",
+    "language": "Language"
   },
   "routes": {
     "smells": "Search",

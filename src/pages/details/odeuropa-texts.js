@@ -591,6 +591,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
     renderPanelRow('actor', result.actor),
     renderPanelRow('emotion', result.emotion),
     renderPanelRow('definedAs', result.adjective),
+    renderPanelRow('language', result.source?.language),
   ].filter((x) => x);
 
   const images = [].concat(result.image).filter((x) => x);

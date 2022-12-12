@@ -255,6 +255,7 @@ const OdeuropaCard = ({
       renderCardRow('actor', item.actor),
       renderCardRow('emotion', item.emotion),
       renderCardRow('definedAs', item.adjective),
+      renderCardRow('language', item.source?.language),
     ].filter((x) => x);
 
     if (smellEmissionRows.length > 0 || olfactoryExperienceRows.length > 0) {
