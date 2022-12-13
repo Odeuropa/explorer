@@ -80,5 +80,7 @@ module.exports = {
     $orderby: 'ASC(?label)',
   }),
   vocabularies: {},
-  plugins: {},
+  analytics: {
+    id: 'G-KLL4E6TZWE',
+  },
 };
