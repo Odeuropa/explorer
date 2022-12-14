@@ -27,8 +27,11 @@ module.exports = {
     allowImageSearch: false,
     placeholderImage: '/images/placeholder.jpg',
     languages: {
+      de: 'Deutsch',
       en: 'English',
       fr: 'Français',
+      it: 'Italiano',
+      si: 'Slovenski',
     },
     defaultLanguage: 'en',
   },
