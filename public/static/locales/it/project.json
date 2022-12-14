@@ -1,0 +1,103 @@
+{
+  "site": {
+    "description": "Esplora il patrimonio olfattivo d'Europa"
+  },
+  "search": "Cerca",
+  "footer": {
+    "text": "Questa applicazione dimostrativa è stata sviluppata nel contesto di <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, un progetto di ricerca che ha ricevuto finanziamenti dall'Unione Europea nel programma di ricerca e innovazione Horizon 2020, all'interno del grant agreement No. 101004469."
+  },
+  "metadata": {
+    "@id": "Permalink",
+    "source": "Sorgente",
+    "carrier": "Veicolo",
+    "adjective": "Aggettivo",
+    "time": "Tempo",
+    "smellPlace": "Luogo",
+    "gesture": "Gestualità",
+    "emotion": "Emozione",
+    "date": "Data di creazione",
+    "location": "Luogo",
+    "license": "Licenza",
+    "consistsOf": "Consiste di",
+    "about": "Parole chiave",
+    "author": "Autore",
+    "definedAs": "Descritto come",
+    "language": "Lingua"
+  },
+  "routes": {
+    "smells": "Cerca",
+    "smell-sources": "Sorgente odorosa",
+    "odour-carriers": "Veicolo olfattivo",
+    "fragrant-spaces": "Spazio odoroso"
+  },
+  "routes-descriptions": {
+    "smell-sources": "Oggetti e sostanze che emettono un odore",
+    "odour-carriers": "Oggetti e sostanze che trasportano un odore"
+  },
+  "filters": {
+    "type": "",
+    "q": "Ricerca tramite testo",
+    "search-by-concept": "Ricerca tramite concetti",
+    "source": "Sorgente odorosa",
+    "carrier": "Veicolo olfattivo",
+    "adjective": "Aggettivo",
+    "time": "Tempo",
+    "time-start": "Da",
+    "time-end": "A",
+    "place": "Luogo",
+    "gesture": "Gestualità",
+    "emotion": "Emozione",
+    "language": "Lingua",
+    "museum": "Museo"
+  },
+  "buttons": {
+    "source": "Fonte:",
+    "seeMore": "più informazioni"
+  },
+  "display": {
+    "showAs": "Mostra come",
+    "card": "schede",
+    "text": "testi"
+  },
+  "home": {
+    "searchTitle": "Cerca qualsiasi odore"
+  },
+  "details": {
+    "textualResource": "Risorsa testuale",
+    "visualResource": "Risorsa visiva",
+    "excerpt": "Estratto {{num}}",
+    "exploreMore": "Scopri riferimenti olfattivi dalla stessa fonte:"
+  },
+  "odeuropa-vocabulary": {
+    "search": "Cerca",
+    "presentFrom": "Presente tra il",
+    "presentTo": "e il",
+    "orderBy": "Ordina per",
+    "sort": {
+      "name": "Alfabeticamente",
+      "count": "Numero di riferimenti"
+    }
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Odore di",
+    "related": "Correlati",
+    "occurrences_one": "{{count}} riferimento",
+    "occurrences_other": "{{count}} riferimenti",
+    "wordCloud": {
+      "loading": "Word cloud in caricamento...",
+      "error": "La word cloud non può essere caricata in questo momento"
+    },
+    "texts": {
+      "title": "Nei testi",
+      "loading": "Riferimenti testuali in caricamento...",
+      "error": "I riferimenti testuali non possono essere caricati in questo momento"
+    },
+    "visuals": {
+      "title": "Nelle immagini",
+      "loading": "Riferimenti visivi in caricamento...",
+      "error": "I riferimenti visivi non possono essere caricati in questo momento"
+    },
+    "showMore": "Mostra tutto",
+    "showLess": "Mostra meno"
+  }
+}

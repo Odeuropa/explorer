@@ -1,0 +1,103 @@
+{
+  "site": {
+    "description": "Raziščite evropsko dediščino vonjav"
+  },
+  "search": "Iskanje",
+  "footer": {
+    "text": "Ta demonstrator je bil razvit v okviru raziskovalnega projekta <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, ki je prejel sredstva iz programa Evropske unije za raziskave in inovacije Horizon 2020 na podlagi sporazuma o dodelitvi sredstev št. 101004469."
+  },
+  "metadata": {
+    "@id": "Stalna povezava",
+    "source": "Vir",
+    "carrier": "Prenašalec",
+    "adjective": "Pridevnik",
+    "time": "Čas",
+    "smellPlace": "Kraj",
+    "gesture": "Gesta",
+    "emotion": "Emocija",
+    "date": "Datum nastanka",
+    "location": "Lokacija",
+    "license": "Licenca",
+    "consistsOf": "Sestavljen je iz",
+    "about": "Ključne besede",
+    "author": "Avtor",
+    "definedAs": "Opredeljen kot",
+    "language": "Jezik"
+  },
+  "routes": {
+    "smells": "Iskanje",
+    "smell-sources": "Viri vonja",
+    "odour-carriers": "Nosilci vonja",
+    "fragrant-spaces": "Dišeči prostori"
+  },
+  "routes-descriptions": {
+    "smell-sources": "Predmeti in snovi, za katere je znano, da oddajajo vonj",
+    "odour-carriers": "Predmeti in snovi, za katere je znano, da prenašajo vonj"
+  },
+  "filters": {
+    "type": "",
+    "q": "Iskanje po celotnem besedilu",
+    "search-by-concept": "Iskanje po pojmu",
+    "source": "Vir vonja",
+    "carrier": "Prenašalec",
+    "adjective": "Pridevnik",
+    "time": "Čas",
+    "time-start": "Začetno leto",
+    "time-end": "Končno leto",
+    "place": "Kraj",
+    "gesture": "Gesta",
+    "emotion": "Emocija",
+    "language": "Jezik",
+    "museum": "Muzej"
+  },
+  "buttons": {
+    "source": "Vir:",
+    "seeMore": "Oglej si več"
+  },
+  "display": {
+    "showAs": "Prikaži kot",
+    "card": "kartice",
+    "text": "besedila"
+  },
+  "home": {
+    "searchTitle": "Poišči katerikoli vonj"
+  },
+  "details": {
+    "textualResource": "Besedilni vir",
+    "visualResource": "Vizualni vir",
+    "excerpt": "Izvleček {{num}}",
+    "exploreMore": "Razišči ekstrakte vonja iz istega vira:"
+  },
+  "odeuropa-vocabulary": {
+    "search": "Iskanje",
+    "presentFrom": "Prisoten od",
+    "presentTo": "do",
+    "orderBy": "Razvrsti po",
+    "sort": {
+      "name": "Abecedni vrstni red",
+      "count": "Pogostost pojavljanja"
+    }
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Vonj po",
+    "related": "Sorodno",
+    "occurrences_one": "{{count}} pojavitev",
+    "occurrences_other": "{{count}} pojavitev",
+    "wordCloud": {
+      "loading": "Nalaganje oblaka besed...",
+      "error": "Oblaka besed v tem trenutku ni bilo mogoče naložiti"
+    },
+    "texts": {
+      "title": "V besedilih",
+      "loading": "Nalaganje besedilnih pojavitev...",
+      "error": "Besedilnih pojavitev v tem trenutku ni bilo mogoče naložiti"
+    },
+    "visuals": {
+      "title": "V slikah",
+      "loading": "Nalaganje vizualnih pojavitev...",
+      "error": "Vizualnih pojavitev v tem trenutku ni bilo mogoče naložiti"
+    },
+    "showMore": "Pokaži vse",
+    "showLess": "Pokaži manj"
+  }
+}

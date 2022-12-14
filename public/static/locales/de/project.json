@@ -1,0 +1,103 @@
+{
+  "site": {
+    "description": "Entdecke das olfaktorische Erbe Europas"
+  },
+  "search": "Suche",
+  "footer": {
+    "text": "Dieses Vorführungsmodell wurde im Kontext des Forschungsprojektes <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a> entwickelt, welches eine Förderung des Forschungs- und Innovationsprogramm Horizon 2020 der europäischen Union unter der Finanzhilfevereinbarung Nr. 101004469 erhielt."
+  },
+  "metadata": {
+    "@id": "Dauerhafter Link",
+    "source": "Quelle",
+    "carrier": "Träger",
+    "adjective": "Adjektiv",
+    "time": "Zeit",
+    "smellPlace": "Ort",
+    "gesture": "Geste",
+    "emotion": "Emotion",
+    "date": "Erstellungsdatum",
+    "location": "Ort",
+    "license": "Lizenz",
+    "consistsOf": "Besteht aus",
+    "about": "Schlagwort",
+    "author": "Autor",
+    "definedAs": "Definiert als",
+    "language": "Sprache"
+  },
+  "routes": {
+    "smells": "Suche",
+    "smell-sources": "Geruchsquelle",
+    "odour-carriers": "Geruchsträger",
+    "fragrant-spaces": "duftende Orte"
+  },
+  "routes-descriptions": {
+    "smell-sources": "Objekte und Substanzen die bekannt sind, dass von Ihnen ein Geruch ausgeht",
+    "odour-carriers": "Objekte und Substanzen die bekannt sind, dass sie einen Geruch mittragen"
+  },
+  "filters": {
+    "type": "",
+    "q": "Volltextsuche",
+    "search-by-concept": "Suche nach Kontext",
+    "source": "Geruchsquelle",
+    "carrier": "Träger",
+    "adjective": "Adjektiv",
+    "time": "Zeit",
+    "time-start": "Start Jahr",
+    "time-end": "Ende Jahr",
+    "place": "Ort",
+    "gesture": "Geste",
+    "emotion": "Emotion",
+    "language": "Sprache",
+    "museum": "Museum"
+  },
+  "buttons": {
+    "source": "Quelle:",
+    "seeMore": "Mehr lesen"
+  },
+  "display": {
+    "showAs": "Zeigen als",
+    "card": "Karten",
+    "text": "Texte"
+  },
+  "home": {
+    "searchTitle": "Suche alle Gerüche"
+  },
+  "details": {
+    "textualResource": "Textquelle",
+    "visualResource": "Bildquelle",
+    "excerpt": "Auszug {{num}}",
+    "exploreMore": "Entdeckte Geruchsauszüge von derselben Quellen:"
+  },
+  "odeuropa-vocabulary": {
+    "search": "Suche",
+    "presentFrom": "Präsent von",
+    "presentTo": "bis",
+    "orderBy": "Sortieren nach",
+    "sort": {
+      "name": "Alphabet",
+      "count": "Vorkommen"
+    }
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Geruch von",
+    "related": "Verbunden",
+    "occurrences_one": "{{count}} Vorkommen",
+    "occurrences_other": "{{count}} Vorkommen",
+    "wordCloud": {
+      "loading": "Wortwolke wird geladen...",
+      "error": "Wortwolke konnte momentan nicht geladen werden"
+    },
+    "texts": {
+      "title": "In Texten",
+      "loading": "Laden der Textvorkommen...",
+      "error": "Textvorkommen konnte momentan nicht geladen werden"
+    },
+    "visuals": {
+      "title": "In Bilder",
+      "loading": "Laden der Bildvorkommen...",
+      "error": "Bildvorkommen konnte nicht geladen werden"
+    },
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen"
+  }
+}
