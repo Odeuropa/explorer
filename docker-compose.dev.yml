@@ -30,10 +30,16 @@ services:
       - ./public/images/pages/odour-carriers.jpg:/usr/src/app/public/images/pages/odour-carriers.jpg
       - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
       - ./public/images/placeholder.jpg:/usr/src/app/public/images/placeholder.jpg
+      - ./public/static/locales/de/home.json:/usr/src/app/public/static/locales/de/home.json
+      - ./public/static/locales/de/project.json:/usr/src/app/public/static/locales/de/project.json
       - ./public/static/locales/en/home.json:/usr/src/app/public/static/locales/en/home.json
       - ./public/static/locales/en/project.json:/usr/src/app/public/static/locales/en/project.json
       - ./public/static/locales/fr/home.json:/usr/src/app/public/static/locales/fr/home.json
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
+      - ./public/static/locales/it/home.json:/usr/src/app/public/static/locales/it/home.json
+      - ./public/static/locales/it/project.json:/usr/src/app/public/static/locales/it/project.json
+      - ./public/static/locales/si/home.json:/usr/src/app/public/static/locales/si/home.json
+      - ./public/static/locales/si/project.json:/usr/src/app/public/static/locales/si/project.json
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js
       - ./src/components/OdeuropaMap.js:/usr/src/app/src/components/OdeuropaMap.js
       - ./src/components/OdeuropaTimeline.js:/usr/src/app/src/components/OdeuropaTimeline.js
