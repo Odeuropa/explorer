@@ -338,11 +338,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                             base: route.uriBase,
                           })
                         )}&type=${query.type}`}
-                        passHref
+                        style={{ fontWeight: 'bold' }}
                       >
-                        <a style={{ fontWeight: 'bold' }}>
-                          <span style={{ margin: '0 1em' }}>{rel.label}</span>
-                        </a>
+                        <span style={{ margin: '0 1em' }}>{rel.label}</span>
                       </Link>
                       {i < related.length - 1 && <>&middot;</>}
                     </>

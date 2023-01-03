@@ -299,29 +299,26 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
                     base: route.uriBase,
                   })
                 )}&type=${query.type}`}
-                passHref
               >
-                <a>
-                  <Item key={result['@id']} id={result['@id']}>
-                    <ItemImage>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={getImageUrl(
-                          result.image,
-                          `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
-                        )}
-                        alt=""
-                        loading="lazy"
-                      />
-                    </ItemImage>
-                    <ItemTitle>
-                      <h2>
-                        {result.mainLabel} <span>({result.count})</span>
-                      </h2>
-                    </ItemTitle>
-                    {result.description && <p>{result.description}</p>}
-                  </Item>
-                </a>
+                <Item key={result['@id']} id={result['@id']}>
+                  <ItemImage>
+                    <Image
+                      src={getImageUrl(
+                        result.image,
+                        `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
+                      )}
+                      alt=""
+                      fill
+                      sizes="100vw, 100vw"
+                    />
+                  </ItemImage>
+                  <ItemTitle>
+                    <h2>
+                      {result.mainLabel} <span>({result.count})</span>
+                    </h2>
+                  </ItemTitle>
+                  {result.description && <p>{result.description}</p>}
+                </Item>
               </Link>
             </Result>
           ))}

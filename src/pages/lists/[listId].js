@@ -83,6 +83,7 @@ function ListsPage({ isOwner, list, shareLink, error }) {
           <Link
             href={`/api/lists/${list._id}/download?hl=${encodeURIComponent(i18n.language)}`}
             passHref
+            legacyBehavior
           >
             <Button primary target="_blank">
               {t('common:buttons.download')}

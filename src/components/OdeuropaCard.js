@@ -177,11 +177,7 @@ export const renderRowValues = (
         }
 
         if (url) {
-          inner = (
-            <Link href={url} passHref>
-              <a>{inner}</a>
-            </Link>
-          );
+          inner = <Link href={url}>{inner}</Link>;
         }
       }
 
@@ -287,11 +283,9 @@ const OdeuropaCard = ({
       {(mainLabel || item.time?.label) && (
         <Header>
           <Element style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-            <PaginatedLink {...linkProps}>
-              <a onClick={onSeeMore}>
-                <Title title={mainLabel}>{mainLabel}</Title>
-                {item.time && <Date>{item.time.label}</Date>}
-              </a>
+            <PaginatedLink {...linkProps} onClick={onSeeMore}>
+              <Title title={mainLabel}>{mainLabel}</Title>
+              {item.time && <Date>{item.time.label}</Date>}
             </PaginatedLink>
           </Element>
           {showFavorite && (
@@ -310,14 +304,12 @@ const OdeuropaCard = ({
       )}
       {item.image && (
         <VisualHeader>
-          <PaginatedLink {...linkProps}>
-            <a onClick={onSeeMore}>
-              <Visual
-                style={{
-                  backgroundImage: `url(${item.image})`,
-                }}
-              />
-            </a>
+          <PaginatedLink {...linkProps} onClick={onSeeMore}>
+            <Visual
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            />
           </PaginatedLink>
           {showFavorite && (
             <SaveButtonContainer>
@@ -334,8 +326,8 @@ const OdeuropaCard = ({
       )}
       {renderBody(item, displayText ? mainLabel : undefined, route, type)}
       <Footer>
-        <PaginatedLink {...linkProps}>
-          <a onClick={onSeeMore}>{t('project:buttons.seeMore')}</a>
+        <PaginatedLink {...linkProps} onClick={onSeeMore}>
+          {t('project:buttons.seeMore')}
         </PaginatedLink>
       </Footer>
     </Container>

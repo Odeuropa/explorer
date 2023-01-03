@@ -332,7 +332,7 @@ const HomePage = () => {
                 {Object.keys(config.routes)
                   .filter((routeName) => config.routes[routeName].showInHome !== false)
                   .flatMap((routeName) => (
-                    <Link key={routeName} href={`/${routeName}`} passHref>
+                    <Link key={routeName} href={`/${routeName}`} passHref legacyBehavior>
                       <BigButton background="transparent" color="#fff">
                         {t(
                           `project:routes.${routeName}`,
