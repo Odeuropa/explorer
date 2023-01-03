@@ -3,9 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 import { GestureHandling } from 'leaflet-gesture-handling';
 import L from 'leaflet';
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import '@changey/react-leaflet-markercluster/dist/styles.min.css';
 import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
@@ -19,9 +16,9 @@ const StyledMapContainer = styled(MapContainer)`
 // eslint-disable-next-line no-underscore-dangle
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconUrl: markerIcon.src,
-  iconRetinaUrl: markerIcon2x.src,
-  shadowUrl: markerShadow.src,
+  iconUrl: '/images/odeuropa-map/marker-icon.png',
+  iconRetinaUrl: '/images/odeuropa-map/marker-icon-2x.png',
+  shadowUrl: '/images/odeuropa-map/marker-shadow.png',
 });
 
 // Prevent zooming while scrolling by using leaflet-gesture-handling
