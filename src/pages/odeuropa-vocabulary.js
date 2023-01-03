@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Image from 'next/image';
 import 'intersection-observer';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -121,6 +122,7 @@ const ItemImage = styled.div`
   width: 300px;
   height: 267px;
   background-color: #e9e9e9;
+  position: relative;
 
   img {
     width: 100%;

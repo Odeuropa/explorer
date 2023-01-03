@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled, { css } from 'styled-components';
@@ -238,17 +237,10 @@ const getRandom = (arr, n) => {
   return result;
 };
 
-const imagesList = Array.from(Array(16), (_, i) => `/images/odeuropa-homepage/${i + 1}.jpg`);
-
 const numberOfImages = 4;
 
-const HomePage = () => {
+const HomePage = ({ imagesList }) => {
   const { t } = useTranslation(['common', 'home', 'project']);
-  const [images, setImages] = useState([]);
-
-  useEffect(() => {
-    setImages(getRandom(imagesList, numberOfImages));
-  }, []);
 
   return (
     <Layout>
@@ -259,12 +251,12 @@ const HomePage = () => {
           <HeroTop>
             <TopBlock>
               <Image
-                src={images[0]}
+                src={imagesList[0]}
                 alt=""
                 width={330}
                 height={496}
-                layout="fixed"
-                objectFit="cover"
+                priority
+                style={{ objectFit: 'cover' }}
               />
             </TopBlock>
             <div
@@ -285,12 +277,12 @@ const HomePage = () => {
             </div>
             <TopBlock>
               <Image
-                src={images[1]}
+                src={imagesList[1]}
                 alt=""
                 width={330}
                 height={496}
-                layout="fixed"
-                objectFit="cover"
+                priority
+                style={{ objectFit: 'cover' }}
               />
             </TopBlock>
           </HeroTop>
@@ -344,10 +336,24 @@ const HomePage = () => {
               </ButtonsContainer>
             </div>
             <SecondBlock>
-              <Image src={images[2]} alt="" layout="fill" objectFit="cover" />
+              <Image
+                src={imagesList[2]}
+                alt=""
+                priority
+                fill
+                sizes="100vw, 100vw"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+              />
             </SecondBlock>
             <ThirdBlock>
-              <Image src={images[3]} alt="" layout="fill" objectFit="cover" />
+              <Image
+                src={imagesList[3]}
+                alt=""
+                priority
+                fill
+                sizes="100vw, 100vw"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+              />
             </ThirdBlock>
           </HeroBottom>
         </Hero>
@@ -360,6 +366,10 @@ const HomePage = () => {
 export const getStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['common', 'home', 'project', 'search'])),
+    imagesList: getRandom(
+      Array.from(Array(16), (_, i) => `/images/odeuropa-homepage/${i + 1}.jpg`),
+      numberOfImages
+    ),
   },
 });
 

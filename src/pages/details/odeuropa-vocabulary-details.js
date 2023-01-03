@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -277,15 +278,14 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element>
           <div style={{ display: 'flex', flexWrap: 'wrap', padding: '1em' }}>
             <div style={{ marginRight: '2em' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={getImageUrl(
                   result.image,
                   `/images/odeuropa-vocabularies/placeholder_${query.type}.png`
                 )}
                 alt=""
-                width="300"
-                height="180"
+                width={300}
+                height={180}
                 style={{ objectFit: 'cover' }}
               />
             </div>
