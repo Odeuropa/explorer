@@ -22,8 +22,16 @@ module.exports = {
       $where: [
         `
         {
-          ?id skos:prefLabel ?label .
-          FILTER(LANG(?label) = "${language}" || LANG(?label) = "")
+          OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL {
+            SELECT ?label_default WHERE {
+              ?id skos:prefLabel ?label_default
+            }
+            ORDER BY ASC(?label_default)
+            LIMIT 1
+          }
+          BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
         }
         UNION
         {
@@ -109,17 +117,15 @@ module.exports = {
         UNION
         {
           OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?id skos:prefLabel ?label_unk . FILTER(LANGMATCHES(LANG(?label_unk), "")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          BIND(COALESCE(?label_hl, ?label_unk, ?label_en) AS ?bestKnownLabel)
           OPTIONAL {
-              SELECT ?label_default WHERE {
-                  ?id skos:prefLabel ?label_default
-              }
-              ORDER BY ASC(?label_default)
-              LIMIT 1
+            SELECT ?label_default WHERE {
+              ?id skos:prefLabel ?label_default
+            }
+            ORDER BY ASC(?label_default)
+            LIMIT 1
           }
-          BIND(COALESCE(?bestKnownLabel, ?label_default) AS ?bestLabel)
+          BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
         }
         UNION
         {
