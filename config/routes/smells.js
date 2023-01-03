@@ -43,7 +43,7 @@ module.exports = {
   details: {
     view: 'odeuropa-texts',
     showPermalink: true,
-    excludedMetadata: ['textualObject', 'image', 'fragment'],
+    excludedMetadata: ['image', 'fragment'],
     route: 'smells',
     query: ({ language }) => ({
       '@context': 'http://schema.org/',
