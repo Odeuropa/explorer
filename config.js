@@ -71,7 +71,7 @@ module.exports = {
     'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
   },
-  imagesDomains: ['data.odeuropa.eu'],
+  imagesDomains: ['data.odeuropa.eu', 'commons.wikimedia.org'],
   graphs: () => ({
     '@context': 'http://schema.org/',
     '@graph': [
