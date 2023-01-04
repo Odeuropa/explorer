@@ -23,7 +23,6 @@ import Select from '@components/Select';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import PageTitle from '@components/PageTitle';
 import ScrollDetector from '@components/ScrollDetector';
-import { absoluteUrl } from '@helpers/utils';
 import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
@@ -211,7 +210,7 @@ Chip.Cross = styled(CrossIcon)`
 
 const PAGE_SIZE = 20;
 
-const OdeuropaBrowsePage = ({ initialData, filters }) => {
+const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
   const router = useRouter();
   const { req, query } = router;
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
@@ -227,7 +226,7 @@ const OdeuropaBrowsePage = ({ initialData, filters }) => {
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.results.length) return null; // reached the end
     const q = { ...query, page: (parseInt(query.page, 10) || 1) + pageIndex, hl: i18n.language };
-    return `${absoluteUrl(req)}/api/search?${queryString.stringify(q)}`; // SWR key
+    return `${baseUrl}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
   const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, {
@@ -700,6 +699,7 @@ export async function getServerSideProps(context) {
         favorites: searchData.favorites,
         debugSparqlQuery: searchData.debugSparqlQuery,
       },
+      baseUrl: process.env.SITE,
       filters,
     },
   };

@@ -18,8 +18,9 @@ import ListSettings from '@components/ListSettings';
 import ListDeletion from '@components/ListDeletion';
 import { Navbar, NavItem } from '@components/Navbar';
 import OdeuropaCard from '@components/OdeuropaCard';
-import { absoluteUrl, uriToId, slugify } from '@helpers/utils';
+import { uriToId, slugify } from '@helpers/utils';
 import { getSessionUser, getListById } from '@helpers/database';
+import { getEntity } from '@pages/api/entity';
 import config from '~/config';
 
 const Results = styled.div`
@@ -33,7 +34,7 @@ const Results = styled.div`
   pointer-events: ${({ loading }) => (loading ? 'none' : 'auto')};
 `;
 
-function ListsPage({ isOwner, list, shareLink, error }) {
+function ListsPage({ isOwner, list, shareLink }) {
   const { t, i18n } = useTranslation('common');
 
   const renderListItems = () => (
@@ -224,30 +225,22 @@ export async function getServerSideProps(ctx) {
       Object.entries(config.routes).find(([rName]) => rName === item.type) || [];
 
     if (route) {
-      const entity = await (
-        await fetch(
-          `${absoluteUrl(req)}/api/entity?${new URLSearchParams({
-            id: uriToId(item.uri, { base: route.uriBase }),
-            type: item.type,
-          })}`,
-          {
-            headers: {
-              ...req.headers,
-              'accept-language': ctx.locale,
-            },
-          }
-        )
-      ).json();
+      const result = await getEntity(
+        {
+          id: uriToId(item.uri, { base: route.uriBase }),
+          type: item.type,
+        },
+        ctx.locale
+      );
 
-      if (entity && entity.result) {
-        const { result } = entity;
+      if (result) {
         list.items[i] = { result, routeName };
       }
     }
   }
 
   props.list = JSON.parse(JSON.stringify(list)); // serialize the list;
-  props.shareLink = `${absoluteUrl(req)}/lists/${slugify(list.name)}-${list._id}`;
+  props.shareLink = `${process.env.SITE}/lists/${slugify(list.name)}-${list._id}`;
   props.isOwner = isOwner;
 
   return {

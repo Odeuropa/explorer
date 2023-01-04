@@ -27,8 +27,9 @@ import PageTitle from '@components/PageTitle';
 import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
 import OdeuropaTimeline from '@components/OdeuropaTimeline';
-import { absoluteUrl, uriToId } from '@helpers/utils';
+import { uriToId } from '@helpers/utils';
 import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
+import { getEntity, getEntityDebugQuery } from '@pages/api/entity';
 import config from '~/config';
 
 const Results = styled.div`
@@ -185,7 +186,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
     (async () => {
       const results = await (
-        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-wordcloud?${qs}`)
+        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-wordcloud?${qs}`)
       ).json();
       setWordCloud(
         results.error
@@ -199,7 +200,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
     (async () => {
       const { results, favorites } = await (
-        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-texts?${qs}`)
+        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
       setTexts(results.error ? null : results);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
@@ -209,7 +210,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
     (async () => {
       const { results, favorites } = await (
-        await fetch(`${absoluteUrl(req)}/api/odeuropa/vocabulary-visuals?${qs}`)
+        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
       setVisuals(results.error ? null : results);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
@@ -574,15 +575,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   );
 };
 
-export async function getServerSideProps({ req, res, query, locale }) {
-  const { result = null, debugSparqlQuery = null } = await (
-    await fetch(`${absoluteUrl(req)}/api/entity?${queryString.stringify(query)}`, {
-      headers: {
-        ...req.headers,
-        'accept-language': locale,
-      },
-    })
-  ).json();
+export async function getServerSideProps({ res, query, locale }) {
+  const result = await getEntity(query, locale);
+  const debugSparqlQuery = await getEntityDebugQuery(query, locale);
 
   if (!result && res) {
     res.statusCode = 404;
