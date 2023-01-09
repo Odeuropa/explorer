@@ -27,7 +27,7 @@ import OdeuropaCard from '@components/OdeuropaCard';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import { useGraphs } from '@helpers/useGraphs';
-import { search, getFilters } from '@pages/api/search';
+import { search, getFilters } from '@helpers/search';
 import { authOptions } from '@pages/api/auth/[...nextauth]';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import config from '~/config';
