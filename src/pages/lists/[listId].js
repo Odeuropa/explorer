@@ -16,7 +16,6 @@ import Title from '@components/Title';
 import PageTitle from '@components/PageTitle';
 import ListSettings from '@components/ListSettings';
 import ListDeletion from '@components/ListDeletion';
-import { Navbar, NavItem } from '@components/Navbar';
 import OdeuropaCard from '@components/OdeuropaCard';
 import { uriToId, slugify } from '@helpers/utils';
 import { getSessionUser, getListById } from '@helpers/database';
@@ -32,6 +31,11 @@ const Results = styled.div`
   transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1) 0s;
   opacity: ${({ loading }) => (loading ? 0.25 : 1)};
   pointer-events: ${({ loading }) => (loading ? 'none' : 'auto')};
+`;
+
+const Navbar = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 function ListsPage({ isOwner, list, shareLink }) {
@@ -107,10 +111,10 @@ function ListsPage({ isOwner, list, shareLink }) {
             <PageTitle title={list.name} />
             <Content>
               <Navbar>
-                <NavItem>
+                <div>
                   <h1>{list.name}</h1>
-                </NavItem>
-                <NavItem>{isOwner && <ListSettings list={list} />}</NavItem>
+                </div>
+                <div>{isOwner && <ListSettings list={list} />}</div>
               </Navbar>
               <Element>
                 <p>
