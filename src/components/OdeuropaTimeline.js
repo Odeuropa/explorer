@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 const Container = styled.div`
@@ -72,17 +73,35 @@ const Item = styled.li`
   }
 `;
 
+const calculateSelectionBox = (startPoint, endPoint) => ({
+  left: Math.min(startPoint.x, endPoint.x),
+  top: Math.min(startPoint.y, endPoint.y),
+  width: Math.abs(startPoint.x - endPoint.x),
+  height: Math.abs(startPoint.y - endPoint.y),
+});
+
+const boxesIntersect = (boxA, boxB) =>
+  boxA.left <= boxB.left + boxB.width &&
+  boxA.left + boxA.width >= boxB.left &&
+  boxA.top <= boxB.top + boxB.height &&
+  boxA.top + boxA.height >= boxB.top;
+
 const OdeuropaTimeline = ({
-  values,
-  defaultValue,
+  options,
+  defaultValues,
   interval = 20,
   minValue,
   maxValue,
   onChange,
   ...props
 }) => {
-  const limitedValues = Object.fromEntries(
-    Object.entries(values).filter(([date]) => {
+  const [activeItems, setActiveItems] = useState(defaultValues);
+  const [dragStart, setDragStart] = useState(null);
+  const [dragEnd, setDragEnd] = useState(null);
+  const itemRef = useRef([]);
+
+  const limitedOptions = Object.fromEntries(
+    Object.entries(options).filter(([date]) => {
       if (minValue && maxValue) return date >= minValue && date <= maxValue;
       if (minValue) return date >= minValue;
       if (maxValue) return date <= maxValue;
@@ -90,10 +109,10 @@ const OdeuropaTimeline = ({
     })
   );
 
-  const histogramItems = { ...limitedValues };
+  const histogramItems = { ...limitedOptions };
 
-  const min = Math.min(...Object.keys(limitedValues));
-  const max = Math.max(...Object.keys(limitedValues));
+  const min = Math.min(...Object.keys(limitedOptions));
+  const max = Math.max(...Object.keys(limitedOptions));
 
   for (let i = min - interval * 2; i < max + interval * 2; i += interval) {
     if (!histogramItems[i]) histogramItems[i] = 0;
@@ -102,20 +121,24 @@ const OdeuropaTimeline = ({
   const keys = Object.keys(histogramItems);
   const labels = [...new Set(keys.map((v) => (Math.round(v / 100) * 100).toString()))];
 
-  const histogramValues = Object.values(histogramItems);
+  const histogramOptions = Object.values(histogramItems);
 
-  const maxHistogramValues = Math.max(...histogramValues);
+  const maxHistogramOptions = Math.max(...histogramOptions);
 
-  const histogram = Object.entries(histogramItems).reduce((acc, [label, value]) => {
-    const height = Math.ceil((value / maxHistogramValues) * 100);
+  const histogram = Object.entries(histogramItems).reduce((acc, [label, value], index) => {
+    const height = Math.ceil((value / maxHistogramOptions) * 100);
     return [
       ...acc,
       <Item
+        ref={(el) => (itemRef.current[index] = el)}
         key={label}
         label={label}
         value={value}
-        active={label === defaultValue}
-        onClick={() => onChange(label === defaultValue ? undefined : label)}
+        active={activeItems.includes(label)}
+        onClick={() => {
+          setActiveItems([label]);
+          handleOnChange(activeItems.includes(label) ? [] : [label]);
+        }}
         style={{ height: `${height}%`, pointerEvents: value === 0 ? 'none' : 'auto' }}
       >
         <span
@@ -123,6 +146,7 @@ const OdeuropaTimeline = ({
             position: 'absolute',
             bottom: -40,
             left: -10,
+            userSelect: 'none',
             visibility: labels.includes(label) ? 'visible' : 'hidden',
           }}
         >
@@ -132,12 +156,105 @@ const OdeuropaTimeline = ({
     ];
   }, []);
 
+  const handleMouseEvent = (event) => {
+    const { type } = event;
+    const x = (event.touches?.[0]?.pageX || event.pageX) - event.currentTarget.offsetLeft;
+    const y = (event.touches?.[0]?.pageY || event.pageY) - event.currentTarget.offsetTop;
+    switch (type) {
+      case 'mousedown':
+      case 'touchstart': {
+        // Prevent scroll on mobile devices
+        if (type === 'touchstart') {
+          document.body.style.overflow = 'hidden';
+        }
+
+        setDragStart({ x, y });
+        setActiveItems([]);
+        break;
+      }
+      case 'mouseup':
+      case 'touchend': {
+        // Re-enable scroll on mobile devices
+        if (type === 'touchend') {
+          document.body.style.overflow = 'auto';
+        }
+
+        setDragStart(null);
+        setDragEnd(null);
+
+        const selectedItems = itemRef.current
+          .filter(
+            (item) =>
+              dragStart &&
+              dragEnd &&
+              item.getAttribute('value') > 0 &&
+              boxesIntersect(calculateSelectionBox(dragStart, dragEnd), {
+                left: item.offsetLeft,
+                top: item.offsetTop,
+                width: item.offsetWidth,
+                height: item.offsetHeight,
+              })
+          )
+          .map((item) => item.getAttribute('label'));
+        handleOnChange(selectedItems);
+        break;
+      }
+      case 'mousemove':
+      case 'touchmove': {
+        if (!dragStart) break;
+        setDragEnd({ x, y });
+        setActiveItems(
+          itemRef.current
+            .filter(
+              (item) =>
+                dragStart &&
+                dragEnd &&
+                item.getAttribute('value') > 0 &&
+                boxesIntersect(calculateSelectionBox(dragStart, dragEnd), {
+                  left: item.offsetLeft,
+                  top: item.offsetTop,
+                  width: item.offsetWidth,
+                  height: item.offsetHeight,
+                })
+            )
+            .map((item) => item.getAttribute('label'))
+        );
+      }
+      default:
+        break;
+    }
+  };
+
+  const handleOnChange = (values) => {
+    onChange?.(values);
+  };
+
   return (
-    <Container {...props}>
+    <Container
+      {...props}
+      onMouseDown={handleMouseEvent}
+      onTouchStart={handleMouseEvent}
+      onMouseUp={handleMouseEvent}
+      onTouchEnd={handleMouseEvent}
+      onMouseMove={handleMouseEvent}
+      onTouchMove={handleMouseEvent}
+    >
       <Chart>
         {histogram}
         <Line />
       </Chart>
+      {dragStart && dragEnd && (
+        <div
+          style={{
+            border: '1px solid rgb(76, 133, 216)',
+            background: 'rgba(155, 193, 239, 0.4)',
+            position: 'absolute',
+            zIndex: 99,
+            pointerEvents: 'none',
+            ...calculateSelectionBox(dragStart, dragEnd),
+          }}
+        ></div>
+      )}
     </Container>
   );
 };

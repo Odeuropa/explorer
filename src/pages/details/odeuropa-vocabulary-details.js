@@ -354,19 +354,20 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
         {Object.keys(timelineDates).length > 0 && (
           <OdeuropaTimeline
-            values={timelineDates}
+            options={timelineDates}
             interval={TIMELINE_INTERVAL}
             minValue={1300}
             maxValue={2000}
-            onChange={(date) => {
-              router.push({
-                query: {
-                  ...query,
-                  date,
-                },
-              });
+            onChange={(dates) => {
+              const newQuery = { ...query };
+              if (dates.length > 0) {
+                newQuery.date = dates.join(',');
+              } else {
+                delete newQuery.date;
+              }
+              router.push({ query: newQuery }, undefined, { scroll: false });
             }}
-            defaultValue={query.date}
+            defaultValues={query.date?.split(',') || []}
           />
         )}
 
