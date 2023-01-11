@@ -18,7 +18,7 @@ services:
       - ./.env:/usr/src/app/.env
       - ./config:/usr/src/app/config
       - ./config.js:/usr/src/app/config.js
-      - ./public/fonts/FuturaStdBook.woff:/usr/src/app/public/fonts/FuturaStdBook.woff
+      - ./public/fonts/FuturaStdBook.woff2:/usr/src/app/public/fonts/FuturaStdBook.woff2
       - ./public/images/eu-logo.png:/usr/src/app/public/images/eu-logo.png
       - ./public/images/favicon.png:/usr/src/app/public/images/favicon.png
       - ./public/images/footer.png:/usr/src/app/public/images/footer.png

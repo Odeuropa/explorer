@@ -11,6 +11,14 @@ module.exports = {
   },
   head: {
     styles: ['https://fonts.googleapis.com/css?family=Libre+Caslon+Text'],
+    preload: [
+      {
+        href: '/fonts/FuturaStdBook.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      },
+    ],
   },
   home: {
     hero: {

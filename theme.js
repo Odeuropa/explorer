@@ -4,7 +4,7 @@ const theme = {
       font-family: 'Futura Std Book';
       font-style: normal;
       font-weight: normal;
-      src: local('Futura Std Book'), url('/fonts/FuturaStdBook.woff') format('woff');
+      src: local('Futura Std Book'), url('/fonts/FuturaStdBook.woff2') format('woff2');
     }
   `,
   fontFamily: {
