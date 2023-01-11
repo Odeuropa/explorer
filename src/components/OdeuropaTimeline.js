@@ -196,6 +196,14 @@ const OdeuropaTimeline = ({
               })
           )
           .map((item) => item.getAttribute('label'));
+
+        if (
+          selectedItems.length === defaultValues.length &&
+          selectedItems.every((v, i) => v === defaultValues[i])
+        ) {
+          return;
+        }
+
         handleOnChange(selectedItems);
         break;
       }
