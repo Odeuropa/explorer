@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
@@ -331,9 +331,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                   {related.map((rel, i) => (
-                    <>
+                    <Fragment key={rel['@id']}>
                       <Link
-                        key={rel['@id']}
                         href={`/details/${route.details.view}?id=${encodeURIComponent(
                           uriToId(rel['@id'], {
                             base: route.uriBase,
@@ -344,7 +343,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                         <span style={{ margin: '0 1em' }}>{rel.label}</span>
                       </Link>
                       {i < related.length - 1 && <>&middot;</>}
-                    </>
+                    </Fragment>
                   ))}
                 </div>
               </div>

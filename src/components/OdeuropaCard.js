@@ -183,7 +183,7 @@ export const renderRowValues = (
 
       return <Fragment key={v['@id']}>{inner}</Fragment>;
     })
-    .reduce((prev, curr) => [prev, <>,&nbsp;</>, curr]);
+    .reduce((prev, curr, i) => [prev, <Fragment key={i}>,&nbsp;</Fragment>, curr]);
 };
 
 const OdeuropaCard = ({
@@ -222,7 +222,7 @@ const OdeuropaCard = ({
     const label = t(`project:metadata.${metaName}`, metaName);
 
     return (
-      <Row key={label}>
+      <Row key={metaName}>
         <Label>{label}</Label>
         <Value>{renderedValue}</Value>
       </Row>
