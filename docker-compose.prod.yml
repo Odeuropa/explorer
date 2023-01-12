@@ -16,7 +16,7 @@ services:
       - /bin/sh
       - -c
       - |
-        npm install react-leaflet @changey/react-leaflet-markercluster leaflet-gesture-handling
+        npm install react-leaflet @changey/react-leaflet-markercluster leaflet-gesture-handling react-tagcloud
         cp -r /custom/. /usr/src/app/
         npm run build
         npm start
