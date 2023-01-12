@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { useTranslation, Trans } from 'next-i18next';
@@ -40,6 +41,7 @@ const Navbar = styled.div`
 
 function ListsPage({ isOwner, list, shareLink }) {
   const { t, i18n } = useTranslation('common');
+  const [favorites, setFavorites] = useState(list.items.map(({ result }) => result['@id']));
 
   const renderListItems = () => (
     <Element marginY={24}>
@@ -62,7 +64,13 @@ function ListsPage({ isOwner, list, shareLink }) {
                   route={route}
                   type={route.details.route}
                   searchApi="/api/search"
-                  showFavorite={false}
+                  showFavorite
+                  isFavorite={favorites.includes(result['@id'])}
+                  onToggleFavorite={(saved) => {
+                    setFavorites((prev) =>
+                      saved ? [...prev, result['@id']] : prev.filter((id) => id !== result['@id'])
+                    );
+                  }}
                 />
               );
             })}
