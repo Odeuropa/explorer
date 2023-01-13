@@ -199,7 +199,7 @@ const OdeuropaCard = ({
   showFavorite = true,
   ...props
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['project']);
 
   if (!item || !item['@id']) return null;
 
