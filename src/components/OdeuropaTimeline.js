@@ -136,8 +136,14 @@ const OdeuropaTimeline = ({
         value={value}
         active={activeItems.includes(label)}
         onClick={() => {
-          setActiveItems([label]);
-          handleOnChange(activeItems.includes(label) ? [] : [label]);
+          const newItems = [...defaultValues];
+          if (defaultValues.includes(label)) {
+            newItems.splice(newItems.indexOf(label), 1);
+          } else {
+            newItems.push(label);
+          }
+          setActiveItems(newItems);
+          handleOnChange(newItems);
         }}
         style={{ height: `${height}%`, pointerEvents: value === 0 ? 'none' : 'auto' }}
       >
@@ -169,7 +175,9 @@ const OdeuropaTimeline = ({
         }
 
         setDragStart({ x, y });
-        setActiveItems([]);
+        if (!event.shiftKey) {
+          setActiveItems([]);
+        }
         break;
       }
       case 'mouseup':
@@ -183,8 +191,9 @@ const OdeuropaTimeline = ({
         setDragEnd(null);
 
         const selectedItems = itemRef.current
-          .filter(
-            (item) =>
+          .filter((item) => {
+            if (event.shiftKey && defaultValues.includes(item.getAttribute('label'))) return true;
+            return (
               dragStart &&
               dragEnd &&
               item.getAttribute('value') > 0 &&
@@ -194,7 +203,8 @@ const OdeuropaTimeline = ({
                 width: item.offsetWidth,
                 height: item.offsetHeight,
               })
-          )
+            );
+          })
           .map((item) => item.getAttribute('label'));
 
         if (
@@ -213,8 +223,9 @@ const OdeuropaTimeline = ({
         setDragEnd({ x, y });
         setActiveItems(
           itemRef.current
-            .filter(
-              (item) =>
+            .filter((item) => {
+              if (event.shiftKey && defaultValues.includes(item.getAttribute('label'))) return true;
+              return (
                 dragStart &&
                 dragEnd &&
                 item.getAttribute('value') > 0 &&
@@ -224,7 +235,8 @@ const OdeuropaTimeline = ({
                   width: item.offsetWidth,
                   height: item.offsetHeight,
                 })
-            )
+              );
+            })
             .map((item) => item.getAttribute('label'))
         );
       }
