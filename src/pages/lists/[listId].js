@@ -1,25 +1,26 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
+import { unstable_getServerSession } from 'next-auth';
 import { useTranslation, Trans } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { unstable_getServerSession } from 'next-auth';
+import DefaultErrorPage from 'next/error';
+import Link from 'next/link';
+import styled from 'styled-components';
 
-import { authOptions } from '@pages/api/auth/[...nextauth]';
-import Header from '@components/Header';
-import Footer from '@components/Footer';
-import Layout from '@components/Layout';
 import Body from '@components/Body';
-import Content from '@components/Content';
 import Button from '@components/Button';
+import Content from '@components/Content';
 import Element from '@components/Element';
-import Title from '@components/Title';
-import PageTitle from '@components/PageTitle';
-import ListSettings from '@components/ListSettings';
+import Footer from '@components/Footer';
+import Header from '@components/Header';
+import Layout from '@components/Layout';
 import ListDeletion from '@components/ListDeletion';
+import ListSettings from '@components/ListSettings';
+import PageTitle from '@components/PageTitle';
+import Title from '@components/Title';
 import OdeuropaCard from '@components/OdeuropaCard';
-import { uriToId, slugify } from '@helpers/utils';
 import { getSessionUser, getListById } from '@helpers/database';
+import { uriToId, slugify } from '@helpers/utils';
+import { authOptions } from '@pages/api/auth/[...nextauth]';
 import { getEntity } from '@pages/api/entity';
 import config from '~/config';
 
@@ -43,9 +44,13 @@ function ListsPage({ isOwner, list, shareLink }) {
   const { t, i18n } = useTranslation('common');
   const [favorites, setFavorites] = useState(list.items.map(({ result }) => result['@id']));
 
+  if (!list) {
+    return <DefaultErrorPage statusCode={404} title={t('common:errors.listNotFound')} />;
+  }
+
   const renderListItems = () => (
     <Element marginY={24}>
-      <h2>{t('list.items')}</h2>
+      <h2>{t('common:list.items')}</h2>
       <Element marginY={12}>
         {list.items.length > 0 ? (
           <Results>
@@ -76,7 +81,7 @@ function ListsPage({ isOwner, list, shareLink }) {
             })}
           </Results>
         ) : (
-          <p>{t('list.empty')}</p>
+          <p>{t('common:list.empty')}</p>
         )}
       </Element>
     </Element>
@@ -90,7 +95,7 @@ function ListsPage({ isOwner, list, shareLink }) {
     return (
       <Element marginY={24}>
         <Element marginBottom={12}>
-          <h2>{t('list.operations')}</h2>
+          <h2>{t('common:list.operations')}</h2>
         </Element>
         <Element marginBottom={12} display="flex" style={{ gap: 12 }}>
           <Link
@@ -163,8 +168,8 @@ function ListsPage({ isOwner, list, shareLink }) {
                       components={[<strong key="0" />]}
                       values={{
                         status: list.is_public
-                          ? t('list.privacy.status.public')
-                          : t('list.privacy.status.private'),
+                          ? t('common:list.privacy.status.public')
+                          : t('common:list.privacy.status.private'),
                       }}
                     />
                   </p>
