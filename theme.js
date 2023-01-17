@@ -17,6 +17,7 @@ const theme = {
     background: '#fff',
     primary: '#B9D59B',
     secondary: '#333',
+    danger: '#dc3545',
     link: '#464C5A',
     linkHover: '#0d3e50',
     light: '#87ceeb',

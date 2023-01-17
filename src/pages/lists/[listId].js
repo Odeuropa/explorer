@@ -92,7 +92,7 @@ function ListsPage({ isOwner, list, shareLink }) {
         <Element marginBottom={12}>
           <h2>{t('list.operations')}</h2>
         </Element>
-        <Element marginBottom={12} display="flex">
+        <Element marginBottom={12} display="flex" style={{ gap: 12 }}>
           <Link
             href={`/api/lists/${list._id}/download?hl=${encodeURIComponent(i18n.language)}`}
             passHref
@@ -102,8 +102,6 @@ function ListsPage({ isOwner, list, shareLink }) {
               {t('common:buttons.download')}
             </Button>
           </Link>
-        </Element>
-        <Element marginY={12}>
           <ListDeletion list={list} />
         </Element>
       </Element>
@@ -187,8 +185,8 @@ function ListsPage({ isOwner, list, shareLink }) {
                   )}
                 </>
               )}
-              {renderListItems()}
               {renderOperations()}
+              {renderListItems()}
             </Content>
           </>
         )) || (
