@@ -390,8 +390,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             maxValue={2000}
             onChange={(dates) => {
               const newQuery = { ...query };
-              delete newQuery.id;
-              delete newQuery.type;
               if (dates.length > 0) {
                 newQuery.date = dates.join(',');
               } else {
@@ -432,8 +430,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                 tags={wordCloud}
                 onClick={(tag) => {
                   const newQuery = { ...query };
-                  delete newQuery.id;
-                  delete newQuery.type;
                   if (query.tag !== tag.value) {
                     newQuery.tag = tag.value;
                   } else {
