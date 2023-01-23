@@ -169,26 +169,58 @@ module.exports = {
         }),
       },
       wordCloud: {
-        query: () => ({
-          '@graph': [
-            {
-              word: '?adjective',
-            },
-          ],
-          $where: [
-            `
-            ?place crm:P137_exemplifies ?id .
-            ?emission crm:P7_took_place_at ?place .
-
-            ?emission od:F1_generated ?smell .
-            ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned/rdfs:label ?adjective .
-            ?assignment crm:P140_assigned_attribute_to ?smell .
-            `,
-          ],
-          $langTag: 'hide',
-          $limit: 15,
-        }),
+        query: ({ date }) => {
+          const $where = [];
+          if (date) {
+            $where.push(
+              date
+                .toString()
+                .split(',')
+                .map((value) => {
+                  const begin = value;
+                  const end = `${parseInt(begin) + 10}`;
+                  return `
+                    {
+                      ?place crm:P137_exemplifies ?id .
+                      ?emission crm:P7_took_place_at ?place .
+                      ?emission od:F1_generated ?smell .
+                      ?assignment a crm:E13_Attribute_Assignment .
+                      ?assignment crm:P141_assigned/rdfs:label ?adjective .
+                      ?assignment crm:P140_assigned_attribute_to ?smell .
+                      ?emission_source crm:P67_refers_to ?emission .
+                      ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                      ?emission_source schema:dateCreated/time:hasEnd ?end .
+                      FILTER(?begin >= ${JSON.stringify(
+                        begin
+                      )}^^xsd:gYear && ?end < ${JSON.stringify(end)}^^xsd:gYear)
+                    }
+                  `;
+                })
+                .join(' UNION ')
+            );
+          } else {
+            $where.push(
+              `
+              ?place crm:P137_exemplifies ?id .
+              ?emission crm:P7_took_place_at ?place .
+              ?emission od:F1_generated ?smell .
+              ?assignment a crm:E13_Attribute_Assignment .
+              ?assignment crm:P141_assigned/rdfs:label ?adjective .
+              ?assignment crm:P140_assigned_attribute_to ?smell .
+              `
+            );
+          }
+          return {
+            '@graph': [
+              {
+                word: '?adjective',
+              },
+            ],
+            $where,
+            $langTag: 'hide',
+            $limit: 15,
+          };
+        },
       },
       visuals: {
         route: 'smells',

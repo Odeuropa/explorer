@@ -186,6 +186,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const q = {
       id: result['@id'],
       type: query.type,
+      date: query.date,
+      tag: query.tag,
       locale: i18n.language,
     };
     const qs = queryString.stringify(q);
@@ -395,6 +397,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               } else {
                 delete newQuery.date;
               }
+              // Remove previous tag as it migh not exist anymore
+              delete newQuery.tag;
               router.push({ pathname: router.asPath.split('?')[0], query: newQuery }, undefined, {
                 scroll: false,
               });
