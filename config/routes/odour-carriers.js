@@ -26,7 +26,7 @@ module.exports = {
           OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
           OPTIONAL {
-            SELECT ?label_default WHERE {
+            SELECT ?id ?label_default WHERE {
               ?id skos:prefLabel ?label_default
             }
             ORDER BY ASC(?label_default)
@@ -120,7 +120,7 @@ module.exports = {
           OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
           OPTIONAL {
-            SELECT ?label_default WHERE {
+            SELECT ?id ?label_default WHERE {
               ?id skos:prefLabel ?label_default
             }
             ORDER BY ASC(?label_default)
