@@ -296,11 +296,11 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
           .map((result) => (
             <Result key={result['@id']} id={result['@id']}>
               <Link
-                href={`/details/${route.details.view}?id=${encodeURIComponent(
+                href={`/${query.type}/${encodeURIComponent(
                   uriToId(result['@id'], {
                     base: route.uriBase,
                   })
-                )}&type=${query.type}`}
+                )}`}
               >
                 <Item key={result['@id']} id={result['@id']}>
                   <ItemImage>

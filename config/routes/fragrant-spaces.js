@@ -1,5 +1,6 @@
 module.exports = {
   view: 'odeuropa-vocabulary',
+  uriBase: 'http://data.odeuropa.eu/vocabulary/fragrant-spaces',
   showInNavbar: true,
   showInHome: true,
   details: {

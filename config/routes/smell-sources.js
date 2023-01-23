@@ -2,6 +2,7 @@ module.exports = {
   view: 'odeuropa-vocabulary',
   showInNavbar: true,
   showInHome: true,
+  uriBase: 'http://data.odeuropa.eu/vocabulary/olfactory-objects',
   details: {
     view: 'odeuropa-vocabulary-details',
     showPermalink: false,
