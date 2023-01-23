@@ -12,7 +12,7 @@ module.exports = {
       '@graph': [
         {
           '@id': '?id',
-          label: '?label',
+          label: '?bestLabel',
           image: '?image',
           related: {
             '@id': '?related',
