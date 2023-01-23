@@ -107,10 +107,15 @@ const filterItemWithDate = (item, targetDate) => {
   return timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL;
 };
 
+const filterItemWithTag = (item, targetTag) => {
+  if (!targetTag) return true;
+  return [].concat(item.adjective).includes(targetTag);
+};
+
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
-  const { req, query } = router;
+  const { query } = router;
   const route = config.routes[query.type];
   const [wordCloud, setWordCloud] = useState();
   const [texts, setTexts] = useState();
@@ -158,7 +163,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       const flatMarkers = [
         ...prevMarkers,
         ...results
-          .filter((result) => filterItemWithDate(result, targetDate))
+          .filter(
+            (result) =>
+              filterItemWithDate(result, targetDate) && filterItemWithTag(result, query.tag)
+          )
           .map((result) =>
             []
               .concat(result.source?.createdLocation, result.source?.location)
@@ -191,10 +199,29 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setWordCloud(
         results.error
           ? null
-          : results.map((word) => ({
-              value: word,
-              count: Math.random(),
-            }))
+          : Object.values(
+              results.reduce((acc, cur) => {
+                if (!acc[cur]) {
+                  const style = {
+                    cursor: 'pointer',
+                  };
+                  if (cur === query.tag) {
+                    style.fontWeight = 'bold';
+                    style.fontSize = 48;
+                  }
+                  acc[cur] = {
+                    key: `${cur}-${query.tag}`,
+                    value: cur,
+                    count: 0,
+                    props: {
+                      style,
+                    },
+                  };
+                }
+                acc[cur].count += 1;
+                return acc;
+              }, {})
+            )
       );
     })();
 
@@ -221,12 +248,16 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
 
   useEffect(() => {
     if (!texts) return;
-    if (!query.date) {
+    if (!query.date && !query.tag) {
       setFilteredTexts(texts);
       return;
     }
     const targetDate = parseInt(query.date, 10);
-    setFilteredTexts(texts.filter((item) => filterItemWithDate(item, targetDate)));
+    setFilteredTexts(
+      texts.filter(
+        (item) => filterItemWithDate(item, targetDate) && filterItemWithTag(item, query.tag)
+      )
+    );
   }, [texts, query]);
 
   useEffect(() => {
@@ -333,11 +364,11 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                   {related.map((rel, i) => (
                     <Fragment key={rel['@id']}>
                       <Link
-                        href={`/details/${route.details.view}?id=${encodeURIComponent(
+                        href={`/${query.type}/${encodeURIComponent(
                           uriToId(rel['@id'], {
                             base: route.uriBase,
                           })
-                        )}&type=${query.type}`}
+                        )}`}
                         style={{ fontWeight: 'bold' }}
                       >
                         <span style={{ margin: '0 1em' }}>{rel.label}</span>
@@ -359,12 +390,16 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             maxValue={2000}
             onChange={(dates) => {
               const newQuery = { ...query };
+              delete newQuery.id;
+              delete newQuery.type;
               if (dates.length > 0) {
                 newQuery.date = dates.join(',');
               } else {
                 delete newQuery.date;
               }
-              router.push({ query: newQuery }, undefined, { scroll: false });
+              router.push({ pathname: router.asPath.split('?')[0], query: newQuery }, undefined, {
+                scroll: false,
+              });
             }}
             defaultValues={query.date?.split(',') || []}
           />
@@ -391,7 +426,28 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               paddingRight="1em"
               style={{ textAlign: 'center' }}
             >
-              <TagCloud minSize={12} maxSize={35} tags={wordCloud} />
+              <TagCloud
+                minSize={20}
+                maxSize={40}
+                tags={wordCloud}
+                onClick={(tag) => {
+                  const newQuery = { ...query };
+                  delete newQuery.id;
+                  delete newQuery.type;
+                  if (query.tag !== tag.value) {
+                    newQuery.tag = tag.value;
+                  } else {
+                    delete newQuery.tag;
+                  }
+                  router.push(
+                    { pathname: router.asPath.split('?')[0], query: newQuery },
+                    undefined,
+                    {
+                      scroll: false,
+                    }
+                  );
+                }}
+              />
             </Element>
           )}
 

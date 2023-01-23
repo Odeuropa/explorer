@@ -52,15 +52,12 @@ module.exports = {
         UNION
         {
           ?object crm:P137_exemplifies ?id .
-          OPTIONAL {
-            ?emission od:F3_had_source ?object .
-            ?emission od:F1_generated ?smell .
-            OPTIONAL {
-              ?assignment a crm:E13_Attribute_Assignment .
-              ?assignment crm:P141_assigned/rdfs:label ?adjective .
-              ?assignment crm:P140_assigned_attribute_to ?smell .
-            }
-          }
+          ?emission od:F3_had_source ?object .
+          ?emission od:F1_generated ?smell .
+
+          ?assignment a crm:E13_Attribute_Assignment .
+          ?assignment crm:P141_assigned/rdfs:label ?adjective .
+          ?assignment crm:P140_assigned_attribute_to ?smell .
         }
         `,
       ],
