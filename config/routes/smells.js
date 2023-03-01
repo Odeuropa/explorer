@@ -38,7 +38,7 @@ module.exports = {
   showInHome: false,
   uriBase: 'http://data.odeuropa.eu/smell',
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
-  filterByGraph: true,
+  filterByGraph: false,
   hideFilterButton: true,
   details: {
     view: 'odeuropa-texts',
@@ -791,6 +791,23 @@ module.exports = {
         '?source crm:P53_has_former_or_current_location ?location',
       ],
       filterFunc: (val) => `?location = <${val}>`,
+    },
+    {
+      id: 'graphs',
+      isMulti: true,
+      isSortable: false,
+      query: () => ({
+        '@graph': [
+          {
+            '@id': '?g',
+            label: '?label',
+          },
+        ],
+        $where: ['GRAPH ?g { ?id a od:L11_Smell }', '?g rdfs:label ?label'],
+        $orderby: 'ASC(?label)',
+        $langTag: 'hide',
+      }),
+      filterFunc: (val) => `?g = <${val}>`,
     },
   ],
 };

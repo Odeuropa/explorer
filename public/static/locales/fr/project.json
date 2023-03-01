@@ -48,7 +48,8 @@
     "gesture": "Geste",
     "emotion": "Émotion",
     "language": "Langue",
-    "museum": "Musée"
+    "museum": "Musée",
+    "graphs": "Graphe"
   },
   "buttons": {
     "source": "Source :",
