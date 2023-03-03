@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef, Fragment } from 'react';
-import styled from 'styled-components';
-import Router, { useRouter } from 'next/router';
+import { Heart as HeartIcon } from '@styled-icons/boxicons-regular/Heart';
+import { Heart as HeartSolidIcon } from '@styled-icons/boxicons-solid/Heart';
 import DefaultErrorPage from 'next/error';
-import queryString from 'query-string';
-import ReactPaginate from 'react-paginate';
-import useSWRInfinite from 'swr/infinite';
+import Router, { useRouter } from 'next/router';
+import { unstable_getServerSession } from 'next-auth';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { unstable_getServerSession } from 'next-auth';
+import queryString from 'query-string';
+import { useState, useEffect, useRef, Fragment } from 'react';
+import ReactPaginate from 'react-paginate';
+import styled from 'styled-components';
+import useSWRInfinite from 'swr/infinite';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -24,6 +26,7 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import PageTitle from '@components/PageTitle';
 import ScrollDetector from '@components/ScrollDetector';
 import OdeuropaCard from '@components/OdeuropaCard';
+import SaveButton from '@components/SaveButton';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import { useGraphs } from '@helpers/useGraphs';
@@ -206,6 +209,16 @@ Chip.Cross = styled(CrossIcon)`
   &:hover {
     background-color: #bbb;
   }
+`;
+
+const StyledHeartIcon = styled(HeartIcon)`
+  color: #e80020;
+  height: 16px;
+`;
+
+const StyledHeartSolidIcon = styled(HeartSolidIcon)`
+  color: #e80020;
+  height: 16px;
 `;
 
 const PAGE_SIZE = 20;
@@ -625,17 +638,31 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
             <>
               {data?.map((page, i) => {
                 const pageNumber = (parseInt(query.page, 10) || 1) + i;
+                const resultsUris = page.results.map((r) => r['@id']);
+                const isSaved = resultsUris.every((uri) => favorites.includes(uri));
                 return (
                   <Fragment key={pageNumber}>
-                    {page.results.length > 0 && (
-                      <ResultPage>
-                        {pageNumber > 1 && <>{t('search:labels.page', { page: pageNumber })}</>}
-                      </ResultPage>
+                    {page.results.length > 0 && pageNumber > 1 && (
+                      <ResultPage>{t('search:labels.page', { page: pageNumber })}</ResultPage>
                     )}
                     <ScrollDetector
                       onAppears={() => onScrollToPage(pageNumber)}
                       rootMargin="0px 0px -50% 0px"
                     />
+                    <SaveButton
+                      type={query.type}
+                      item={page.results}
+                      saved={isSaved}
+                      onChange={() => router.reload()}
+                      style={{ marginTop: '1em', marginBottom: '2em' }}
+                    >
+                      {isSaved ? (
+                        <StyledHeartSolidIcon style={{ marginRight: '0.5em' }} />
+                      ) : (
+                        <StyledHeartIcon style={{ marginRight: '0.5em' }} />
+                      )}
+                      {t('search:buttons.addResults', { page: pageNumber })}
+                    </SaveButton>
                     <Results loading={isLoadingMore || isPageLoading ? 1 : 0}>
                       {renderResults(page.results, pageNumber)}
                     </Results>
