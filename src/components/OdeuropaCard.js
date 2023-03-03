@@ -8,7 +8,7 @@ import SaveButton from '@components/SaveButton';
 import PaginatedLink from '@components/PaginatedLink';
 import { getEntityMainLabel } from '@helpers/explorer';
 import { uriToId } from '@helpers/utils';
-import { getHighlightedText } from '@helpers/odeuropa';
+import { highlightAndUnderlineText } from '@helpers/odeuropa';
 import config from '~/config';
 
 const Container = styled.div`
@@ -236,7 +236,7 @@ const OdeuropaCard = ({
         .filter((x) => x)
         .join(' ');
       const truncatedText = text.length < 200 ? text : text.substring(0, 200) + '…';
-      return <Body>{getHighlightedText(truncatedText, highlightKeyword)}</Body>;
+      return <Body>{highlightAndUnderlineText(truncatedText, [highlightKeyword], [])}</Body>;
     }
 
     const smellEmissionRows = [

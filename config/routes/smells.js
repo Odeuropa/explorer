@@ -62,6 +62,7 @@ module.exports = {
             excerpts: {
               '@id': '?excerpt',
               value: '?excerptValue',
+              words: '?excerptWord',
             },
             author: {
               '@id': '?sourceAuthor',
@@ -128,7 +129,12 @@ module.exports = {
         {
           OPTIONAL {
             ?source crm:P165_incorporates ?excerpt .
-            ?excerpt rdf:value ?excerptValue .
+            OPTIONAL {
+              ?excerpt crm:P106_is_composed_of ?excerptWord .
+            }
+            OPTIONAL {
+              ?excerpt rdf:value ?excerptValue .
+            }
           }
         }
         UNION

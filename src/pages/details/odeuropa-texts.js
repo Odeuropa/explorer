@@ -26,7 +26,7 @@ import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink, getSearchData } from '@helpers/explorer';
 import { slugify, uriToId } from '@helpers/utils';
-import { getHighlightedText } from '@helpers/odeuropa';
+import { highlightAndUnderlineText } from '@helpers/odeuropa';
 import { getEntity, getEntityDebugQuery, isEntityInList } from '@pages/api/entity';
 import config from '~/config';
 
@@ -411,9 +411,10 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                     {t('project:details.excerpt', { num: i + 1 })}
                   </span>
                   <ExcerptPreview>
-                    {getHighlightedText(
+                    {highlightAndUnderlineText(
                       excerpt.value,
-                      excerpt['@id'] === result.relevantExcerpt ? mainLabel : null
+                      excerpt['@id'] === result.relevantExcerpt ? [mainLabel] : [],
+                      [].concat(excerpt.words).filter((x) => x)
                     )}
                   </ExcerptPreview>
                 </div>
@@ -432,11 +433,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                   <path d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
                 </svg>
               </ExcerptTitle>
-              {openedExcerpts.includes(excerpt['@id']) &&
-                renderExcerpt(
-                  excerpt.value,
-                  excerpt['@id'] === result.relevantExcerpt ? mainLabel : null
-                )}
+              {openedExcerpts.includes(excerpt['@id']) && renderExcerpt(excerpt)}
             </ExcerptContainer>
             {i < excerpts.length - 1 && <Separator />}
             {i === 0 && excerpts.length > 1 && (
@@ -533,7 +530,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
     );
   };
 
-  const renderExcerpt = (excerpt, highlight) => (
+  const renderExcerpt = (excerpt) => (
     <Element
       style={{ display: 'flex', alignItems: 'center', paddingLeft: '1em', paddingRight: '1em' }}
     >
@@ -549,7 +546,11 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
         ‟
       </Element>
       <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>
-        {getHighlightedText(excerpt, highlight)}
+        {highlightAndUnderlineText(
+          excerpt.value,
+          excerpt['@id'] === result.relevantExcerpt ? [mainLabel] : [],
+          [].concat(excerpt.words).filter((x) => x)
+        )}
       </Element>
     </Element>
   );
