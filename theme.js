@@ -6,6 +6,12 @@ const theme = {
       font-weight: normal;
       src: local('Futura Std Book'), url('/fonts/FuturaStdBook.woff2') format('woff2');
     }
+
+    mark {
+      font-weight: bold;
+      background-color: #F2BB05;
+      padding: '0.1em';
+    }
   `,
   fontFamily: {
     sansSerif:
