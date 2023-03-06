@@ -413,8 +413,8 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                   <ExcerptPreview>
                     {highlightAndUnderlineText(
                       excerpt.value,
-                      excerpt['@id'] === result.relevantExcerpt ? [mainLabel] : [],
-                      [].concat(excerpt.words).filter((x) => x)
+                      [excerpt['@id'] === result.relevantExcerpt ? mainLabel : null, query.q],
+                      [].concat(excerpt.words)
                     )}
                   </ExcerptPreview>
                 </div>
@@ -548,8 +548,8 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
       <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>
         {highlightAndUnderlineText(
           excerpt.value,
-          excerpt['@id'] === result.relevantExcerpt ? [mainLabel] : [],
-          [].concat(excerpt.words).filter((x) => x)
+          [excerpt['@id'] === result.relevantExcerpt ? mainLabel : null, query.q],
+          [].concat(excerpt.words)
         )}
       </Element>
     </Element>
