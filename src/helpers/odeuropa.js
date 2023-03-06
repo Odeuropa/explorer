@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 
 export const highlightAndUnderlineText = (text, highlightedWords, underlinedWords) => {
-  const wordsToHighlight = highlightedWords.map((word) => word.toLowerCase());
-  const wordsToUnderline = underlinedWords.map((word) => word.toLowerCase());
+  const wordsToHighlight = highlightedWords.filter((x) => x).map((word) => word.toLowerCase());
+  const wordsToUnderline = underlinedWords.filter((x) => x).map((word) => word.toLowerCase());
 
   function applyMarkup(word, index) {
     const lowerCaseWord = word.toLowerCase();
@@ -25,7 +25,7 @@ export const highlightAndUnderlineText = (text, highlightedWords, underlinedWord
     return markup;
   }
 
-  const regex = new RegExp(`\\b(${highlightedWords.concat(underlinedWords).join('|')})\\b`, 'gi');
+  const regex = new RegExp(`\\b(${wordsToHighlight.concat(wordsToUnderline).join('|')})\\b`, 'gi');
 
   return (
     <Fragment>
