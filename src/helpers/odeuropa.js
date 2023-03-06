@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-export const highlightAndUnderlineText = (text, highlightedWords, underlinedWords) => {
+export const highlightAndUnderlineText = (text, highlightedWords = [], underlinedWords = []) => {
   const wordsToHighlight = highlightedWords.filter((x) => x).map((word) => word.toLowerCase());
   const wordsToUnderline = underlinedWords.filter((x) => x).map((word) => word.toLowerCase());
 

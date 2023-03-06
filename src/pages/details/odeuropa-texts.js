@@ -309,8 +309,11 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
           style={{ fontSize: '4rem', color: '#725cae', fontWeight: 'bold', lineHeight: '100%' }}
         >
           {source.label &&
-            source.label.substr(0, MAX_TITLE_LENGTH - 1) +
-              (source.label.length > MAX_TITLE_LENGTH ? '…' : '')}
+            highlightAndUnderlineText(
+              source.label.substr(0, MAX_TITLE_LENGTH - 1) +
+                (source.label.length > MAX_TITLE_LENGTH ? '…' : ''),
+              [query.q]
+            )}
         </Element>
         <Element style={{ fontSize: '2rem', color: 'black' }}>
           {subtitles.map((subtitle, i) => (
