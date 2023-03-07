@@ -474,7 +474,9 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                   >
                     <Annotation>
                       {fragment.label}{' '}
-                      <span style={{ fontSize: '8px' }}>({parseFloat(fragment.score) * 100}%)</span>
+                      <span style={{ fontSize: '8px' }}>
+                        ({parseFloat((parseFloat(fragment.score) * 100).toFixed(2))}%)
+                      </span>
                     </Annotation>
                   </AnnotationContainer>
                 ))}
