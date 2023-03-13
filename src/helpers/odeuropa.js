@@ -25,7 +25,10 @@ export const highlightAndUnderlineText = (text, highlightedWords = [], underline
     return markup;
   }
 
-  const regex = new RegExp(`\\b(${wordsToHighlight.concat(wordsToUnderline).join('|')})\\b`, 'gi');
+  const regex = new RegExp(
+    `(?<=[\\s,.:;"\']|^)(${wordsToHighlight.concat(wordsToUnderline).join('|')})(?=[\\s,.:;"\']|$)`,
+    'g'
+  );
 
   return (
     <Fragment>
