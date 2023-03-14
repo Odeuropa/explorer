@@ -39,7 +39,7 @@ module.exports = {
       en: 'English',
       fr: 'Français',
       it: 'Italiano',
-      si: 'Slovenski',
+      sl: 'Slovenski',
     },
     defaultLanguage: 'en',
   },
