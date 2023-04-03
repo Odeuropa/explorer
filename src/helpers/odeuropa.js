@@ -1,5 +1,13 @@
 import { Fragment } from 'react';
 
+/**
+ * Takes a string of text, a list of words to highlight, and a list of words to underline, and
+ * returns a React component that renders the text with the specified words highlighted and underlined
+ * @param text - The text to be highlighted and underlined.
+ * @param [highlightedWords] - An array of words to highlight.
+ * @param [underlinedWords] - An array of words to underline.
+ * @returns A React component that highlights and underlines words in a string.
+ */
 export const highlightAndUnderlineText = (text, highlightedWords = [], underlinedWords = []) => {
   const wordsToHighlight = highlightedWords.filter((x) => x).map((word) => word.toLowerCase());
   const wordsToUnderline = underlinedWords.filter((x) => x).map((word) => word.toLowerCase());
@@ -26,7 +34,10 @@ export const highlightAndUnderlineText = (text, highlightedWords = [], underline
   }
 
   const regex = new RegExp(
-    `(?<=[\\s,.:;"\']|^)(${wordsToHighlight.concat(wordsToUnderline).join('|')})(?=[\\s,.:;"\']|$)`,
+    `(?![\\s,.:;"\']|^)(${wordsToHighlight
+      .concat(wordsToUnderline)
+      .map((s) => s.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'))
+      .join('|')})(?=[\\s,.:;"\']|$)`,
     'g'
   );
 
