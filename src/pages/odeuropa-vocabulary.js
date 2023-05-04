@@ -169,14 +169,15 @@ const FilterBar = styled.div`
 `;
 
 export const getImageUrl = (image, placeholder) => {
-  if (!image) return placeholder;
+  const imageUrl = Array.isArray(image) ? image[0] : image;
+  if (!imageUrl) return placeholder;
   if (
     ['.gif', '.svg', '.tiff'].some((ext) =>
-      image.toLocaleLowerCase().trim().endsWith(ext.toLocaleLowerCase().trim())
+      imageUrl.toLocaleLowerCase().trim().endsWith(ext.toLocaleLowerCase().trim())
     )
   )
     return image;
-  return generateMediaUrl(image, 300);
+  return generateMediaUrl(imageUrl, 300);
 };
 
 const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
