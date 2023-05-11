@@ -100,11 +100,13 @@ const OdeuropaMap = dynamic(() => import('@components/OdeuropaMap'), { ssr: fals
 
 const TIMELINE_INTERVAL = 20; // years
 
-const filterItemWithDate = (item, targetDate) => {
-  if (!targetDate) return true;
+const filterItemWithDates = (item, targetDates) => {
+  if (!Array.isArray(targetDates) || targetDates.length === 0) return true;
   const time = [].concat(item.time).filter((x) => x)[0];
   const timeBegin = parseInt(time?.begin, 10);
-  return timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL;
+  return targetDates.some(
+    (targetDate) => timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL
+  );
 };
 
 const filterItemWithTag = (item, targetTag) => {
@@ -157,7 +159,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const updateMapMarkersWithResults = (results) => {
     if (!Array.isArray(results)) return;
 
-    const targetDate = parseInt(query.date, 10);
+    const targetDates = (query.date || '').split(',').map((date) => parseInt(date, 10));
 
     setMapMarkers((prevMarkers) => {
       const flatMarkers = [
@@ -165,7 +167,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         ...results
           .filter(
             (result) =>
-              filterItemWithDate(result, targetDate) && filterItemWithTag(result, query.tag)
+              filterItemWithDates(result, targetDates) && filterItemWithTag(result, query.tag)
           )
           .map((result) =>
             []
@@ -254,10 +256,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setFilteredTexts(texts);
       return;
     }
-    const targetDate = parseInt(query.date, 10);
+    const targetDates = query.date.split(',').map((date) => parseInt(date, 10));
     setFilteredTexts(
       texts.filter(
-        (item) => filterItemWithDate(item, targetDate) && filterItemWithTag(item, query.tag)
+        (item) => filterItemWithDates(item, targetDates) && filterItemWithTag(item, query.tag)
       )
     );
   }, [texts, query]);
@@ -268,8 +270,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setFilteredVisuals(visuals);
       return;
     }
-    const targetDate = parseInt(query.date, 10);
-    setFilteredVisuals(visuals.filter((item) => filterItemWithDate(item, targetDate)));
+    const targetDates = query.date.split(',').map((date) => parseInt(date, 10));
+    setFilteredVisuals(visuals.filter((item) => filterItemWithDates(item, targetDates)));
   }, [visuals, query]);
 
   if (!result) {
