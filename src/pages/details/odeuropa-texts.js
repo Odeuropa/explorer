@@ -250,7 +250,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
       subtitles.push(<>{result.date}</>);
     }
 
-    const authors = [].concat(source.author).filter((x) => x);
+    const authors = [].concat(source.author, source.artist).filter((x) => x);
     authors.forEach((author) => {
       if (author.label) {
         subtitles.push(

@@ -69,6 +69,11 @@ module.exports = {
               label: '?sourceAuthorLabel',
               sameAs: '?sourceAuthorSameAs',
             },
+            artist: {
+              '@id': '?sourceArtist',
+              label: '?sourceArtistLabel',
+              sameAs: '?sourceArtistSameAs',
+            },
             date: '?sourceDate',
             genre: {
               '@id': '?sourceGenre',
@@ -203,6 +208,25 @@ module.exports = {
         UNION
         {
           OPTIONAL {
+            ?source schema:artist ?sourceArtist .
+            {
+              OPTIONAL {
+                ?sourceArtist rdfs:label ?sourceArtistLabel .
+              }
+            }
+            UNION
+            {
+              OPTIONAL {
+                GRAPH <http://www.ontotext.com/explicit> {
+                  ?sourceArtist owl:sameAs ?sourceArtistSameAs .
+                }
+              }
+            }
+          }
+        }
+        UNION
+        {
+          OPTIONAL {
             ?source schema:dateCreated / rdfs:label ?sourceDate .
           }
         }
@@ -320,6 +344,11 @@ module.exports = {
             label: '?sourceAuthorLabel',
             sameAs: '?sourceAuthorSameAs',
           },
+          artist: {
+            '@id': '?sourceArtist',
+            label: '?sourceArtistLabel',
+            sameAs: '?sourceArtistSameAs',
+          },
           date: '?sourceDate',
           genre: {
             '@id': '?sourceGenre',
@@ -408,6 +437,25 @@ module.exports = {
             OPTIONAL {
               GRAPH <http://www.ontotext.com/explicit> {
                 ?sourceAuthor owl:sameAs ?sourceAuthorSameAs .
+              }
+            }
+          }
+        }
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?source schema:artist ?sourceArtist .
+          {
+            OPTIONAL {
+              ?sourceArtist rdfs:label ?sourceArtistLabel .
+            }
+          }
+          UNION
+          {
+            OPTIONAL {
+              GRAPH <http://www.ontotext.com/explicit> {
+                ?sourceArtist owl:sameAs ?sourceArtistSameAs .
               }
             }
           }
