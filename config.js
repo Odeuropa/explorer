@@ -71,7 +71,6 @@ module.exports = {
       wgs: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
       xsd: 'http://www.w3.org/2001/XMLSchema#',
     },
-    permalinkUrl: (uri) => `https://data.odeuropa.eu/resource?uri=${uri}`,
   },
   routes: {
     smells,
