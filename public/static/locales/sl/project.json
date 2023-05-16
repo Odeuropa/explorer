@@ -2,7 +2,7 @@
   "site": {
     "description": "Raziščite evropsko dediščino vonjav"
   },
-  "search": "Iskanje",
+  "search": "Prebrskaj",
   "footer": {
     "text": "Ta demonstrator je bil razvit v okviru raziskovalnega projekta <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, ki je prejel sredstva iz programa Evropske unije za raziskave in inovacije Horizon 2020 na podlagi sporazuma o dodelitvi sredstev št. 101004469."
   },

@@ -2,7 +2,7 @@
   "site": {
     "description": "Explore the European Olfactory Heritage"
   },
-  "search": "Search",
+  "search": "Browse",
   "footer": {
     "text": "This demonstrator has been developed in the context of <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, a research project that has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 101004469."
   },
