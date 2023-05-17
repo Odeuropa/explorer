@@ -26,7 +26,7 @@
     "language": "Language"
   },
   "routes": {
-    "smells": "Search",
+    "smells": "Browse",
     "smell-sources": "Smell sources",
     "odour-carriers": "Odour carriers",
     "fragrant-spaces": "Fragrant Spaces"

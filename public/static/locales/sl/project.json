@@ -26,7 +26,7 @@
     "language": "Jezik"
   },
   "routes": {
-    "smells": "Iskanje",
+    "smells": "Prebrskaj",
     "smell-sources": "Viri vonja",
     "odour-carriers": "Nosilci vonja",
     "fragrant-spaces": "Dišeči prostori"
