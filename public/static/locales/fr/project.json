@@ -2,7 +2,7 @@
   "site": {
     "description": "Explorez le Patrimoine Olfactif Européen"
   },
-  "search": "Parcourir",
+  "search": "Rechercher",
   "footer": {
     "text": "Ce démonstrateur a été développé dans le cadre de <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, un projet de recherche qui a reçu un financement du programme de recherche et d'innovation Horizon 2020 de l'Union européenne dans le cadre de la convention de subvention n° 101004469."
   },
