@@ -159,7 +159,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const updateMapMarkersWithResults = (results) => {
     if (!Array.isArray(results)) return;
 
-    const targetDates = (query.date || '').split(',').map((date) => parseInt(date, 10));
+    const targetDates = (query.date || '')
+      .split(',')
+      .map((date) => parseInt(date, 10))
+      .filter((x) => x);
 
     setMapMarkers((prevMarkers) => {
       const flatMarkers = [
@@ -256,7 +259,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setFilteredTexts(texts);
       return;
     }
-    const targetDates = query.date.split(',').map((date) => parseInt(date, 10));
+    const targetDates = query.date
+      .split(',')
+      .map((date) => parseInt(date, 10))
+      .filter((x = x));
     setFilteredTexts(
       texts.filter(
         (item) => filterItemWithDates(item, targetDates) && filterItemWithTag(item, query.tag)
@@ -270,7 +276,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setFilteredVisuals(visuals);
       return;
     }
-    const targetDates = query.date.split(',').map((date) => parseInt(date, 10));
+    const targetDates = query.date
+      .split(',')
+      .map((date) => parseInt(date, 10))
+      .filter((x = x));
     setFilteredVisuals(visuals.filter((item) => filterItemWithDates(item, targetDates)));
   }, [visuals, query]);
 
