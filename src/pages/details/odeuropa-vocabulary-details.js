@@ -262,7 +262,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const targetDates = query.date
       .split(',')
       .map((date) => parseInt(date, 10))
-      .filter((x = x));
+      .filter((x) => x);
     setFilteredTexts(
       texts.filter(
         (item) => filterItemWithDates(item, targetDates) && filterItemWithTag(item, query.tag)
@@ -279,7 +279,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const targetDates = query.date
       .split(',')
       .map((date) => parseInt(date, 10))
-      .filter((x = x));
+      .filter((x) => x);
     setFilteredVisuals(visuals.filter((item) => filterItemWithDates(item, targetDates)));
   }, [visuals, query]);
 
