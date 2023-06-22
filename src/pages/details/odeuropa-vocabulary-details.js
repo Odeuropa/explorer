@@ -530,7 +530,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         {filteredTexts && (
           <>
             <Results showAll={showingAllTexts}>
-              {filteredTexts.map((item) => (
+              {filteredTexts.slice(0, showingAllTexts ? undefined : 5).map((item) => (
                 <Result key={item['@id']}>
                   <OdeuropaCard
                     item={item}
@@ -589,7 +589,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         {filteredVisuals && (
           <>
             <Results showAll={showingAllVisuals}>
-              {filteredVisuals.map((item) => (
+              {filteredVisuals.slice(0, showingAllVisuals ? undefined : 5).map((item) => (
                 <Result key={item['@id']} style={{ margin: '0 1em' }}>
                   <OdeuropaCard
                     item={item}
