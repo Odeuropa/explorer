@@ -146,19 +146,21 @@ export const renderRowValues = (
       if (typeof v === 'object') {
         let url = null;
 
-        const idValue = targetProperty ? v[targetProperty] : v['@id'];
+        const idValue = [].concat(targetProperty ? v[targetProperty] : v['@id']).filter((x) => x);
         const targetRoute = config.routes[targetRouteName];
-        if (targetRoute && idValue) {
-          url = `/details/${targetRoute.details.view}?id=${encodeURIComponent(
-            uriToId(idValue, {
-              base: targetRoute.uriBase,
-            })
-          )}&type=${targetRouteName}`;
-        } else {
-          const filter =
-            route && Array.isArray(route.filters) && route.filters.find((f) => f.id === metaName);
-          if (filter && idValue) {
-            url = `/${queryType}?filter_${metaName}=${encodeURIComponent(idValue)}`;
+        if (idValue.length > 0) {
+          if (targetRoute) {
+            url = `/details/${targetRoute.details.view}?id=${encodeURIComponent(
+              uriToId(idValue[0], {
+                base: targetRoute.uriBase,
+              })
+            )}&type=${targetRouteName}`;
+          } else {
+            const filter =
+              route && Array.isArray(route.filters) && route.filters.find((f) => f.id === metaName);
+            if (filter) {
+              url = `/${queryType}?filter_${metaName}=${encodeURIComponent(idValue[0])}`;
+            }
           }
         }
 
