@@ -259,7 +259,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setFilteredTexts(texts);
       return;
     }
-    const targetDates = query.date
+    const targetDates = (query.date || '')
       .split(',')
       .map((date) => parseInt(date, 10))
       .filter((x) => x);
