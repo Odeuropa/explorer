@@ -6,6 +6,11 @@
   "footer": {
     "text": "Questa applicazione dimostrativa è stata sviluppata nel contesto di <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, un progetto di ricerca che ha ricevuto finanziamenti dall'Unione Europea nel programma di ricerca e innovazione Horizon 2020, all'interno del grant agreement No. 101004469."
   },
+  "searchOptions": {
+    "title": "Solo titolo",
+    "content": "Solo contenuto",
+    "all": "Titolo e contenuto"
+  },
   "metadata": {
     "@id": "Permalink",
     "source": "Sorgente",

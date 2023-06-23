@@ -312,13 +312,21 @@ module.exports = {
       $langTag: 'hide',
     }),
   },
-  textSearchFunc: (q) => {
+  textSearchOptions: ['title', 'content', 'all'],
+  textSearchFunc: (q, option) => {
     const escapedValue = q.replace(escapeAll, characterReplacer);
+    const lucQuery = [];
+    if (!option || option === 'title' || option === 'all') {
+      lucQuery.push(`source_label:(${escapedValue})`);
+    }
+    if (!option || option === 'content' || option === 'all') {
+      lucQuery.push(`source_value:(${escapedValue})`);
+    }
     return [
       `
       {
         ?search a luc-index:search ;
-        luc:query "source_label:(${escapedValue}) || source_value:(${escapedValue})" ;
+        luc:query ${JSON.stringify(lucQuery.join(' || '))} ;
         luc:entities ?id .
       }
       `,

@@ -6,6 +6,11 @@
   "footer": {
     "text": "Dieses Vorführungsmodell wurde im Kontext des Forschungsprojektes <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a> entwickelt, welches eine Förderung des Forschungs- und Innovationsprogramm Horizon 2020 der europäischen Union unter der Finanzhilfevereinbarung Nr. 101004469 erhielt."
   },
+  "searchOptions": {
+    "title": "Nur Titel",
+    "content": "Nur Inhalt",
+    "all": "Titel und Inhalt"
+  },
   "metadata": {
     "@id": "Dauerhafter Link",
     "source": "Quelle",
