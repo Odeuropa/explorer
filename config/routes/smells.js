@@ -313,6 +313,7 @@ module.exports = {
     }),
   },
   textSearchOptions: ['title', 'content', 'all'],
+  textSearchDefaultOption: 'all',
   textSearchFunc: (q, option) => {
     const escapedValue = q.replace(escapeAll, characterReplacer);
     const lucQuery = [];
