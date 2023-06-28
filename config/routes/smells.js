@@ -656,7 +656,7 @@ module.exports = {
       inputProps: {
         type: 'number',
       },
-      query: ({ language }) => ({
+      query: () => ({
         '@graph': [
           {
             '@id': '?timeBegin',
@@ -689,7 +689,7 @@ module.exports = {
       inputProps: {
         type: 'number',
       },
-      query: ({ language }) => ({
+      query: () => ({
         '@graph': [
           {
             '@id': '?timeEnd',
@@ -713,6 +713,52 @@ module.exports = {
         '?time time:hasEnd ?timeEnd',
       ],
       filterFunc: (val) => `?timeEnd <= ${JSON.stringify(val)}^^xsd:gYear`,
+    },
+    {
+      id: 'time-period',
+      placeholder: 'time-period',
+      hideLabel: true,
+      values: [
+        { label: '15th century', value: 1400, key: 'fifteenth-century' },
+        { label: '16th century', value: 1500, key: 'sixteenth-century' },
+        { label: '17th century', value: 1600, key: 'seventeenth-century' },
+        { label: '18th century', value: 1700, key: 'eighteenth-century' },
+        { label: '19th century', value: 1800, key: 'nineteenth-century' },
+        { label: '20th century', value: 1900, key: 'twentieth-century' },
+      ],
+      whereFunc: () => [
+        '?emission od:F1_generated ?id',
+        '?emission time:hasTime ?time',
+        '?time time:hasBeginning ?timeBegin',
+        '?time time:hasEnd ?timeEnd',
+      ],
+      filterFunc: (val) =>
+        `?timeBegin >= ${JSON.stringify(val)}^^xsd:gYear && ?timeEnd <= ${JSON.stringify(
+          val + 99
+        )}^^xsd:gYear`,
+    },
+    {
+      id: 'time-season',
+      placeholder: 'time-season',
+      hideLabel: true,
+      values: [
+        { label: 'Winter', value: 'winter' },
+        { label: 'Spring', value: 'spring' },
+        { label: 'Summer', value: 'summer' },
+        { label: 'Autumn', value: 'autumn' },
+      ],
+      whereFunc: () => [
+        '?emission od:F1_generated ?id',
+        '?emission time:hasTime ?time',
+        '?time time:hasBeginning ?timeBegin',
+      ],
+      filterFunc: (val) => {
+        if (val === 'winter') return `MONTH(?timeBegin) IN (12, 1, 2)`; // December, January, February
+        if (val === 'spring') return `MONTH(?timeBegin) IN (3, 4, 5)`; // March, April, May
+        if (val === 'summer') return `MONTH(?timeBegin) IN (6, 7, 8)`; // June, July, August
+        if (val === 'autumn') return `MONTH(?timeBegin) IN (9, 10, 11)`; // September, October, November
+        return '';
+      },
     },
     {
       id: 'source',

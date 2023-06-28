@@ -50,12 +50,30 @@
     "time": "Čas",
     "time-start": "Začetno leto",
     "time-end": "Končno leto",
+    "time-period": "Časovno obdobje",
+    "time-season": "Letni čas",
     "place": "Kraj",
     "gesture": "Gesta",
     "emotion": "Emocija",
     "language": "Jezik",
     "museum": "Muzej",
     "graphs": "Graf"
+  },
+  "filters-values": {
+    "time-period": {
+      "fifteenth-century": "15. stoletje",
+      "sixteenth-century": "16. stoletje",
+      "seventeenth-century": "17. stoletje",
+      "eighteenth-century": "18. stoletje",
+      "nineteenth-century": "19. stoletje",
+      "twentieth-century": "20. stoletje"
+    },
+    "time-season": {
+      "winter": "Zima",
+      "spring": "Pomlad",
+      "summer": "Poletje",
+      "autumn": "Jesen"
+    }
   },
   "buttons": {
     "source": "Vir:",

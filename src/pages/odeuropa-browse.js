@@ -558,13 +558,18 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
               if (!filter) return null;
               return fieldValues.map((fieldValue) => {
                 const label = t(`project:filters.${filter.id}`, null);
+                const option =
+                  filter.isAutocomplete === false
+                    ? fieldValue
+                    : filter.values.find((v) => v.value === fieldValue);
                 return (
                   <Chip key={`${fieldKey}-${fieldValue}`}>
                     {label && <Chip.Label>{label}</Chip.Label>}
                     <Chip.Value>
-                      {filter.isAutocomplete === false
-                        ? fieldValue
-                        : filter.values.find((v) => v.value === fieldValue)?.label}
+                      {t(
+                        `project:filters-values.${filter.id}.${option?.key || option?.value}`,
+                        option?.label
+                      )}
                     </Chip.Value>
                     <Chip.Cross
                       onClick={() => {

@@ -50,12 +50,30 @@
     "time": "Temps",
     "time-start": "Année de début",
     "time-end": "Année de fin",
+    "time-period": "Période",
+    "time-season": "Saison",
     "place": "Lieux",
     "gesture": "Geste",
     "emotion": "Émotion",
     "language": "Langue",
     "museum": "Musée",
     "graphs": "Graphe"
+  },
+  "filters-values": {
+    "time-period": {
+      "fifteenth-century": "15e siècle",
+      "sixteenth-century": "16e siècle",
+      "seventeenth-century": "17e siècle",
+      "eighteenth-century": "18e siècle",
+      "nineteenth-century": "19e siècle",
+      "twentieth-century": "20e siècle"
+    },
+    "time-season": {
+      "winter": "Hiver",
+      "spring": "Printemps",
+      "summer": "Été",
+      "autumn": "Automne"
+    }
   },
   "buttons": {
     "source": "Source :",

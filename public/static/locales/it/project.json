@@ -50,12 +50,30 @@
     "time": "Tempo",
     "time-start": "Da",
     "time-end": "A",
+    "time-period": "Periodo",
+    "time-season": "Stagione",
     "place": "Luogo",
     "gesture": "Gestualità",
     "emotion": "Emozione",
     "language": "Lingua",
     "museum": "Museo",
     "graphs": "Grafico"
+  },
+  "filters-values": {
+    "time-period": {
+      "fifteenth-century": "XV secolo",
+      "sixteenth-century": "XVI secolo",
+      "seventeenth-century": "XVII secolo",
+      "eighteenth-century": "XVIII secolo",
+      "nineteenth-century": "XIX secolo",
+      "twentieth-century": "XX secolo"
+    },
+    "time-season": {
+      "winter": "Inverno",
+      "spring": "Primavera",
+      "summer": "Estate",
+      "autumn": "Autunno"
+    }
   },
   "buttons": {
     "source": "Fonte:",
