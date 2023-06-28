@@ -647,10 +647,14 @@ module.exports = {
     {
       id: 'time',
       placeholder: 'time-start',
+      isAutocomplete: false,
       isMulti: false,
       isSortable: {
         reverse: true,
         variable: 'timeBegin',
+      },
+      inputProps: {
+        type: 'number',
       },
       query: ({ language }) => ({
         '@graph': [
@@ -681,6 +685,10 @@ module.exports = {
       id: 'time-end',
       placeholder: 'time-end',
       hideLabel: true,
+      isAutocomplete: false,
+      inputProps: {
+        type: 'number',
+      },
       query: ({ language }) => ({
         '@graph': [
           {

@@ -562,7 +562,9 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
                   <Chip key={`${fieldKey}-${fieldValue}`}>
                     {label && <Chip.Label>{label}</Chip.Label>}
                     <Chip.Value>
-                      {filter.values.find((v) => v.value === fieldValue)?.label}
+                      {filter.isAutocomplete === false
+                        ? fieldValue
+                        : filter.values.find((v) => v.value === fieldValue)?.label}
                     </Chip.Value>
                     <Chip.Cross
                       onClick={() => {
