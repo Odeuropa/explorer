@@ -28,7 +28,7 @@ import SaveButton from '@components/SaveButton';
 import useDebounce from '@helpers/useDebounce';
 import useOnScreen from '@helpers/useOnScreen';
 import { useGraphs } from '@helpers/useGraphs';
-import { search, getFilters } from '@helpers/search';
+import { getFilters } from '@helpers/search';
 import { authOptions } from '@pages/api/auth/[...nextauth]';
 import breakpoints, { sizes } from '@styles/breakpoints';
 import config from '~/config';
@@ -214,7 +214,7 @@ Chip.Cross = styled(CrossIcon)`
 
 const PAGE_SIZE = 20;
 
-const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
+const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
   const router = useRouter();
   const { req, query } = router;
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
@@ -233,9 +233,7 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
     return `${baseUrl}/api/search?${queryString.stringify(q)}`; // SWR key
   };
 
-  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher, {
-    fallbackData: [initialData],
-  });
+  const { data, error, size, setSize } = useSWRInfinite(getKey, fetcher);
 
   const isLoadingInitialData = !data && !error;
   const isLoadingMore = isLoadingInitialData || (data && typeof data[size - 1] === 'undefined');
@@ -251,6 +249,7 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
   }
 
   useEffect(() => {
+    if (!data) return;
     setFavorites(
       data.reduce((acc, cur) => {
         acc.push(...cur.favorites);
@@ -712,17 +711,10 @@ export async function getServerSideProps(context) {
   const { req, res, query, locale } = context;
   const filters = await getFilters(query, { language: locale });
   const session = await unstable_getServerSession(req, res, authOptions);
-  const searchData = await search(query, session, locale);
 
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
-      initialData: {
-        results: searchData.results,
-        totalResults: searchData.totalResults,
-        favorites: searchData.favorites,
-        debugSparqlQuery: searchData.debugSparqlQuery,
-      },
       baseUrl: process.env.SITE,
       filters,
     },
