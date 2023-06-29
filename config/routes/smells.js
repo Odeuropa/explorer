@@ -716,6 +716,7 @@ module.exports = {
     },
     {
       id: 'time-period',
+      isMulti: true,
       placeholder: 'time-period',
       hideLabel: true,
       values: [
@@ -739,6 +740,7 @@ module.exports = {
     },
     {
       id: 'time-season',
+      isMulti: true,
       placeholder: 'time-season',
       hideLabel: true,
       values: [
