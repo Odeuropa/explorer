@@ -734,8 +734,10 @@ module.exports = {
         '?time time:hasEnd ?timeEnd',
       ],
       filterFunc: (val) =>
-        `?timeBegin >= ${JSON.stringify(val)}^^xsd:gYear && ?timeEnd <= ${JSON.stringify(
-          val + 99
+        `?timeBegin >= ${JSON.stringify(
+          parseInt(val, 10).toString()
+        )}^^xsd:gYear && ?timeEnd <= ${JSON.stringify(
+          (parseInt(val, 10) + 99).toString()
         )}^^xsd:gYear`,
     },
     {
