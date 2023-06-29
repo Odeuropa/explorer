@@ -612,6 +612,7 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
                   options={displayOptions}
                   value={displayOptions.find((o) => o.value === query.display) || displayOptions[0]}
                   onChange={onDisplayChange}
+                  isSearchable={false}
                   styles={selectStyles}
                   theme={selectTheme}
                 />
@@ -626,6 +627,7 @@ const OdeuropaBrowsePage = ({ initialData, baseUrl, filters }) => {
                   options={sortOptions}
                   value={sortOptions.find((o) => o.value === query.sort)}
                   onChange={onSortChange}
+                  isSearchable={false}
                   styles={selectStyles}
                   theme={selectTheme}
                 />
