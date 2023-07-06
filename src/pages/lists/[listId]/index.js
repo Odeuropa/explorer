@@ -62,7 +62,7 @@ function DeleteIcon(props) {
 
 function ListsPage({ isOwner, collaborators, list, shareLink, inviteUrl }) {
   const { t, i18n } = useTranslation('common');
-  const [favorites, setFavorites] = useState(list.items.map(({ result }) => result['@id']));
+  const [favorites, setFavorites] = useState(list?.items.map(({ result }) => result['@id']) || []);
 
   if (!list) {
     return <DefaultErrorPage statusCode={404} title={t('common:errors.listNotFound')} />;
