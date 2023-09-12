@@ -34,13 +34,11 @@ module.exports = {
           }
           BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
         }
-        UNION
         {
           OPTIONAL {
             ?id schema:image ?image .
           }
         }
-        UNION
         {
           OPTIONAL {
             ?id skos:related ?related .
@@ -49,7 +47,6 @@ module.exports = {
             FILTER(LANG(?relatedLabel) = "${language}" || LANG(?relatedLabel) = "")
           }
         }
-        UNION
         {
           ?place crm:P137_exemplifies ?id .
           ?emission crm:P7_took_place_at ?place .
