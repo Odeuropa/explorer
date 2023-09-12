@@ -153,11 +153,6 @@ module.exports = {
           $where: [
             `
             ?place crm:P137_exemplifies ?id .
-            { # Nested select because of an issue with GraphDB optimization engine
-              SELECT DISTINCT ?emission WHERE {
-                ?emission crm:P7_took_place_at ?place .
-              }
-            }
             ?emission crm:P7_took_place_at ?place .
             ?source crm:P67_refers_to ?emission .
             ?source schema:dateCreated/time:hasBeginning ?date .

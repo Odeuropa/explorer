@@ -145,11 +145,7 @@ module.exports = {
           $where: [
             `
             olfactory-objects:carrier skos:member ?id .
-            { # Nested select because of an issue with GraphDB optimization engine
-              SELECT DISTINCT ?emission WHERE {
-                  ?emission od:F4_had_carrier / crm:P137_exemplifies ?id .
-              }
-            }
+            ?emission od:F4_had_carrier / crm:P137_exemplifies ?id .
             ?source crm:P67_refers_to ?emission .
             ?source schema:dateCreated/time:hasBeginning ?date .
             `,
