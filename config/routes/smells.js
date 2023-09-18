@@ -618,31 +618,127 @@ module.exports = {
       },
     },
     {
-      id: 'place',
+      id: 'source',
+      isMulti: true,
+      isSortable: false,
+      condition: 'user-defined',
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?source',
+            label: '?sourceLabel',
+            altLabel: '?sourceAltLabel',
+          },
+        ],
+        $where: [
+          `
+          ?emission od:F1_generated ?id .
+          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          {
+            ?source skos:prefLabel ?sourceLabel .
+            FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
+          }
+          UNION
+          {
+            OPTIONAL {
+              ?source skos:altLabel ?sourceAltLabel .
+              FILTER(LANG(?sourceAltLabel) = "${language}" || LANG(?sourceAltLabel) = "")
+            }
+          }
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: (_val, index) => [
+        '?emission od:F1_generated ?id',
+        `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
+        `OPTIONAL { ?source_${index} skos:broader* ?source_${index}_narrower }`,
+      ],
+      filterFunc: (val, index) =>
+        `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
+    },
+    {
+      id: 'carrier',
       isMulti: true,
       isSortable: false,
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?country',
-            label: '?countryName',
+            '@id': '?carrierExemplifies',
+            label: '?carrierExemplifiesLabel',
           },
         ],
         $where: [
           `
-          ?id a od:L11_Smell .
-          ?experience od:F2_perceived ?id .
-          ?experience crm:P7_took_place_at / gn:parentCountry ?country .
-          ?country gn:name ?countryName .
+          ?emission od:F4_had_carrier ?carrier .
+          ?carrier crm:P137_exemplifies ?carrierExemplifies .
+          olfactory-objects:carrier skos:member ?carrierExemplifies .
+          ?carrierExemplifies skos:prefLabel ?carrierExemplifiesLabel .
+          FILTER(LANG(?carrierExemplifiesLabel) = "${language}" || LANG(?carrierExemplifiesLabel) = "")
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?emission od:F1_generated ?id',
+        '?emission od:F4_had_carrier ?carrier',
+        '?carrier crm:P137_exemplifies ?carrierExemplifies',
+      ],
+      filterFunc: (val) => `?carrierExemplifies = <${val}>`,
+    },
+    {
+      id: 'emotion',
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?emotionType',
+            label: '?emotionTypeLabel',
+          },
+        ],
+        $where: [
+          `
+          ?emotion reo:readP27 ?experience .
+          ?emotion crm:P137_exemplifies ?emotionType .
+          OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL { ?emotionType rdfs:label ?original_label . }
+          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionTypeLabel)
           `,
         ],
         $langTag: 'hide',
       }),
       whereFunc: () => [
         '?experience od:F2_perceived ?id',
-        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
+        '?emotion reo:readP27 ?experience',
+        '?emotion crm:P137_exemplifies ?emotionType',
       ],
-      filterFunc: (val) => `?placeCountry = <${val}>`,
+      filterFunc: (val) => `?emotionType = <${val}>`,
+    },
+    {
+      id: 'language',
+      isMulti: true,
+      isSortable: false,
+      query: () => ({
+        '@graph': [
+          {
+            '@id': '?language',
+            label: '?language',
+          },
+        ],
+        $where: [
+          `
+          ?source schema:inLanguage ?language .
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?textualObject crm:P67_refers_to ?id',
+        '?textualObject schema:inLanguage ?language',
+      ],
+      filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
     },
     {
       id: 'time',
@@ -765,129 +861,31 @@ module.exports = {
       },
     },
     {
-      id: 'source',
-      isMulti: true,
-      isSortable: false,
-      condition: 'user-defined',
-      query: ({ language }) => ({
-        '@graph': [
-          {
-            '@id': '?source',
-            label: '?sourceLabel',
-            altLabel: '?sourceAltLabel',
-          },
-        ],
-        $where: [
-          `
-          ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
-          {
-            ?source skos:prefLabel ?sourceLabel .
-            FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
-          }
-          UNION
-          {
-            OPTIONAL {
-              ?source skos:altLabel ?sourceAltLabel .
-              FILTER(LANG(?sourceAltLabel) = "${language}" || LANG(?sourceAltLabel) = "")
-            }
-          }
-          `,
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: (_val, index) => [
-        '?emission od:F1_generated ?id',
-        `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
-        `OPTIONAL { ?source_${index} skos:broader* ?source_${index}_narrower }`,
-      ],
-      filterFunc: (val, index) =>
-        `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
-    },
-    {
-      id: 'carrier',
+      id: 'place',
       isMulti: true,
       isSortable: false,
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?carrierExemplifies',
-            label: '?carrierExemplifiesLabel',
+            '@id': '?country',
+            label: '?countryName',
           },
         ],
         $where: [
           `
-          ?emission od:F4_had_carrier ?carrier .
-          ?carrier crm:P137_exemplifies ?carrierExemplifies .
-          olfactory-objects:carrier skos:member ?carrierExemplifies .
-          ?carrierExemplifies skos:prefLabel ?carrierExemplifiesLabel .
-          FILTER(LANG(?carrierExemplifiesLabel) = "${language}" || LANG(?carrierExemplifiesLabel) = "")
-          `,
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: () => [
-        '?emission od:F1_generated ?id',
-        '?emission od:F4_had_carrier ?carrier',
-        '?carrier crm:P137_exemplifies ?carrierExemplifies',
-      ],
-      filterFunc: (val) => `?carrierExemplifies = <${val}>`,
-    },
-    {
-      id: 'emotion',
-      isMulti: true,
-      isSortable: false,
-      query: ({ language }) => ({
-        '@graph': [
-          {
-            '@id': '?emotionType',
-            label: '?emotionTypeLabel',
-          },
-        ],
-        $where: [
-          `
-          ?emotion reo:readP27 ?experience .
-          ?emotion crm:P137_exemplifies ?emotionType .
-          {
-            OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-            OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-            OPTIONAL { ?emotionType rdfs:label ?original_label . }
-            BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionTypeLabel)
-          }
+          ?id a od:L11_Smell .
+          ?experience od:F2_perceived ?id .
+          ?experience crm:P7_took_place_at / gn:parentCountry ?country .
+          ?country gn:name ?countryName .
           `,
         ],
         $langTag: 'hide',
       }),
       whereFunc: () => [
         '?experience od:F2_perceived ?id',
-        '?emotion reo:readP27 ?experience',
-        '?emotion crm:P137_exemplifies ?emotionType',
+        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
       ],
-      filterFunc: (val) => `?emotionType = <${val}>`,
-    },
-    {
-      id: 'language',
-      isMulti: true,
-      isSortable: false,
-      query: () => ({
-        '@graph': [
-          {
-            '@id': '?language',
-            label: '?language',
-          },
-        ],
-        $where: [
-          `
-          ?source schema:inLanguage ?language .
-          `,
-        ],
-        $langTag: 'hide',
-      }),
-      whereFunc: () => [
-        '?textualObject crm:P67_refers_to ?id',
-        '?textualObject schema:inLanguage ?language',
-      ],
-      filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
+      filterFunc: (val) => `?placeCountry = <${val}>`,
     },
     {
       id: 'museum',
