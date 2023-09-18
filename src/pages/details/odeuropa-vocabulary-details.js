@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -28,7 +27,7 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import OdeuropaCard from '@components/OdeuropaCard';
 import OdeuropaTimeline from '@components/OdeuropaTimeline';
 import { uriToId } from '@helpers/utils';
-import { getEntityMainLabel, findRouteByRDFType } from '@helpers/explorer';
+import { getEntityMainLabel } from '@helpers/explorer';
 import { getEntity, getEntityDebugQuery } from '@pages/api/entity';
 import config from '~/config';
 
@@ -96,8 +95,6 @@ const ShowMore = styled.div`
   }
 `;
 
-const OdeuropaMap = dynamic(() => import('@components/OdeuropaMap'), { ssr: false });
-
 const TIMELINE_INTERVAL = 20; // years
 
 const filterItemWithDates = (item, targetDates) => {
@@ -127,7 +124,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [favorites, setFavorites] = useState([]);
   const [timelineDates, setTimelineDates] = useState({});
   const [resultToDateMapping, setResultToDateMapping] = useState({});
-  const [mapMarkers, setMapMarkers] = useState([]);
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
 
@@ -156,35 +152,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     setTimelineDates(newTimelineDates);
   };
 
-  const updateMapMarkersWithResults = (results) => {
-    if (!Array.isArray(results)) return;
-
-    const targetDates = (query.date || '')
-      .split(',')
-      .map((date) => parseInt(date, 10))
-      .filter((x) => x);
-
-    setMapMarkers((prevMarkers) => {
-      const flatMarkers = [
-        ...prevMarkers,
-        ...results
-          .filter(
-            (result) =>
-              filterItemWithDates(result, targetDates) && filterItemWithTag(result, query.tag)
-          )
-          .map((result) =>
-            []
-              .concat(result.source?.createdLocation, result.source?.location)
-              .map((loc) => loc && { id: result['@id'], lat: loc.lat, long: loc.long })
-              .filter((x) => x)
-          )
-          .flat(),
-      ];
-
-      return [...new Set(Object.values(flatMarkers))];
-    });
-  };
-
   useEffect(() => {
     if (!result) return;
 
@@ -196,8 +163,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       locale: i18n.language,
     };
     const qs = queryString.stringify(q);
-
-    setMapMarkers([]);
 
     (async () => {
       const results = await (
@@ -239,7 +204,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setTexts(results.error ? null : results);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
-      updateMapMarkersWithResults(results);
     })();
 
     (async () => {
@@ -249,7 +213,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setVisuals(results.error ? null : results);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
-      updateMapMarkersWithResults(results);
     })();
   }, [result]);
 
@@ -456,47 +419,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     {
                       scroll: false,
                     }
-                  );
-                }}
-              />
-            </Element>
-          )}
-
-          {mapMarkers.length > 0 && (
-            <Element flex="1" height={500}>
-              <OdeuropaMap
-                markers={mapMarkers}
-                popupContentWrapperStyle={{
-                  background: 'none',
-                  boxShadow: 'none',
-                }}
-                renderPopup={(marker) => {
-                  const result = []
-                    .concat(visuals, texts)
-                    .filter((x) => x)
-                    .find((result) => result['@id'] === marker.id);
-
-                  if (!result) return null;
-
-                  const [, targetRoute] = findRouteByRDFType(result['@type']);
-                  if (!targetRoute) return null;
-
-                  return (
-                    <OdeuropaCard
-                      key={result['@id']}
-                      item={result}
-                      route={targetRoute}
-                      type={route.details.route}
-                      searchApi="/api/search"
-                      isFavorite={favorites.includes(result['@id'])}
-                      onToggleFavorite={(saved) => {
-                        setFavorites((prev) =>
-                          saved
-                            ? [...prev, result['@id']]
-                            : prev.filter((id) => id !== result['@id'])
-                        );
-                      }}
-                    />
                   );
                 }}
               />
