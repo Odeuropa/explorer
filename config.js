@@ -27,7 +27,7 @@ module.exports = {
     },
   },
   footer: {
-    logo: ['/images/eu-logo.png', '/images/footer.png'],
+    logo: ['/images/eu-logo.png', { url: '/images/footer.png', href: 'https://odeuropa.eu' }],
   },
   search: {
     route: 'smells',
