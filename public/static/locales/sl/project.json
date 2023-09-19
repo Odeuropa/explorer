@@ -36,7 +36,7 @@
     "fragrant-spaces": "Dišeči prostori"
   },
   "routes-descriptions": {
-    "smell-sources": "Predmeti in snovi, za katere je znano, da oddajajo vonj",
+    "smell-sources": "Predmeti in snovi, za katere je znano, da oddajajo vonj"
   },
   "filters": {
     "type": "",
@@ -93,8 +93,7 @@
   },
   "odeuropa-vocabulary": {
     "search": "Iskanje",
-    "presentFrom": "Prisoten od",
-    "presentTo": "do",
+    "category": "Kategorija",
     "orderBy": "Razvrsti po",
     "sort": {
       "name": "Abecedni vrstni red",

@@ -36,7 +36,7 @@
     "fragrant-spaces": "Fragrant Spaces"
   },
   "routes-descriptions": {
-    "smell-sources": "Objects and substances which are recognised to emit an odour",
+    "smell-sources": "Objects and substances which are recognised to emit an odour"
   },
   "filters": {
     "type": "",
@@ -93,8 +93,7 @@
   },
   "odeuropa-vocabulary": {
     "search": "Search",
-    "presentFrom": "Present from",
-    "presentTo": "to",
+    "category": "Category",
     "orderBy": "Order by",
     "sort": {
       "name": "Alphabetical",

@@ -36,7 +36,7 @@
     "fragrant-spaces": "duftende Orte"
   },
   "routes-descriptions": {
-    "smell-sources": "Gegenstände und Stoffe, die bekanntermaßen einen Geruch abgeben",
+    "smell-sources": "Gegenstände und Stoffe, die bekanntermaßen einen Geruch abgeben"
   },
   "filters": {
     "type": "",
@@ -93,8 +93,7 @@
   },
   "odeuropa-vocabulary": {
     "search": "Suche",
-    "presentFrom": "Präsent von",
-    "presentTo": "bis",
+    "category": "Kategorie",
     "orderBy": "Sortieren nach",
     "sort": {
       "name": "Alphabet",

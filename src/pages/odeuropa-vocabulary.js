@@ -82,10 +82,6 @@ const StyledSelect = styled(Select)`
   min-width: 200px;
 `;
 
-const DateSelect = styled(Select)`
-  min-width: 100px;
-`;
-
 const Results = styled.div`
   flex: 1;
   justify-content: center;
@@ -180,17 +176,16 @@ export const getImageUrl = (image, placeholder) => {
   return generateMediaUrl(imageUrl, 300);
 };
 
-const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
+const OdeuropaVocabularyPage = ({ results, categoriesFilter, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'search', 'project']);
   const router = useRouter();
   const query = { ...router.query };
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [searchDateFrom, setSearchDateFrom] = useState(query.from);
-  const [searchDateTo, setSearchDateTo] = useState(query.to);
+  const [searchCategory, setSearchCategory] = useState(query.category);
   const [searchOrder, setSearchOrder] = useState(query.order);
   const [resultsWithLabel, setResultsWithLabel] = useState([]);
-  const [dateOptions, setDateOptions] = useState([]);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
 
   const route = config.routes[query.type];
 
@@ -216,15 +211,18 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
   }, [results, searchOrder]);
 
   useEffect(() => {
-    const dates = [].concat(datesFilter).filter((x) => x);
-    dates.sort((a, b) => a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()));
-    setDateOptions(
-      dates.map((date) => ({
-        label: date,
-        value: date,
-      }))
+    const categories = []
+      .concat(categoriesFilter)
+      .filter((x) => x)
+      .map((category) => ({
+        label: category.label['@value'],
+        value: category['@id'],
+      }));
+    categories.sort((a, b) =>
+      a.label.toLocaleLowerCase().localeCompare(b.label.toLocaleLowerCase())
     );
-  }, [datesFilter]);
+    setCategoriesOptions(categories);
+  }, [categoriesFilter]);
 
   const useWith = [];
   if (route && Array.isArray(route.useWith)) {
@@ -235,34 +233,18 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
     setSearchText(e.target.value);
   };
 
-  const onSelectDate = (selectedOption, { name }) => {
-    const value = selectedOption?.value;
-    if (name === 'from') {
-      setSearchDateFrom(value);
-      if (parseInt(searchDateTo, 10) < parseInt(value, 10)) {
-        setSearchDateTo(undefined);
-      }
-    } else if (name === 'to') {
-      setSearchDateTo(value);
-    }
-  };
+  const onSelectCategory = (selectedOption) => {
+    setSearchCategory(selectedOption?.value);
 
-  const isInitialMount = useRef(true);
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      setIsLoading(true);
-      router
-        .push({
-          pathname: query.type,
-          query: { ...query, from: searchDateFrom, to: searchDateTo },
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [searchDateFrom, searchDateTo]);
+    router.push(
+      {
+        pathname: query.type,
+        query: { ...query, category: selectedOption?.value },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const onSelectOrder = (selectedOption) => {
     setSearchOrder(selectedOption?.value);
@@ -293,6 +275,9 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
               ?.trim()
               .toLocaleLowerCase()
               .includes(searchText.trim().toLocaleLowerCase())
+          )
+          .filter(
+            (result) => !searchCategory || [].concat(result.topCategory).includes(searchCategory)
           )
           .map((result) => (
             <Result key={result['@id']} id={result['@id']}>
@@ -371,7 +356,7 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
             </label>
 
             <div style={{ marginLeft: 'auto', display: 'flex', flexWrap: 'wrap', gap: '1em' }}>
-              {dateOptions.length > 0 && (
+              {categoriesOptions.length > 0 && (
                 <>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label
@@ -383,42 +368,16 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
                     }}
                   >
                     <span style={{ textTransform: 'uppercase' }}>
-                      {t('project:odeuropa-vocabulary.presentFrom')}
+                      {t('project:odeuropa-vocabulary.category')}
                     </span>
-                    <DateSelect
-                      id="select_date_from"
-                      instanceId="select_date_from"
-                      name="from"
+                    <StyledSelect
+                      id="select_category"
+                      instanceId="select_category"
+                      name="category"
                       placeholder={t('search:labels.select')}
-                      options={dateOptions}
-                      value={dateOptions.find((o) => o.value === searchDateFrom)}
-                      onChange={onSelectDate}
-                      styles={selectStyles}
-                      theme={selectTheme}
-                      isClearable
-                    />
-                  </label>
-                  <label
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '1em',
-                    }}
-                  >
-                    <span style={{ textTransform: 'uppercase' }}>
-                      {t('project:odeuropa-vocabulary.presentTo')}
-                    </span>
-                    <DateSelect
-                      id="select_date_to"
-                      instanceId="select_date_to"
-                      name="to"
-                      placeholder={t('search:labels.select')}
-                      options={dateOptions.filter(
-                        (o) => !searchDateFrom || o.value >= searchDateFrom
-                      )}
-                      value={dateOptions.find((o) => o.value === searchDateTo) || null}
-                      onChange={onSelectDate}
+                      options={categoriesOptions}
+                      value={categoriesOptions.find((o) => o.value === searchCategory)}
+                      onChange={onSelectCategory}
                       styles={selectStyles}
                       theme={selectTheme}
                       isClearable
@@ -476,12 +435,12 @@ export async function getServerSideProps({ query, locale }) {
 
   const debugSparqlQuery = {};
   const results = [];
-  const datesFilter = [];
+  const categoriesFilter = [];
 
   if (route) {
     const mainQuery = getQueryObject(route.query, {
       language: locale,
-      params: { from: query.from, to: query.to },
+      params: { category: query.category },
     });
 
     if (config.debug) {
@@ -495,20 +454,25 @@ export async function getServerSideProps({ query, locale }) {
       params: config.api.params,
     });
     if (res) {
-      results.push(...removeEmptyObjects(res['@graph']).filter((result) => result.count));
+      results.push(...removeEmptyObjects(res['@graph']));
     }
 
-    // Get dates with another query
-    const datesQuery = getQueryObject(route.plugins['odeuropa-vocabulary'].dates.query, {
-      language: locale,
-    });
-    const resDates = await SparqlClient.query(datesQuery, {
-      endpoint: config.api.endpoint,
-      debug: config.debug,
-      params: config.api.params,
-    });
-    if (resDates) {
-      datesFilter.push(...removeEmptyObjects(resDates['@graph'])[0].date);
+    // Get categories with another query
+    if (route.plugins?.['odeuropa-vocabulary']?.categories?.query) {
+      const categoriesQuery = getQueryObject(
+        route.plugins['odeuropa-vocabulary'].categories.query,
+        {
+          language: locale,
+        }
+      );
+      const resCategories = await SparqlClient.query(categoriesQuery, {
+        endpoint: config.api.endpoint,
+        debug: config.debug,
+        params: config.api.params,
+      });
+      if (resCategories) {
+        categoriesFilter.push(...removeEmptyObjects(resCategories['@graph']));
+      }
     }
   }
 
@@ -516,7 +480,7 @@ export async function getServerSideProps({ query, locale }) {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
       results,
-      datesFilter,
+      categoriesFilter,
       debugSparqlQuery,
     },
   };

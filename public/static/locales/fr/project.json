@@ -36,7 +36,7 @@
     "fragrant-spaces": "Espaces parfumés"
   },
   "routes-descriptions": {
-    "smell-sources": "Objets et substances reconnus comme dégageant une odeur",
+    "smell-sources": "Objets et substances reconnus comme dégageant une odeur"
   },
   "filters": {
     "type": "",
@@ -93,8 +93,7 @@
   },
   "odeuropa-vocabulary": {
     "search": "Recherche",
-    "presentFrom": "Présent de",
-    "presentTo": "à",
+    "category": "Catégorie",
     "orderBy": "Trier par",
     "sort": {
       "name": "Alphabétique",

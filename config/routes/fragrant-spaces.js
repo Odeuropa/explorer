@@ -62,7 +62,7 @@ module.exports = {
       $langTag: 'hide',
     }),
   },
-  query: ({ language, params }) => ({
+  query: ({ language }) => ({
     '@graph': [
       {
         '@id': '?id',
@@ -73,68 +73,31 @@ module.exports = {
     ],
     $where: [
       `
+      ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
+      FILTER EXISTS { [] crm:P137_exemplifies ?id . }
       {
-        ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
-        ?place crm:P137_exemplifies ?id .
-        ?emission crm:P7_took_place_at ?place .
-
-        {
-          OPTIONAL {
-            SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
-              ?place crm:P137_exemplifies ?id .
-              {
-                # Textual items use emissions
-                ?emission crm:P7_took_place_at ?place .
-                ?emission od:F1_generated ?item .
-
-                ${
-                  params.from || params.to
-                    ? `
-                  ?emission_source crm:P67_refers_to ?emission .
-                  ?emission_source schema:dateCreated/time:hasBeginning ?begin .
-                  ?emission_source schema:dateCreated/time:hasEnd ?end .
-                `
-                    : ''
-                }
-              }
-              UNION
-              {
-                # Visual items use schema:about
-                ?item crm:P138_represents|schema:about ?place .
-
-                ${
-                  params.from || params.to
-                    ? `
-                  ?item schema:dateCreated/time:hasBeginning ?begin .
-                  ?item schema:dateCreated/time:hasEnd ?end .
-                `
-                    : ''
-                }
-              }
-              ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
-              ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
-            }
-            GROUP BY ?id
-          }
+        SELECT DISTINCT ?id (COUNT(DISTINCT ?place) AS ?count) WHERE {
+          ?place crm:P137_exemplifies ?id .
         }
-        UNION
-        {
-          OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL {
-            SELECT ?id ?label_default WHERE {
-              ?id skos:prefLabel ?label_default
-            }
-            ORDER BY ASC(?label_default)
-            LIMIT 1
+        GROUP BY ?id
+      }
+      UNION
+      {
+        OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+        OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+        OPTIONAL {
+          SELECT ?id ?label_default WHERE {
+            ?id skos:prefLabel ?label_default
           }
-          BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
+          ORDER BY ASC(?label_default)
+          LIMIT 1
         }
-        UNION
-        {
-          OPTIONAL {
-            ?id schema:image ?image .
-          }
+        BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
+      }
+      UNION
+      {
+        OPTIONAL {
+          ?id schema:image ?image .
         }
       }
       `,

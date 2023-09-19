@@ -36,7 +36,7 @@
     "fragrant-spaces": "Spazio odoroso"
   },
   "routes-descriptions": {
-    "smell-sources": "Oggetti e sostanze che emettono un odore",
+    "smell-sources": "Oggetti e sostanze che emettono un odore"
   },
   "filters": {
     "type": "",
@@ -93,8 +93,7 @@
   },
   "odeuropa-vocabulary": {
     "search": "Cerca",
-    "presentFrom": "Presente tra il",
-    "presentTo": "e il",
+    "category": "Categoria",
     "orderBy": "Ordina per",
     "sort": {
       "name": "Alfabeticamente",

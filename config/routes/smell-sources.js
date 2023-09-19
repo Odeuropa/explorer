@@ -25,14 +25,7 @@ module.exports = {
         {
           OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL {
-            SELECT ?id ?label_default WHERE {
-              ?id skos:prefLabel ?label_default
-            }
-            ORDER BY ASC(?label_default)
-            LIMIT 1
-          }
-          BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
+          BIND(COALESCE(?label_hl, ?label_en) AS ?bestLabel)
         }
         {
           OPTIONAL {
@@ -61,56 +54,24 @@ module.exports = {
       $langTag: 'hide',
     }),
   },
-  query: ({ language, params }) => ({
+  query: ({ language }) => ({
     '@graph': [
       {
         '@id': '?id',
         label: '?bestLabel',
         image: '?image',
         count: '?count',
+        topCategory: '?topCategory',
       },
     ],
     $where: [
       `
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
-      ?emission od:F3_had_source / crm:P137_exemplifies ?id .
-
+      FILTER EXISTS { [] crm:P137_exemplifies ?id . }
       {
         SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
           ?object crm:P137_exemplifies ?id .
-          {
-            # Textual items
-            ?emission od:F3_had_source ?object .
-            ?emission od:F1_generated ?item .
-            ?source crm:P67_refers_to ?emission .
-            ?source a crm:E33_Linguistic_Object .
-
-            ${
-              params.from || params.to
-                ? `
-              ?emission_source crm:P67_refers_to ?emission .
-              ?emission_source schema:dateCreated/time:hasBeginning ?begin .
-              ?emission_source schema:dateCreated/time:hasEnd ?end .
-            `
-                : ''
-            }
-          }
-          UNION
-          {
-            # Visual items
-            ?item crm:P138_represents|schema:about ?object .
-
-            ${
-              params.from || params.to
-                ? `
-              ?item schema:dateCreated/time:hasBeginning ?begin .
-              ?item schema:dateCreated/time:hasEnd ?end .
-            `
-                : ''
-            }
-          }
-          ${params.from ? `FILTER(?begin >= ${JSON.stringify(params.from)}^^xsd:gYear)` : ''}
-          ${params.to ? `FILTER(?end <= ${JSON.stringify(params.to)}^^xsd:gYear)` : ''}
+          ?item od:F3_had_source ?object .
         }
         GROUP BY ?id
       }
@@ -118,13 +79,7 @@ module.exports = {
       {
         OPTIONAL { ?id skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
         OPTIONAL { ?id skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-        OPTIONAL {
-          SELECT ?id ?label_default WHERE {
-            ?id skos:prefLabel ?label_default
-          }
-          ORDER BY ASC(?label_default)
-          LIMIT 1
-        }
+        OPTIONAL { SELECT ?id ?label_default WHERE { ?id skos:prefLabel ?label_default } LIMIT 1 }
         BIND(COALESCE(?label_hl, ?label_en, ?label_default) AS ?bestLabel)
       }
       UNION
@@ -133,23 +88,58 @@ module.exports = {
           ?id schema:image ?image .
         }
       }
+      UNION
+      {
+        OPTIONAL {
+          ?id skos:broader* ?topCategory .
+          ?topCategory skos:topConceptOf <http://data.odeuropa.eu/vocabulary/olfactory-objects>
+        }
+      }
       `,
     ],
     $langTag: 'hide',
   }),
   plugins: {
     'odeuropa-vocabulary': {
-      wordCloud: {
-        query: () => {
-          const $where = [
+      categories: {
+        query: ({ language }) => ({
+          '@graph': [
+            {
+              '@id': '?category',
+              label: '?bestLabel',
+            },
+          ],
+          $where: [
             `
-              ?emission od:F3_had_source/crm:P137_exemplifies ?id .
-              ?emission od:F1_generated ?smell .
-              ?assignment a crm:E13_Attribute_Assignment .
-              ?assignment crm:P141_assigned/rdfs:label ?adjective .
-              ?assignment crm:P140_assigned_attribute_to ?smell .
+            GRAPH <http://data.odeuropa.eu/vocabulary/olfactory-objects> {
+              <http://data.odeuropa.eu/vocabulary/olfactory-objects> skos:hasTopConcept ?category .
+              OPTIONAL { ?category skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+              OPTIONAL { ?category skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+              BIND(COALESCE(?label_hl, ?label_en) AS ?bestLabel)
+            }
             `,
-          ];
+          ],
+        }),
+      },
+      wordCloud: {
+        query: ({ category }) => {
+          const $where = [];
+          if (category) {
+            $where.push(
+              `
+              ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+              ?id skos:broader* <${category}> .
+              `
+            );
+          }
+          $where.push(
+            `
+            ?emission od:F1_generated ?smell .
+            ?assignment a crm:E13_Attribute_Assignment .
+            ?assignment crm:P141_assigned/rdfs:label ?adjective .
+            ?assignment crm:P140_assigned_attribute_to ?smell .
+            `
+          );
           return {
             '@graph': [
               {
@@ -167,7 +157,7 @@ module.exports = {
         baseWhere: [
           '?emission od:F1_generated ?id',
           '?object crm:P137_exemplifies ?_vocab',
-          '?source crm:P138_represents|schema:about ?object',
+          '?source crm:P138_represents ?object',
           '?source crm:P67_refers_to ?emission',
         ],
       },
