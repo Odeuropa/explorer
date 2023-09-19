@@ -104,7 +104,10 @@ module.exports = {
           emotion: {
             '@id': '?emotion',
             label: '?emotionLabel',
-            type: '?emotionType',
+            type: {
+              '@id': '?emotionType',
+              label: '?emotionTypeLabel',
+            },
           },
           fragment: {
             '@id': '?fragment',
@@ -293,7 +296,8 @@ module.exports = {
                   ?emotion rdfs:label ?emotionLabel .
                 }
                 OPTIONAL {
-                  ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
+                  ?emotion crm:P137_exemplifies ?emotionType .
+                  ?emotionType skos:prefLabel ?emotionTypeLabel .
                 }
               }
             }
@@ -400,7 +404,10 @@ module.exports = {
         emotion: {
           '@id': '?emotion',
           label: '?emotionLabel',
-          type: '?emotionType',
+          type: {
+            '@id': '?emotionType',
+            label: '?emotionTypeLabel',
+          },
         },
       },
     ],
@@ -567,7 +574,10 @@ module.exports = {
               ?emotion reo:readP27 ?experience .
               OPTIONAL {
                 ?emotion rdfs:label ?emotionLabel .
-                ?emotion crm:P137_exemplifies / skos:prefLabel ?emotionType .
+              }
+              OPTIONAL {
+                ?emotion crm:P137_exemplifies ?emotionType .
+                ?emotionType skos:prefLabel ?emotionTypeLabel .
               }
             }
           }

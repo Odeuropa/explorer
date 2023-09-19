@@ -22,11 +22,10 @@ import SPARQLQueryLink from '@components/SPARQLQueryLink';
 import Pagination from '@components/Pagination';
 import GraphLink from '@components/GraphLink';
 import SaveButton from '@components/SaveButton';
-import { renderRowValues } from '@components/OdeuropaCard';
 import breakpoints from '@styles/breakpoints';
 import { getEntityMainLabel, generatePermalink, getSearchData } from '@helpers/explorer';
 import { slugify, uriToId } from '@helpers/utils';
-import { highlightAndUnderlineText } from '@helpers/odeuropa';
+import { highlightAndUnderlineText, renderRowValues } from '@helpers/odeuropa';
 import { getEntity, getEntityDebugQuery, isEntityInList } from '@pages/api/entity';
 import config from '~/config';
 
