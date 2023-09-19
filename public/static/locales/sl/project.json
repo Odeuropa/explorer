@@ -33,12 +33,10 @@
   "routes": {
     "smells": "Prebrskaj",
     "smell-sources": "Viri vonja",
-    "odour-carriers": "Nosilci vonja",
     "fragrant-spaces": "Dišeči prostori"
   },
   "routes-descriptions": {
     "smell-sources": "Predmeti in snovi, za katere je znano, da oddajajo vonj",
-    "odour-carriers": "Predmeti in snovi, za katere je znano, da prenašajo vonj"
   },
   "filters": {
     "type": "",

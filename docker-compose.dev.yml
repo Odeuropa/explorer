@@ -27,7 +27,6 @@ services:
       - ./public/images/odeuropa-map/:/usr/src/app/public/images/odeuropa-map/
       - ./public/images/odeuropa-vocabularies/:/usr/src/app/public/images/odeuropa-vocabularies/
       - ./public/images/pages/fragrant-spaces.jpg:/usr/src/app/public/images/pages/fragrant-spaces.jpg
-      - ./public/images/pages/odour-carriers.jpg:/usr/src/app/public/images/pages/odour-carriers.jpg
       - ./public/images/pages/smell-sources.jpg:/usr/src/app/public/images/pages/smell-sources.jpg
       - ./public/images/placeholder.jpg:/usr/src/app/public/images/placeholder.jpg
       - ./public/static/locales/de/home.json:/usr/src/app/public/static/locales/de/home.json

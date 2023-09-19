@@ -33,12 +33,10 @@
   "routes": {
     "smells": "Navigare",
     "smell-sources": "Sorgente odorosa",
-    "odour-carriers": "Veicolo olfattivo",
     "fragrant-spaces": "Spazio odoroso"
   },
   "routes-descriptions": {
     "smell-sources": "Oggetti e sostanze che emettono un odore",
-    "odour-carriers": "Oggetti e sostanze che trasportano un odore"
   },
   "filters": {
     "type": "",

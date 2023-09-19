@@ -246,7 +246,7 @@ const OdeuropaCard = ({
       renderCardRow('artist', item.source?.artist),
       renderCardRow('date', item.time),
       renderCardRow('source', item.smellSource, 'smell-sources', '@id'),
-      renderCardRow('carrier', item.carrier, 'odour-carriers', 'exemplifies'),
+      renderCardRow('carrier', item.carrier),
       renderCardRow('smellPlace', item.place, 'fragrant-spaces', 'exemplifies'),
     ].filter((x) => x);
 

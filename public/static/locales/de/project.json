@@ -33,12 +33,10 @@
   "routes": {
     "smells": "Durchsuche",
     "smell-sources": "Geruchsquellen",
-    "odour-carriers": "Geruchsträger",
     "fragrant-spaces": "duftende Orte"
   },
   "routes-descriptions": {
     "smell-sources": "Gegenstände und Stoffe, die bekanntermaßen einen Geruch abgeben",
-    "odour-carriers": "Objekte und Substanzen die bekannt sind, dass sie einen Geruch mittragen"
   },
   "filters": {
     "type": "",
