@@ -317,7 +317,8 @@ const OdeuropaVocabularyPage = ({ results, datesFilter, debugSparqlQuery }) => {
                   </ItemImage>
                   <ItemTitle>
                     <h2>
-                      {result.mainLabel} <span>({result.count})</span>
+                      {result.mainLabel}{' '}
+                      {typeof result.count !== 'undefined' && <span>({result.count})</span>}
                     </h2>
                   </ItemTitle>
                   {result.description && <p>{result.description}</p>}
