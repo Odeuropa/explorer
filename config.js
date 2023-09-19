@@ -1,6 +1,5 @@
 const smells = require('./config/routes/smells');
 const smellSources = require('./config/routes/smell-sources');
-const odourCarriers = require('./config/routes/odour-carriers');
 const fragrantSpaces = require('./config/routes/fragrant-spaces');
 
 module.exports = {
@@ -75,7 +74,6 @@ module.exports = {
   routes: {
     smells,
     'smell-sources': smellSources,
-    'odour-carriers': odourCarriers,
     'fragrant-spaces': fragrantSpaces,
   },
   imagesDomains: ['data.odeuropa.eu', 'commons.wikimedia.org'],

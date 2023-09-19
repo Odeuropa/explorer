@@ -33,7 +33,6 @@
   "routes": {
     "smells": "Browse",
     "smell-sources": "Smell sources",
-    "odour-carriers": "Odour carriers",
     "fragrant-spaces": "Fragrant Spaces"
   },
   "routes-descriptions": {
