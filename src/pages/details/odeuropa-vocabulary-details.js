@@ -119,6 +119,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [wordCloud, setWordCloud] = useState();
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
+  const [wordCloudDebug, setWordCloudDebug] = useState();
+  const [textsDebug, setTextsDebug] = useState();
+  const [visualsDebug, setVisualsDebug] = useState();
   const [filteredTexts, setFilteredTexts] = useState();
   const [filteredVisuals, setFilteredVisuals] = useState();
   const [favorites, setFavorites] = useState([]);
@@ -165,14 +168,15 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const qs = queryString.stringify(q);
 
     (async () => {
-      const results = await (
+      const wordCloudRes = await (
         await fetch(`${window.location.origin}/api/odeuropa/vocabulary-wordcloud?${qs}`)
       ).json();
+      setWordCloudDebug(wordCloudRes.debugSparqlQuery);
       setWordCloud(
-        results.error
+        wordCloudRes.error
           ? null
           : Object.values(
-              results.reduce((acc, cur) => {
+              wordCloudRes.results.reduce((acc, cur) => {
                 if (!acc[cur]) {
                   const style = {
                     cursor: 'pointer',
@@ -198,19 +202,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     })();
 
     (async () => {
-      const { results, favorites } = await (
+      const { results, favorites, debugSparqlQuery } = await (
         await fetch(`${window.location.origin}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
       setTexts(results.error ? null : results);
+      setTextsDebug(debugSparqlQuery);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
     })();
 
     (async () => {
-      const { results, favorites } = await (
+      const { results, favorites, debugSparqlQuery } = await (
         await fetch(`${window.location.origin}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
       setVisuals(results.error ? null : results);
+      setVisualsDebug(debugSparqlQuery);
       setFavorites((prev) => [...new Set([...prev, ...favorites])]);
       updateTimelineWithResults(results);
     })();
@@ -424,6 +430,14 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               />
             </Element>
           )}
+          <Debug>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={wordCloudDebug}>
+                {t('common:buttons.editQuery')}
+              </SPARQLQueryLink>
+              <pre>{wordCloudDebug}</pre>
+            </Metadata>
+          </Debug>
         </Element>
 
         <Element style={{ padding: '1em', color: 'gray' }}>
@@ -447,6 +461,15 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               )
             </h2>
           )}
+          <Debug>
+            <Metadata label="Query Result">
+              <pre>{JSON.stringify(texts, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={textsDebug}>{t('common:buttons.editQuery')}</SPARQLQueryLink>
+              <pre>{textsDebug}</pre>
+            </Metadata>
+          </Debug>
         </Element>
 
         {filteredTexts && (
@@ -506,6 +529,18 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               )
             </h2>
           )}
+
+          <Debug>
+            <Metadata label="Query Result">
+              <pre>{JSON.stringify(visuals, null, 2)}</pre>
+            </Metadata>
+            <Metadata label="SPARQL Query">
+              <SPARQLQueryLink query={visualsDebug}>
+                {t('common:buttons.editQuery')}
+              </SPARQLQueryLink>
+              <pre>{visualsDebug}</pre>
+            </Metadata>
+          </Debug>
         </Element>
 
         {filteredVisuals && (

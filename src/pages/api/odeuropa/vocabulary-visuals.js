@@ -32,6 +32,8 @@ export default withRequestValidation({
     $values: { [`?${key || '_vocab'}`]: [query.id] },
   };
 
+  const debugSparqlQuery = await SparqlClient.getSparqlQuery(visualsQuery);
+
   const visualsQueryRes = await SparqlClient.query(visualsQuery, {
     endpoint: config.api.endpoint,
     debug: config.debug,
@@ -60,5 +62,6 @@ export default withRequestValidation({
     results,
     favorites,
     totalResults: results.length,
+    debugSparqlQuery,
   });
 });

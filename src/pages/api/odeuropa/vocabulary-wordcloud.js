@@ -28,6 +28,8 @@ export default withRequestValidation({
   }
   wordCloudQuery.$values['?id'] = [query.id];
 
+  const debugSparqlQuery = await SparqlClient.getSparqlQuery(wordCloudQuery);
+
   const wordCloudQueryRes = await SparqlClient.query(wordCloudQuery, {
     endpoint: config.api.endpoint,
     debug: config.debug,
@@ -39,5 +41,8 @@ export default withRequestValidation({
     wordCloud.push(...removeEmptyObjects([].concat(wordCloudQueryRes['@graph'][0].word)));
   }
 
-  res.status(200).json(wordCloud);
+  res.status(200).json({
+    results: wordCloud,
+    debugSparqlQuery,
+  });
 });

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import queryString from 'query-string';
 import 'react-18-image-lightbox/style.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useTranslation } from 'next-i18next';
