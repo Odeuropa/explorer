@@ -133,10 +133,9 @@ module.exports = {
       visuals: {
         route: 'smells',
         baseWhere: [
-          '?emission od:F1_generated ?id',
-          '?source crm:P67_refers_to ?emission',
-          '?source schema:about ?place',
           '?place crm:P137_exemplifies ?_vocab',
+          '?source schema:about ?place',
+          '?source crm:P67_refers_to ?id',
         ],
       },
       texts: {
@@ -145,8 +144,6 @@ module.exports = {
           '?place crm:P137_exemplifies ?_vocab',
           '?emission crm:P7_took_place_at ?place',
           '?emission od:F1_generated ?id',
-          '?source crm:P67_refers_to ?id',
-          '?source a crm:E33_Linguistic_Object',
         ],
       },
     },

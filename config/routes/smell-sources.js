@@ -69,9 +69,10 @@ module.exports = {
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
       FILTER EXISTS { [] crm:P137_exemplifies ?id . }
       {
-        SELECT DISTINCT ?id (COUNT(DISTINCT ?item) AS ?count) WHERE {
-          ?object crm:P137_exemplifies ?id .
-          ?item od:F3_had_source ?object .
+        SELECT DISTINCT ?id (COUNT(DISTINCT ?emission) AS ?count) WHERE {
+          ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
+          ?item crm:P137_exemplifies ?id .
+          ?emission od:F3_had_source ?item .
         }
         GROUP BY ?id
       }

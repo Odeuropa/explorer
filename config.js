@@ -55,6 +55,7 @@ module.exports = {
       crm: 'http://erlangen-crm.org/current/',
       crmsci: 'http://www.ics.forth.gr/isl/CRMsci/',
       dc: 'http://purl.org/dc/elements/1.1/',
+      dcmi: 'http://purl.org/dc/dcmitype/',
       gn: 'http://www.geonames.org/ontology#',
       luc: 'http://www.ontotext.com/connectors/lucene#',
       ma: 'http://www.w3.org/ns/ma-ont#',

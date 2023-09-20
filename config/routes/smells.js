@@ -40,6 +40,8 @@ module.exports = {
   rdfType: ['http://data.odeuropa.eu/ontology/L11_Smell'],
   filterByGraph: false,
   hideFilterButton: true,
+  orderByVariable: null,
+  countResults: true,
   details: {
     view: 'odeuropa-texts',
     showPermalink: true,
@@ -660,9 +662,16 @@ module.exports = {
         $langTag: 'hide',
       }),
       whereFunc: (_val, index) => [
-        '?emission od:F1_generated ?id',
-        `?emission od:F3_had_source / crm:P137_exemplifies ?source_${index}`,
-        `OPTIONAL { ?source_${index} skos:broader* ?source_${index}_narrower }`,
+        `
+        ?emission od:F1_generated ?id .
+        {
+          ?emission od:F3_had_source / crm:P137_exemplifies ?source_${index} .
+        }
+        UNION
+        {
+          ?emission od:F3_had_source / crm:P137_exemplifies / skos:broader* ?source_${index}_narrower
+        }
+        `,
       ],
       filterFunc: (val, index) =>
         `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
@@ -932,7 +941,7 @@ module.exports = {
             label: '?label',
           },
         ],
-        $where: ['GRAPH ?g { ?id a od:L11_Smell }', '?g rdfs:label ?label'],
+        $where: ['?g a dcmi:Dataset', '?g rdfs:label ?label'],
         $orderby: 'ASC(?label)',
         $langTag: 'hide',
       }),
