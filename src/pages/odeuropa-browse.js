@@ -258,7 +258,7 @@ const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
     );
   }, [data]);
 
-  totalPages = Math.ceil(totalResults / PAGE_SIZE);
+  totalPages = totalResults >= 0 ? Math.ceil(totalResults / PAGE_SIZE) : currentPage + 1;
 
   const debouncedHandleResize = useDebounce(() => {
     if (typeof window !== 'undefined') {
@@ -598,7 +598,9 @@ const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
             <StyledTitle>
               {isLoadingMore || isPageLoading
                 ? t('search:labels.loading')
-                : t('search:labels.searchResults', { count: totalResults })}
+                : totalResults >= 0
+                ? t('search:labels.searchResults', { count: totalResults })
+                : undefined}
             </StyledTitle>
             <OptionsBar>
               <Option>
