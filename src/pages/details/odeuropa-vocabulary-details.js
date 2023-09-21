@@ -402,9 +402,13 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               style={{ textAlign: 'center' }}
             >
               <TagCloud
-                minSize={20}
-                maxSize={40}
+                minSize={24}
+                maxSize={48}
                 tags={wordCloud}
+                randomSeed={42}
+                colorOptions={{
+                  luminosity: 'bright',
+                }}
                 onClick={(tag) => {
                   const newQuery = { ...query };
                   if (query.tag !== tag.value) {
