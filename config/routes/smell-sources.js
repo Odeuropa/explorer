@@ -123,33 +123,35 @@ module.exports = {
         }),
       },
       wordCloud: {
-        query: ({ category }) => {
-          const $where = [];
-          if (category) {
-            $where.push(
-              `
-              ?emission od:F3_had_source/crm:P137_exemplifies ?id .
-              ?id skos:broader* <${category}> .
-              `
-            );
-          }
-          $where.push(
+        query: ({ id, category }) => {
+          const $where = [
             `
-            ?emission od:F1_generated ?smell .
-            ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned/rdfs:label ?adjective .
-            ?assignment crm:P140_assigned_attribute_to ?smell .
-            `
-          );
+            {
+              SELECT ?word (COUNT(?smell) AS ?count) WHERE {
+                VALUES ?id { <${id}> }
+                ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                ?emission od:F1_generated ?smell .
+                ?assignment a crm:E13_Attribute_Assignment .
+                ?assignment crm:P141_assigned/rdfs:label ?word .
+                ?assignment crm:P140_assigned_attribute_to ?smell .
+                ${category ? `?id skos:broader* <${category}> .` : ''}
+              }
+              GROUP BY ?word
+              ORDER BY DESC(?count)
+              LIMIT 20
+            }
+            `,
+          ];
           return {
             '@graph': [
               {
-                word: '?adjective',
+                '@id': '?word',
+                count: '?count',
               },
             ],
             $where,
+            $distinct: false,
             $langTag: 'hide',
-            $limit: 15,
           };
         },
       },

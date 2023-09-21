@@ -17,6 +17,7 @@ export default withRequestValidation({
   const wordCloudQuery = JSON.parse(
     JSON.stringify(
       getQueryObject(route.plugins['odeuropa-vocabulary'].wordCloud.query, {
+        id: query.id,
         date: query.date,
         tag: query.tag,
         language: query.locale,
@@ -36,10 +37,12 @@ export default withRequestValidation({
     params: config.api.params,
   });
 
-  const wordCloud = [];
-  if (wordCloudQueryRes['@graph'][0]) {
-    wordCloud.push(...removeEmptyObjects([].concat(wordCloudQueryRes['@graph'][0].word)));
-  }
+  const wordCloud = wordCloudQueryRes['@graph'][0]
+    ? removeEmptyObjects([].concat(wordCloudQueryRes['@graph'])).reduce((acc, cur) => {
+        acc[cur['@id']] = cur.count;
+        return acc;
+      }, {})
+    : {};
 
   res.status(200).json({
     results: wordCloud,

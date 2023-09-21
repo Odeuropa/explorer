@@ -175,29 +175,22 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setWordCloud(
         wordCloudRes.error
           ? null
-          : Object.values(
-              wordCloudRes.results.reduce((acc, cur) => {
-                if (!acc[cur]) {
-                  const style = {
-                    cursor: 'pointer',
-                  };
-                  if (cur === query.tag) {
-                    style.fontWeight = 'bold';
-                    style.fontSize = 48;
-                  }
-                  acc[cur] = {
-                    key: `${cur}-${query.tag}`,
-                    value: cur,
-                    count: 0,
-                    props: {
-                      style,
-                    },
-                  };
-                }
-                acc[cur].count += 1;
-                return acc;
-              }, {})
-            )
+          : Object.entries(wordCloudRes.results).map(([key, value]) => {
+              const style = {
+                cursor: 'pointer',
+              };
+              if (key === query.tag) {
+                style.fontWeight = 'bold';
+              }
+              return {
+                key,
+                value: key,
+                count: value,
+                props: {
+                  style,
+                },
+              };
+            })
       );
     })();
 
