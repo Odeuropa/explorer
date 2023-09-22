@@ -14,9 +14,18 @@ export default withRequestValidation({
     return;
   }
 
+  const configQuery = query.cloud
+    ? route.plugins?.['odeuropa-vocabulary']?.wordCloud?.[query.cloud]?.query
+    : route.plugins?.['odeuropa-vocabulary']?.wordCloud?.query;
+
+  if (!configQuery) {
+    res.status(404).json({ error: { message: 'Query not found' } });
+    return;
+  }
+
   const wordCloudQuery = JSON.parse(
     JSON.stringify(
-      getQueryObject(route.plugins['odeuropa-vocabulary'].wordCloud.query, {
+      getQueryObject(configQuery, {
         id: query.id,
         date: query.date,
         tag: query.tag,

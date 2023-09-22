@@ -111,15 +111,44 @@ const filterItemWithTag = (item, targetTag) => {
   return [].concat(item.adjective).includes(targetTag);
 };
 
+const formatWordCloudData = (results) => {
+  const minFontSize = 16;
+  const maxFontSize = 48;
+
+  const minCount = Math.min(...Object.values(results));
+  const maxCount = Math.max(...Object.values(results));
+
+  return Object.entries(results).map(([key, value]) => {
+    const fontSize =
+      Math.sqrt((value - minCount) / (maxCount - minCount)) * (maxFontSize - minFontSize) +
+      minFontSize;
+
+    return {
+      key,
+      value: key,
+      count: value,
+      props: {
+        style: {
+          fontSize,
+        },
+      },
+    };
+  });
+};
+
 const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
   const { query } = router;
   const route = config.routes[query.type];
-  const [wordCloud, setWordCloud] = useState();
+  const [wordCloud, setWordCloud] = useState({
+    quality: undefined,
+    emotion: undefined,
+    smellscape: undefined,
+  });
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
-  const [wordCloudDebug, setWordCloudDebug] = useState();
+  const [wordCloudDebug, setWordCloudDebug] = useState({});
   const [textsDebug, setTextsDebug] = useState();
   const [visualsDebug, setVisualsDebug] = useState();
   const [filteredTexts, setFilteredTexts] = useState();
@@ -168,30 +197,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     const qs = queryString.stringify(q);
 
     (async () => {
-      const wordCloudRes = await (
-        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-wordcloud?${qs}`)
-      ).json();
-      setWordCloudDebug(wordCloudRes.debugSparqlQuery);
-      setWordCloud(
-        wordCloudRes.error
-          ? null
-          : Object.entries(wordCloudRes.results).map(([key, value]) => {
-              const style = {
-                cursor: 'pointer',
-              };
-              if (key === query.tag) {
-                style.fontWeight = 'bold';
-              }
-              return {
-                key,
-                value: key,
-                count: value,
-                props: {
-                  style,
-                },
-              };
-            })
-      );
+      for (const cloud of Object.keys(wordCloud)) {
+        const wordCloudRes = await (
+          await fetch(
+            `${window.location.origin}/api/odeuropa/vocabulary-wordcloud?cloud=${cloud}&${qs}`
+          )
+        ).json();
+        setWordCloudDebug((prev) => ({
+          ...prev,
+          [cloud]: wordCloudRes.debugSparqlQuery,
+        }));
+        setWordCloud((prev) => ({
+          ...prev,
+          [cloud]: wordCloudRes.error ? null : formatWordCloudData(wordCloudRes.results),
+        }));
+      }
     })();
 
     (async () => {
@@ -380,61 +400,58 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           />
         )}
 
-        <Element display="flex" alignItems="center" padding="1em">
-          {typeof wordCloud === 'undefined' && (
-            <Element display="flex" alignItems="center" paddingRight="1em">
-              <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-              {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+        <Element display="flex" flexDirection="row" alignItems="center" padding="1em">
+          {Object.keys(wordCloud).map((cloud) => (
+            <Element key={cloud} style={{ minWidth: `${100 / Object.keys(wordCloud).length}%` }}>
+              {typeof wordCloud[cloud] === 'undefined' && (
+                <Element
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  paddingRight="1em"
+                >
+                  <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+                  {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+                </Element>
+              )}
+              {wordCloud[cloud] === null && (
+                <span style={{ color: 'red', paddingRight: '1em' }}>
+                  {t('project:odeuropa-vocabulary-details.wordCloud.error')}
+                </span>
+              )}
+              {wordCloud[cloud]?.length > 0 && (
+                <Element
+                  display="flex"
+                  justifyContent="center"
+                  height="100%"
+                  paddingRight="1em"
+                  style={{ textAlign: 'center' }}
+                >
+                  <TagCloud
+                    minSize={24}
+                    maxSize={48}
+                    tags={wordCloud[cloud]}
+                    randomSeed={42}
+                    colorOptions={{
+                      luminosity: 'bright',
+                    }}
+                  />
+                </Element>
+              )}
             </Element>
-          )}
-          {wordCloud === null && (
-            <span style={{ color: 'red', paddingRight: '1em' }}>
-              {t('project:odeuropa-vocabulary-details.wordCloud.error')}
-            </span>
-          )}
-          {wordCloud?.length > 0 && (
-            <Element
-              display="flex"
-              justifyContent="center"
-              width="25%"
-              height="100%"
-              paddingRight="1em"
-              style={{ textAlign: 'center' }}
-            >
-              <TagCloud
-                minSize={24}
-                maxSize={48}
-                tags={wordCloud}
-                randomSeed={42}
-                colorOptions={{
-                  luminosity: 'bright',
-                }}
-                onClick={(tag) => {
-                  const newQuery = { ...query };
-                  if (query.tag !== tag.value) {
-                    newQuery.tag = tag.value;
-                  } else {
-                    delete newQuery.tag;
-                  }
-                  router.push(
-                    { pathname: router.asPath.split('?')[0], query: newQuery },
-                    undefined,
-                    {
-                      scroll: false,
-                    }
-                  );
-                }}
-              />
-            </Element>
-          )}
-          <Debug>
-            <Metadata label="SPARQL Query">
-              <SPARQLQueryLink query={wordCloudDebug}>
-                {t('common:buttons.editQuery')}
-              </SPARQLQueryLink>
-              <pre>{wordCloudDebug}</pre>
-            </Metadata>
-          </Debug>
+          ))}
+        </Element>
+        <Element display="flex" flexDirection="row" alignItems="center" paddingX="1em">
+          {Object.keys(wordCloud).map((cloud) => (
+            <Debug key={wordCloud}>
+              <Metadata label="SPARQL Query">
+                <SPARQLQueryLink query={wordCloudDebug[cloud]}>
+                  {t('common:buttons.editQuery')}
+                </SPARQLQueryLink>
+                <pre>{wordCloudDebug[cloud]}</pre>
+              </Metadata>
+            </Debug>
+          ))}
         </Element>
 
         <Element style={{ padding: '1em', color: 'gray' }}>
