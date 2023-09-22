@@ -26,10 +26,37 @@ export default withRequestValidation({
     JSON.stringify(getQueryObject(originalRoute.query, { language: query.locale }))
   );
 
+  let totalResults = 0;
+  const paginationQuery = {
+    proto: {
+      id: '?count',
+    },
+    $where: `
+    SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {
+      VALUES ${`?${key || '_vocab'}`} { <${query.id}> }
+      ${baseWhere}
+    }
+  `,
+  };
+  try {
+    const resPagination = await SparqlClient.query(paginationQuery, {
+      endpoint: config.api.endpoint,
+      debug: config.debug,
+      params: config.api.params,
+    });
+    totalResults = resPagination && resPagination[0] ? parseInt(resPagination[0].id, 10) : 0;
+  } catch (e) {
+    console.error(e);
+  }
+
   const visualsQuery = {
     ...originalQuery,
-    $where: [...baseWhere, ...originalQuery.$where],
-    $values: { [`?${key || '_vocab'}`]: [query.id] },
+    $where: [
+      `{ SELECT DISTINCT ?id WHERE { VALUES ${`?${key || '_vocab'}`} { <${
+        query.id
+      }> } ${baseWhere} } LIMIT 20 }`,
+      ...originalQuery.$where,
+    ],
   };
 
   const debugSparqlQuery = await SparqlClient.getSparqlQuery(visualsQuery);
@@ -61,7 +88,7 @@ export default withRequestValidation({
   res.status(200).json({
     results,
     favorites,
-    totalResults: results.length,
+    totalResults,
     debugSparqlQuery,
   });
 });

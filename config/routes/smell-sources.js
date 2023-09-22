@@ -224,20 +224,26 @@ module.exports = {
       },
       visuals: {
         route: 'smells',
+        showAllFilter: 'source',
         baseWhere: [
-          '?emission od:F1_generated ?id',
-          '?object crm:P137_exemplifies ?_vocab',
-          '?source crm:P138_represents ?object',
-          '?source crm:P67_refers_to ?emission',
+          `
+          ?emission od:F1_generated ?id .
+          ?object crm:P137_exemplifies ?_vocab .
+          ?source crm:P138_represents ?object .
+          ?source crm:P67_refers_to ?emission .
+          `,
         ],
       },
       texts: {
         route: 'smells',
+        showAllFilter: 'source',
         baseWhere: [
-          '?emission od:F3_had_source/crm:P137_exemplifies ?_vocab',
-          '?emission od:F1_generated ?id',
-          '?source crm:P67_refers_to ?id',
-          '?source a crm:E33_Linguistic_Object',
+          `
+          ?emission od:F3_had_source/crm:P137_exemplifies ?_vocab .
+          ?emission od:F1_generated ?id .
+          ?source crm:P67_refers_to ?id .
+          ?source a crm:E33_Linguistic_Object .
+          `,
         ],
       },
     },

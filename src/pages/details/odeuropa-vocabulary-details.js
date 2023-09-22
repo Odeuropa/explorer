@@ -55,13 +55,14 @@ const ShowMoreIcon = styled.svg`
   height: 2em;
 `;
 
-const ShowMore = styled.div`
+const ShowMore = styled.a`
   display: flex;
   flex-direction: row;
   cursor: pointer;
   position: relative;
   margin: 2em;
   text-transform: uppercase;
+  text-decoration: none;
 
   &::before,
   &::after {
@@ -149,6 +150,8 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [texts, setTexts] = useState();
   const [visuals, setVisuals] = useState();
   const [wordCloudDebug, setWordCloudDebug] = useState({});
+  const [textsCount, setTextsCount] = useState(0);
+  const [visualsCount, setVisualsCount] = useState(0);
   const [textsDebug, setTextsDebug] = useState();
   const [visualsDebug, setVisualsDebug] = useState();
   const [filteredTexts, setFilteredTexts] = useState();
@@ -215,23 +218,29 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
     })();
 
     (async () => {
-      const { results, favorites, debugSparqlQuery } = await (
+      const { results, favorites, totalResults, debugSparqlQuery } = await (
         await fetch(`${window.location.origin}/api/odeuropa/vocabulary-texts?${qs}`)
       ).json();
-      setTexts(results.error ? null : results);
-      setTextsDebug(debugSparqlQuery);
-      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
-      updateTimelineWithResults(results);
+      if (results) {
+        setTexts(results.error ? null : results);
+        setTextsDebug(debugSparqlQuery);
+        setTextsCount(totalResults);
+        setFavorites((prev) => [...new Set([...prev, ...favorites])]);
+        updateTimelineWithResults(results);
+      }
     })();
 
     (async () => {
-      const { results, favorites, debugSparqlQuery } = await (
+      const { results, favorites, totalResults, debugSparqlQuery } = await (
         await fetch(`${window.location.origin}/api/odeuropa/vocabulary-visuals?${qs}`)
       ).json();
-      setVisuals(results.error ? null : results);
-      setVisualsDebug(debugSparqlQuery);
-      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
-      updateTimelineWithResults(results);
+      if (results) {
+        setVisuals(results.error ? null : results);
+        setVisualsDebug(debugSparqlQuery);
+        setVisualsCount(totalResults);
+        setFavorites((prev) => [...new Set([...prev, ...favorites])]);
+        updateTimelineWithResults(results);
+      }
     })();
   }, [result]);
 
@@ -470,7 +479,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             <h2>
               {t('project:odeuropa-vocabulary-details.texts.title')} (
               {t('project:odeuropa-vocabulary-details.occurrences', {
-                count: filteredTexts.length,
+                count: textsCount,
               })}
               )
             </h2>
@@ -509,13 +518,25 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             {filteredTexts.length > 4 && (
               <ShowMore
                 active={showingAllTexts}
-                onClick={() => setShowingAllTexts((show) => !show)}
+                href={
+                  route.plugins['odeuropa-vocabulary'].texts.showAllFilter
+                    ? `/smells?filter_type=text&filter_${
+                        route.plugins['odeuropa-vocabulary'].texts.showAllFilter
+                      }=${encodeURIComponent(result['@id'])}`
+                    : ''
+                }
+                onClick={() =>
+                  !route.plugins['odeuropa-vocabulary'].texts.showAllFilter &&
+                  setShowingAllTexts((show) => !show)
+                }
               >
                 <div>
                   {showingAllTexts
                     ? t('project:odeuropa-vocabulary-details.showLess')
                     : t('project:odeuropa-vocabulary-details.showMore')}
-                  <ShowMoreIcon as={showingAllTexts ? ChevronUp : ChevronDown} />
+                  {!route.plugins['odeuropa-vocabulary'].texts.showAllFilter && (
+                    <ShowMoreIcon as={showingAllTexts ? ChevronUp : ChevronDown} />
+                  )}
                 </div>
               </ShowMore>
             )}
@@ -538,7 +559,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             <h2>
               {t('project:odeuropa-vocabulary-details.visuals.title')} (
               {t('project:odeuropa-vocabulary-details.occurrences', {
-                count: filteredVisuals.length,
+                count: visualsCount,
               })}
               )
             </h2>
@@ -580,13 +601,25 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             {filteredVisuals.length > 4 && (
               <ShowMore
                 active={showingAllVisuals}
-                onClick={() => setShowingAllVisuals((show) => !show)}
+                href={
+                  route.plugins['odeuropa-vocabulary'].visuals.showAllFilter
+                    ? `/smells?filter_type=image&filter_${
+                        route.plugins['odeuropa-vocabulary'].texts.showAllFilter
+                      }=${encodeURIComponent(result['@id'])}`
+                    : ''
+                }
+                onClick={() =>
+                  !route.plugins['odeuropa-vocabulary'].visuals.showAllFilter &&
+                  setShowingAllVisuals((show) => !show)
+                }
               >
                 <div>
                   {showingAllVisuals
                     ? t('project:odeuropa-vocabulary-details.showLess')
                     : t('project:odeuropa-vocabulary-details.showMore')}
-                  <ShowMoreIcon as={showingAllVisuals ? ChevronUp : ChevronDown} />
+                  {!route.plugins['odeuropa-vocabulary'].visuals.showAllFilter && (
+                    <ShowMoreIcon as={showingAllVisuals ? ChevronUp : ChevronDown} />
+                  )}
                 </div>
               </ShowMore>
             )}
