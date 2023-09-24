@@ -1,0 +1,126 @@
+{
+  "site": {
+    "description": "Ontdek het geurerfgoed van Europa"
+  },
+  "search": "Zoeken",
+  "footer": {
+    "text": "Deze demo is ontwikkeld in de context van <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>,
+    een onderzoeksproject dat gefinencierd is via de Europese Unie's Horizon 2020 research and innovation programma contractnummer: 101004469."
+  },
+  "searchOptions": {
+    "title": "Alleen in de titel zoeken",
+    "content": "Alleen in de inhoud zoeken",
+    "all": "In titel en inhoud zoeken"
+  },
+  "metadata": {
+    "@id": "Permalink",
+    "source": "Bron",
+    "carrier": "Geurdrager",
+    "adjective": "Adjectief",
+    "time": "Tijd",
+    "smellPlace": "Plaats",
+    "gesture": "Gebaar",
+    "emotion": "Emotie",
+    "date": "Datering",
+    "location": "Locatie",
+    "license": "Licentie",
+    "consistsOf": "Bestaat uit",
+    "about": "Trefwoorden",
+    "author": "Auteur",
+    "artist": "Vervaardiger",
+    "definedAs": "Gedefinieerd als",
+    "language": "Taal"
+  },
+  "routes": {
+    "smells": "Bladeren",
+    "smell-sources": "Geurbronnen",
+    "fragrant-spaces": "Geurige ruimtes en landschappen"
+  },
+  "routes-descriptions": {
+    "smell-sources": "Objecten en stoffen waarvan bekend is dat ze een geur verspreiden"
+  },
+  "filters": {
+    "type": "",
+    "q": "Zoeken in volledige tekst",
+    "search-by-concept": "Zoeken via concept",
+    "source": "Geurbron",
+    "carrier": "Geurrager",
+    "adjective": "Adjectief",
+    "time": "Tijd",
+    "time-start": "Beginjaar (JJJJ)",
+    "time-end": "Eindjaar (JJJJ)",
+    "time-period": "Tijdsperiode",
+    "time-season": "Seizoen",
+    "place": "Plaats",
+    "gesture": "Gebaar",
+    "emotion": "Emotie",
+    "language": "Taal",
+    "museum": "Museum",
+    "graphs": "Graaf"
+  },
+  "filters-values": {
+    "time-period": {
+      "fifteenth-century": "15e eeuw",
+      "sixteenth-century": "16e eeuw",
+      "seventeenth-century": "17e eeuw",
+      "eighteenth-century": "18e eeuw",
+      "nineteenth-century": "19e eeuw",
+      "twentieth-century": "20e eeuw"
+    },
+    "time-season": {
+      "winter": "Winter",
+      "spring": "Lente",
+      "summer": "Zomer",
+      "autumn": "Herfst"
+    }
+  },
+  "buttons": {
+    "source": "Bron:",
+    "seeMore": "Meer zien"
+  },
+  "display": {
+    "showAs": "Laat zien als",
+    "card": "kaarten",
+    "text": "teksten"
+  },
+  "home": {
+    "searchTitle": "Zoek in alle geuren"
+  },
+  "details": {
+    "textualResource": "Tekstbron",
+    "visualResource": "Beeldbron",
+    "excerpt": "Fragment {{num}}",
+    "exploreMore": "Ontdek geurfragmenten uit dezelfde bron:"
+  },
+  "odeuropa-vocabulary": {
+    "search": "Zoeken",
+    "category": "Categorie",
+    "orderBy": "Sorteer op",
+    "sort": {
+      "name": "Alfabet",
+      "count": "Voorkomens"
+    }
+  },
+  "odeuropa-vocabulary-details": {
+    "smellOf": "Geur van",
+    "related": "Gerelateerd",
+    "occurrences_one": "{{count}} fragmenten",
+    "occurrences_other": "{{count}} fragmenten",
+    "wordCloud": {
+      "loading": "Woordwolk wordt geladen...",
+      "error": "Woordwolk kan op dit moment niet geladen worden"
+    },
+    "texts": {
+      "title": "In teksten",
+      "loading": "Tekstfragmenten worden geladen...",
+      "error": "Tekstfragmenten kunnen op dit moment niet geladen worden"
+    },
+    "visuals": {
+      "title": "In beelden",
+      "loading": "Afbeeldingen worden geladen...",
+      "error": "Afbeeldingen kunnen op dit moment niet geladen worden"
+    },
+    "showMore": "Laat alles zien",
+    "showLess": "Laat minder zien"
+  }
+}
