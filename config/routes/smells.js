@@ -706,6 +706,37 @@ module.exports = {
       filterFunc: (val) => `?carrierExemplifies = <${val}>`,
     },
     {
+      id: 'quality',
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?quality',
+            label: '?qualityLabel',
+          },
+        ],
+        $where: [
+          `
+          ?assignment crm:P140_assigned_attribute_to ?id .
+          ?assignment crm:P141_assigned ?quality .
+          ?quality skos:inScheme [] .
+          OPTIONAL { ?quality skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?quality skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL { ?quality rdfs:label ?original_label . }
+          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?qualityLabel)
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?assignment crm:P140_assigned_attribute_to ?id',
+        '?assignment crm:P141_assigned ?quality',
+        '?quality skos:inScheme []',
+      ],
+      filterFunc: (val) => `?quality = <${val}>`,
+    },
+    {
       id: 'emotion',
       isMulti: true,
       isSortable: false,
