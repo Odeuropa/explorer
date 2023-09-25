@@ -37,6 +37,8 @@ services:
       - ./public/static/locales/fr/project.json:/usr/src/app/public/static/locales/fr/project.json
       - ./public/static/locales/it/home.json:/usr/src/app/public/static/locales/it/home.json
       - ./public/static/locales/it/project.json:/usr/src/app/public/static/locales/it/project.json
+      - ./public/static/locales/nl/home.json:/usr/src/app/public/static/locales/nl/home.json
+      - ./public/static/locales/nl/project.json:/usr/src/app/public/static/locales/nl/project.json
       - ./public/static/locales/sl/home.json:/usr/src/app/public/static/locales/sl/home.json
       - ./public/static/locales/sl/project.json:/usr/src/app/public/static/locales/sl/project.json
       - ./src/components/OdeuropaCard.js:/usr/src/app/src/components/OdeuropaCard.js

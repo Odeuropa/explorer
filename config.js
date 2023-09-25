@@ -38,6 +38,7 @@ module.exports = {
       en: 'English',
       fr: 'Français',
       it: 'Italiano',
+      nl: 'Nederlands',
       sl: 'Slovenski',
     },
     defaultLanguage: 'en',
