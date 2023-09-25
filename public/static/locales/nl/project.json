@@ -4,8 +4,7 @@
   },
   "search": "Zoeken",
   "footer": {
-    "text": "Deze demo is ontwikkeld in de context van <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>,
-    een onderzoeksproject dat gefinencierd is via de Europese Unie's Horizon 2020 research and innovation programma contractnummer: 101004469."
+    "text": "Deze demo is ontwikkeld in de context van <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, een onderzoeksproject dat gefinencierd is via de Europese Unie's Horizon 2020 research and innovation programma contractnummer: 101004469."
   },
   "searchOptions": {
     "title": "Alleen in de titel zoeken",
