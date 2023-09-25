@@ -107,43 +107,129 @@ module.exports = {
   plugins: {
     'odeuropa-vocabulary': {
       wordCloud: {
-        query: () => {
-          const $where = [
-            `
-            ?place crm:P137_exemplifies ?id .
-            ?emission crm:P7_took_place_at ?place .
-            ?emission od:F1_generated ?smell .
-            ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned/rdfs:label ?adjective .
-            ?assignment crm:P140_assigned_attribute_to ?smell .
-            `,
-          ];
-          return {
-            '@graph': [
+        quality: {
+          query: ({ id, category }) => {
+            const $where = [
+              `
               {
-                word: '?adjective',
-              },
-            ],
-            $where,
-            $langTag: 'hide',
-            $limit: 15,
-          };
+                SELECT ?word (COUNT(?smell) AS ?count) WHERE {
+                  VALUES ?id { <${id}> }
+                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F1_generated ?smell .
+                  ?assignment a crm:E13_Attribute_Assignment .
+                  ?assignment crm:P141_assigned/rdfs:label ?word .
+                  ?assignment crm:P140_assigned_attribute_to ?smell .
+                  ${category ? `?id skos:broader* <${category}> .` : ''}
+                }
+                GROUP BY ?word
+                ORDER BY DESC(?count)
+                LIMIT 20
+              }
+              `,
+            ];
+            return {
+              '@graph': [
+                {
+                  '@id': '?word',
+                  count: '?count',
+                },
+              ],
+              $where,
+              $distinct: false,
+              $langTag: 'hide',
+            };
+          },
+        },
+        emotion: {
+          query: ({ id, category }) => {
+            const $where = [
+              `
+              {
+                SELECT ?word (COUNT(?smell) AS ?count) WHERE {
+                  VALUES ?id { <${id}> }
+                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F1_generated ?smell .
+                  ?experience od:F2_perceived ?smell .
+                  ?emotion reo:readP27 ?experience .
+                  ?emotion rdfs:label ?word .
+                  ${category ? `?id skos:broader* <${category}> .` : ''}
+                }
+                GROUP BY ?word
+                ORDER BY DESC(?count)
+                LIMIT 20
+              }
+              `,
+            ];
+            return {
+              '@graph': [
+                {
+                  '@id': '?word',
+                  count: '?count',
+                },
+              ],
+              $where,
+              $distinct: false,
+              $langTag: 'hide',
+            };
+          },
+        },
+        smellscape: {
+          query: ({ id, category }) => {
+            const $where = [
+              `
+              {
+                SELECT ?word (COUNT(?smell) AS ?count) WHERE {
+                  VALUES ?id { <${id}> }
+                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F1_generated ?smell .
+                  ?emission crm:P7_took_place_at ?place .
+                  ?place rdfs:label ?word .
+                  ${category ? `?id skos:broader* <${category}> .` : ''}
+                }
+                GROUP BY ?word
+                ORDER BY DESC(?count)
+                LIMIT 20
+              }
+              `,
+            ];
+            return {
+              '@graph': [
+                {
+                  '@id': '?word',
+                  count: '?count',
+                },
+              ],
+              $where,
+              $distinct: false,
+              $langTag: 'hide',
+            };
+          },
         },
       },
       visuals: {
         route: 'smells',
+        showAllFilter: 'source',
         baseWhere: [
-          '?place crm:P137_exemplifies ?_vocab',
-          '?source schema:about ?place',
-          '?source crm:P67_refers_to ?id',
+          `
+          ?place crm:P137_exemplifies ?_vocab .
+          ?emission crm:P7_took_place_at ?place .
+          ?emission od:F1_generated ?id .
+          ?source crm:P67_refers_to ?emission .
+          ?source a crm:E36_Visual_Item .
+          `,
         ],
       },
       texts: {
         route: 'smells',
+        showAllFilter: 'source',
         baseWhere: [
-          '?place crm:P137_exemplifies ?_vocab',
-          '?emission crm:P7_took_place_at ?place',
-          '?emission od:F1_generated ?id',
+          `
+          ?place crm:P137_exemplifies ?_vocab .
+          ?emission crm:P7_took_place_at ?place .
+          ?emission od:F1_generated ?id .
+          ?source crm:P67_refers_to ?emission .
+          ?source a crm:E33_Linguistic_Object .
+          `,
         ],
       },
     },
