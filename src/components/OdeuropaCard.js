@@ -83,8 +83,6 @@ const Label = styled.div`
 
 const Value = styled.div`
   font-size: 1.2rem;
-  display: flex;
-  flex-wrap: wrap;
 `;
 
 const Separator = styled.div`
@@ -145,7 +143,7 @@ const OdeuropaCard = ({
 
   const mainLabel = getEntityMainLabel(item, { route, language: i18n.language });
 
-  const renderCardRow = (metaName, value, targetRouteName, targetProperty) => {
+  const renderCardRow = (metaName, value, { targetRouteName, targetProperty, truncate } = {}) => {
     if (typeof value === 'undefined' || value === null) {
       return null;
     }
@@ -161,10 +159,21 @@ const OdeuropaCard = ({
 
     const label = t(`project:metadata.${metaName}`, metaName);
 
+    const style = truncate
+      ? {
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }
+      : {
+          display: 'flex',
+          flexWrap: 'wrap',
+        };
+
     return (
       <Row key={metaName}>
         <Label>{label}</Label>
-        <Value>{renderedValue}</Value>
+        <Value style={style}>{renderedValue}</Value>
       </Row>
     );
   };
@@ -180,12 +189,25 @@ const OdeuropaCard = ({
     }
 
     const smellEmissionRows = [
-      renderCardRow('author', item.source?.author),
-      renderCardRow('artist', item.source?.artist),
+      renderCardRow('author', item.source?.author, {
+        truncate: true,
+      }),
+      renderCardRow('artist', item.source?.artist, {
+        truncate: true,
+      }),
+      renderCardRow('title', item.source?.label, {
+        truncate: true,
+      }),
       renderCardRow('date', item.time),
-      renderCardRow('source', item.smellSource, 'smell-sources', '@id'),
+      renderCardRow('source', item.smellSource, {
+        targetRouteName: 'smell-sources',
+        targetProperty: '@id',
+      }),
       renderCardRow('carrier', item.carrier),
-      renderCardRow('smellPlace', item.place, 'fragrant-spaces', 'exemplifies'),
+      renderCardRow('smellPlace', item.place, {
+        targetRouteName: 'fragrant-spaces',
+        targetProperty: 'exemplifies',
+      }),
     ].filter((x) => x);
 
     const olfactoryExperienceRows = [
