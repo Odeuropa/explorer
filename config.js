@@ -32,6 +32,7 @@ module.exports = {
     route: 'smells',
     allowTextSearch: true,
     allowImageSearch: false,
+    showInHeader: false,
     placeholderImage: '/images/placeholder.jpg',
     languages: {
       de: 'Deutsch',

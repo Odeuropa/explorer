@@ -108,7 +108,12 @@
     "occurrences_other": "{{count}} occurrences",
     "wordCloud": {
       "loading": "Chargement du nuage de mots...",
-      "error": "Le nuage de mots n'a pas pu être chargé pour le moment"
+      "error": "Le nuage de mots n'a pas pu être chargé pour le moment",
+      "title": {
+        "quality": "Qualité",
+        "emotion": "Émotion",
+        "smellscape": "Lieux"
+      }
     },
     "texts": {
       "title": "Dans les textes",

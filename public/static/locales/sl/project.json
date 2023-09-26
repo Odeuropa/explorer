@@ -108,7 +108,12 @@
     "occurrences_other": "{{count}} pojavitev",
     "wordCloud": {
       "loading": "Nalaganje oblaka besed...",
-      "error": "Oblaka besed v tem trenutku ni bilo mogoče naložiti"
+      "error": "Oblaka besed v tem trenutku ni bilo mogoče naložiti",
+      "title": {
+        "quality": "Kakovost",
+        "emotion": "Emocija",
+        "smellscape": "Kraj"
+      }
     },
     "texts": {
       "title": "V besedilih",

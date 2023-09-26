@@ -108,7 +108,12 @@
     "occurrences_other": "{{count}} riferimenti",
     "wordCloud": {
       "loading": "Word cloud in caricamento...",
-      "error": "La word cloud non può essere caricata in questo momento"
+      "error": "La word cloud non può essere caricata in questo momento",
+      "title": {
+        "quality": "Qualità",
+        "emotion": "Emozione",
+        "smellscape": "Luogo"
+      }
     },
     "texts": {
       "title": "Nei testi",

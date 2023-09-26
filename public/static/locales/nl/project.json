@@ -108,7 +108,12 @@
     "occurrences_other": "{{count}} fragmenten",
     "wordCloud": {
       "loading": "Woordwolk wordt geladen...",
-      "error": "Woordwolk kan op dit moment niet geladen worden"
+      "error": "Woordwolk kan op dit moment niet geladen worden",
+      "title": {
+        "quality": "Kwaliteit",
+        "emotion": "Emotie",
+        "smellscape": "Plaats"
+      }
     },
     "texts": {
       "title": "In teksten",

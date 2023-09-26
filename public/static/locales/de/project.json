@@ -108,7 +108,12 @@
     "occurrences_other": "{{count}} Vorkommen",
     "wordCloud": {
       "loading": "Wortwolke wird geladen...",
-      "error": "Wortwolke konnte momentan nicht geladen werden"
+      "error": "Wortwolke konnte momentan nicht geladen werden",
+      "title": {
+        "quality": "Qualität",
+        "emotion": "Emotion",
+        "smellscape": "Ort"
+      }
     },
     "texts": {
       "title": "In Texten",

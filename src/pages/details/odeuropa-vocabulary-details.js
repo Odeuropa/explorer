@@ -96,6 +96,19 @@ const ShowMore = styled.a`
   }
 `;
 
+const WordCloudsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1em;
+  text-align: center;
+  gap: 1em;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
 const TIMELINE_INTERVAL = 20; // years
 
 const filterItemWithDates = (item, targetDates) => {
@@ -409,9 +422,13 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           />
         )}
 
-        <Element display="flex" flexDirection="row" alignItems="center" padding="1em">
+        <WordCloudsContainer>
           {Object.keys(wordCloud).map((cloud) => (
-            <Element key={cloud} style={{ minWidth: `${100 / Object.keys(wordCloud).length}%` }}>
+            <Element
+              key={cloud}
+              style={{ maxWidth: '50%', width: `${100 / Object.keys(wordCloud).length}%` }}
+            >
+              <h3>{t(`project:odeuropa-vocabulary-details.wordCloud.title.${cloud}`)}</h3>
               {typeof wordCloud[cloud] === 'undefined' && (
                 <Element
                   display="flex"
@@ -449,7 +466,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               )}
             </Element>
           ))}
-        </Element>
+        </WordCloudsContainer>
         <Element display="flex" flexDirection="row" alignItems="center" paddingX="1em">
           {Object.keys(wordCloud).map((cloud) => (
             <Debug key={wordCloud}>
