@@ -72,6 +72,15 @@
       "spring": "Spring",
       "summer": "Summer",
       "autumn": "Autumn"
+    },
+    "language": {
+      "de": "German",
+      "en": "English",
+      "es": "Spanish",
+      "fr": "French",
+      "it": "Italian",
+      "nl": "Dutch",
+      "sl": "Slovenian"
     }
   },
   "buttons": {

@@ -72,6 +72,15 @@
       "spring": "Pomlad",
       "summer": "Poletje",
       "autumn": "Jesen"
+    },
+    "language": {
+      "de": "Nemščina",
+      "en": "Angleščina",
+      "es": "Španščina",
+      "fr": "Francoščina",
+      "it": "Italijanščina",
+      "nl": "Nizozemščina",
+      "sl": "Slovenščina"
     }
   },
   "buttons": {

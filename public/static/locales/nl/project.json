@@ -72,6 +72,15 @@
       "spring": "Lente",
       "summer": "Zomer",
       "autumn": "Herfst"
+    },
+    "language": {
+      "de": "Duits",
+      "en": "Engels",
+      "es": "Spaans",
+      "fr": "Frans",
+      "it": "Italiaans",
+      "nl": "Nederlands",
+      "sl": "Sloveens"
     }
   },
   "buttons": {
