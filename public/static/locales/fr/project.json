@@ -33,7 +33,7 @@
   "routes": {
     "smells": "Parcourir",
     "smell-sources": "Sources d'odeurs",
-    "fragrant-spaces": "Espaces parfumés"
+    "fragrant-spaces": "Espaces odorants"
   },
   "routes-descriptions": {
     "smell-sources": "Objets et substances reconnus comme dégageant une odeur"
