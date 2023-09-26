@@ -76,8 +76,10 @@ module.exports = {
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
       FILTER EXISTS { [] crm:P137_exemplifies ?id . }
       {
-        SELECT DISTINCT ?id (COUNT(DISTINCT ?place) AS ?count) WHERE {
+        SELECT DISTINCT ?id (COUNT(DISTINCT ?smell) AS ?count) WHERE {
           ?place crm:P137_exemplifies ?id .
+          ?emission crm:P7_took_place_at ?place .
+          ?emission od:F1_generated ?smell .
         }
         GROUP BY ?id
       }
