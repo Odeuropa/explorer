@@ -99,7 +99,7 @@
     "textualResource": "Ressource textuelle",
     "visualResource": "Ressource visuelle",
     "excerpt": "Extrait {{num}}",
-    "exploreMore": "Extraits d'odeurs provenant de la même source :"
+    "exploreMore": "Explorez d'autres extraits contenant des mots d'odeur provenant de la même source :"
   },
   "odeuropa-vocabulary": {
     "search": "Recherche",

@@ -99,7 +99,7 @@
     "textualResource": "Textual resource",
     "visualResource": "Visual resource",
     "excerpt": "Excerpt {{num}}",
-    "exploreMore": "Explore Smell Extracts from the same source:"
+    "exploreMore": "Explore other excerpts containing smell words from the same source:"
   },
   "odeuropa-vocabulary": {
     "search": "Search",
