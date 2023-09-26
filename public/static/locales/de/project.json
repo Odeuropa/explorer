@@ -110,9 +110,9 @@
       "loading": "Wortwolke wird geladen...",
       "error": "Wortwolke konnte momentan nicht geladen werden",
       "title": {
-        "quality": "Qualität",
+        "quality": "Geruchsqualität",
         "emotion": "Emotion",
-        "smellscape": "Ort"
+        "smellscape": "duftende Orte"
       }
     },
     "texts": {

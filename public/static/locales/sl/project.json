@@ -110,9 +110,9 @@
       "loading": "Nalaganje oblaka besed...",
       "error": "Oblaka besed v tem trenutku ni bilo mogoče naložiti",
       "title": {
-        "quality": "Kakovost",
+        "quality": "Kakovost vonja",
         "emotion": "Emocija",
-        "smellscape": "Kraj"
+        "smellscape": "Dišeči prostori"
       }
     },
     "texts": {

@@ -110,9 +110,9 @@
       "loading": "Word cloud in caricamento...",
       "error": "La word cloud non può essere caricata in questo momento",
       "title": {
-        "quality": "Qualità",
+        "quality": "Qualità olfattiva",
         "emotion": "Emozione",
-        "smellscape": "Luogo"
+        "smellscape": "Spazio odoroso"
       }
     },
     "texts": {

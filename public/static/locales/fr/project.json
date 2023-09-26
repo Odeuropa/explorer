@@ -110,9 +110,9 @@
       "loading": "Chargement du nuage de mots...",
       "error": "Le nuage de mots n'a pas pu être chargé pour le moment",
       "title": {
-        "quality": "Qualité",
+        "quality": "Qualité Olfactive",
         "emotion": "Émotion",
-        "smellscape": "Lieux"
+        "smellscape": "Espace Odorant"
       }
     },
     "texts": {
