@@ -367,7 +367,7 @@ export const getStaticProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale, ['common', 'home', 'project', 'search'])),
     imagesList: getRandom(
-      Array.from(Array(16), (_, i) => `/images/odeuropa-homepage/${i + 1}.jpg`),
+      Array.from(Array(15), (_, i) => `/images/odeuropa-homepage/${i + 1}.jpg`),
       numberOfImages
     ),
   },
