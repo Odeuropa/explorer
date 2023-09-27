@@ -110,7 +110,7 @@ const ExcerptPreview = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
-  opacity: 0;
+  opacity: 1;
   padding: 0 12px;
 `;
 
@@ -131,7 +131,7 @@ const ExcerptTitle = styled.div`
 
 const ExcerptContainer = styled.div`
   ${(props) => css`
-    ${ExcerptTitle}:hover ${ExcerptPreview} {
+    ${ExcerptPreview} {
       opacity: ${props.active ? 0 : 1};
     }
   `}
