@@ -176,9 +176,9 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
   const { t, i18n } = useTranslation(['common', 'project']);
   const router = useRouter();
   const { query } = router;
-  const { data: session } = useSession();
   const route = config.routes[query.type];
   const [excerpts, setExcerpts] = useState([]);
+  const [relevantExcerpts, setRelevantExcerpts] = useState([]);
   const [openedExcerpts, setOpenedExcerpts] = useState([]);
   const [fragmentsList, setFragmentsList] = useState([]);
   const [fragmentsFilter, setFragmentsFilter] = useState([]);
@@ -187,14 +187,15 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
 
   useEffect(() => {
     if (!result) return;
-    if (result.relevantExcerpt) {
-      setOpenedExcerpts([result.relevantExcerpt]);
-    }
+
+    const relevantExcerptsList = [].concat(result.relevantExcerpt).filter((x) => x);
+    setRelevantExcerpts(relevantExcerptsList);
+    setOpenedExcerpts(relevantExcerptsList);
 
     const excerptsList = [].concat(result.source?.excerpts).filter((x) => x);
     excerptsList.sort((a, b) => {
       if (a['@id'] === b['@id']) return 0;
-      return a['@id'] === result.relevantExcerpt ? -1 : 1;
+      return relevantExcerptsList.includes(a['@id']) ? -1 : 1;
     });
     setExcerpts(excerptsList);
 
@@ -369,7 +370,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
             <ExcerptContainer
               active={openedExcerpts.includes(excerpt['@id'])}
               style={{
-                backgroundColor: result.relevantExcerpt === excerpt['@id'] ? '#f5f5f5' : '',
+                backgroundColor: relevantExcerpts.includes(excerpt['@id']) ? '#f5f5f5' : '',
               }}
             >
               <ExcerptTitle
@@ -414,7 +415,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                   <ExcerptPreview>
                     {highlightAndUnderlineText(
                       excerpt.value,
-                      [excerpt['@id'] === result.relevantExcerpt ? mainLabel : null, query.q],
+                      [relevantExcerpts.includes(excerpt['@id']) ? mainLabel : null, query.q],
                       [].concat(excerpt.words)
                     )}
                   </ExcerptPreview>
@@ -437,7 +438,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
               {openedExcerpts.includes(excerpt['@id']) && renderExcerpt(excerpt)}
             </ExcerptContainer>
             {i < excerpts.length - 1 && <Separator />}
-            {i === 0 && excerpts.length > 1 && (
+            {i === relevantExcerpts.length - 1 && excerpts.length > 1 && (
               <>
                 <h3>{t('project:details.exploreMore')}</h3>
                 <Separator />
@@ -551,7 +552,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
       <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>
         {highlightAndUnderlineText(
           excerpt.value,
-          [excerpt['@id'] === result.relevantExcerpt ? mainLabel : null, query.q],
+          [relevantExcerpts.includes(excerpt['@id']) ? mainLabel : null, query.q],
           [].concat(excerpt.words)
         )}
       </Element>
