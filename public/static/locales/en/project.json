@@ -117,7 +117,7 @@
     "occurrences_other": "{{count}} occurrences",
     "wordCloud": {
       "loading": "Loading word cloud...",
-      "error": "Word cloud could not be loaded at that moment",
+      "error": "Word cloud could not be loaded",
       "title": {
         "quality": "Smell Quality",
         "emotion": "Emotion",
@@ -127,12 +127,12 @@
     "texts": {
       "title": "In texts",
       "loading": "Loading textual occurrences...",
-      "error": "Textual occurrences could not be loaded at that moment"
+      "error": "Textual occurrences could not be loaded"
     },
     "visuals": {
       "title": "In images",
       "loading": "Loading visual occurrences...",
-      "error": "Visual occurrences could not be loaded at that moment"
+      "error": "Visual occurrences could not be loaded"
     },
     "showMore": "Show all",
     "showLess": "Show less"
