@@ -415,7 +415,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
                   <ExcerptPreview>
                     {highlightAndUnderlineText(
                       excerpt.value,
-                      [relevantExcerpts.includes(excerpt['@id']) ? mainLabel : null, query.q],
+                      [...(relevantExcerpts.includes(excerpt['@id']) ? labels : [null]), query.q],
                       [].concat(excerpt.words)
                     )}
                   </ExcerptPreview>
@@ -552,7 +552,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
       <Element style={{ fontSize: '1.5rem', fontFamily: 'Times New Roman' }}>
         {highlightAndUnderlineText(
           excerpt.value,
-          [relevantExcerpts.includes(excerpt['@id']) ? mainLabel : null, query.q],
+          [...(relevantExcerpts.includes(excerpt['@id']) ? labels : [null]), query.q],
           [].concat(excerpt.words)
         )}
       </Element>
@@ -599,6 +599,7 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
 
   const images = [].concat(result.image).filter((x) => x);
   const fragments = [].concat(result.fragment).filter((x) => x);
+  const labels = [].concat(result.label).filter((x) => x);
 
   return (
     <Layout>
