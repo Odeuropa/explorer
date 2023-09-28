@@ -59,16 +59,6 @@ module.exports = {
             FILTER(LANG(?relatedLabel) = "${language}" || LANG(?relatedLabel) = "")
           }
         }
-        {
-          ?place crm:P137_exemplifies ?id .
-          ?emission crm:P7_took_place_at ?place .
-          ?emission od:F1_generated ?smell .
-          OPTIONAL {
-            ?assignment a crm:E13_Attribute_Assignment .
-            ?assignment crm:P141_assigned/rdfs:label ?adjective .
-            ?assignment crm:P140_assigned_attribute_to ?smell .
-          }
-        }
         `,
       ],
       $langTag: 'hide',
