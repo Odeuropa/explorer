@@ -442,7 +442,9 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
               key={cloud}
               style={{ maxWidth: '50%', width: `${100 / Object.keys(wordCloud).length}%` }}
             >
-              <h3>{t(`project:odeuropa-vocabulary-details.wordCloud.title.${cloud}`)}</h3>
+              <h3 style={{ color: 'gray' }}>
+                {t(`project:odeuropa-vocabulary-details.wordCloud.title.${cloud}`)}
+              </h3>
               {typeof wordCloud[cloud] === 'undefined' && (
                 <Element
                   display="flex"
