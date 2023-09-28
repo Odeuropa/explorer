@@ -430,7 +430,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           />
         )}
         <Debug key={wordCloud}>
-          <Metadata label="SPARQL Query">
+          <Metadata label="Timeline - SPARQL Query">
             <SPARQLQueryLink query={timelineDebug}>{t('common:buttons.editQuery')}</SPARQLQueryLink>
             <pre>{timelineDebug}</pre>
           </Metadata>
@@ -484,7 +484,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         <Element display="flex" flexDirection="row" alignItems="center" paddingX="1em">
           {Object.keys(wordCloud).map((cloud) => (
             <Debug key={wordCloud}>
-              <Metadata label="SPARQL Query">
+              <Metadata label={`${cloud} Word Cloud - SPARQL Query`}>
                 <SPARQLQueryLink query={wordCloudDebug[cloud]}>
                   {t('common:buttons.editQuery')}
                 </SPARQLQueryLink>
@@ -516,10 +516,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             </h2>
           )}
           <Debug>
-            <Metadata label="Query Result">
+            <Metadata label="Texts - Query Result">
               <pre>{JSON.stringify(texts, null, 2)}</pre>
             </Metadata>
-            <Metadata label="SPARQL Query">
+            <Metadata label="Texts - SPARQL Query">
               <SPARQLQueryLink query={textsDebug}>{t('common:buttons.editQuery')}</SPARQLQueryLink>
               <pre>{textsDebug}</pre>
             </Metadata>
@@ -597,10 +597,10 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           )}
 
           <Debug>
-            <Metadata label="Query Result">
+            <Metadata label="Visuals - Query Result">
               <pre>{JSON.stringify(visuals, null, 2)}</pre>
             </Metadata>
-            <Metadata label="SPARQL Query">
+            <Metadata label="Visuals - SPARQL Query">
               <SPARQLQueryLink query={visualsDebug}>
                 {t('common:buttons.editQuery')}
               </SPARQLQueryLink>
