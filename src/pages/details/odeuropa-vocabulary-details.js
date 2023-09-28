@@ -171,6 +171,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [filteredVisuals, setFilteredVisuals] = useState();
   const [favorites, setFavorites] = useState([]);
   const [timelineDates, setTimelineDates] = useState({});
+  const [timelineDebug, setTimelineDebug] = useState();
   const [resultToDateMapping, setResultToDateMapping] = useState({});
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
@@ -188,16 +189,6 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       return acc;
     }, resultToDateMapping);
     setResultToDateMapping(resultToDate);
-
-    const newTimelineDates = Object.values(resultToDate)
-      .flat()
-      .reduce((acc, cur) => {
-        const rounded = Math.floor(cur / TIMELINE_INTERVAL) * TIMELINE_INTERVAL;
-        acc[rounded] = (acc[rounded] || 0) + 1;
-        return acc;
-      }, {});
-
-    setTimelineDates(newTimelineDates);
   };
 
   useEffect(() => {
@@ -228,6 +219,23 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
           [cloud]: wordCloudRes.error ? null : formatWordCloudData(wordCloudRes.results),
         }));
       }
+    })();
+
+    (async () => {
+      const timelineRes = await (
+        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-timeline?${qs}`)
+      ).json();
+
+      const newTimelineDates = timelineRes.results.reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur['@id']]: cur.count,
+        }),
+        {}
+      );
+
+      setTimelineDates(newTimelineDates);
+      setTimelineDebug(timelineRes.debugSparqlQuery);
     })();
 
     (async () => {
@@ -421,6 +429,12 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
             defaultValues={query.date?.split(',') || []}
           />
         )}
+        <Debug key={wordCloud}>
+          <Metadata label="SPARQL Query">
+            <SPARQLQueryLink query={timelineDebug}>{t('common:buttons.editQuery')}</SPARQLQueryLink>
+            <pre>{timelineDebug}</pre>
+          </Metadata>
+        </Debug>
 
         <WordCloudsContainer>
           {Object.keys(wordCloud).map((cloud) => (

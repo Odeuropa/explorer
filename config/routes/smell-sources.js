@@ -246,6 +246,38 @@ module.exports = {
           `,
         ],
       },
+      timeline: {
+        query: ({ id }) => ({
+          '@graph': [
+            {
+              '@id': '?interval_start',
+              count: '?count',
+            },
+          ],
+          $where: [
+            `
+            {
+              SELECT (COUNT(DISTINCT ?smell) AS ?count) ?interval_start
+              WHERE {
+                VALUES ?id { <${id}> }
+                {
+                    ?emission od:F1_generated ?smell .
+                    ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+                    ?emission_source crm:P67_refers_to ?emission .
+                    ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                    BIND(FLOOR(YEAR(?begin) / 20) * 20 AS ?interval_start)
+                }
+              }
+              GROUP BY ?interval_start
+              HAVING(?interval_start >= 1300 && ?interval_start <= 2000)
+              ORDER BY ?interval_start
+            }
+            `,
+          ],
+          $distinct: false,
+          $langTag: 'hide',
+        }),
+      },
     },
   },
 };
