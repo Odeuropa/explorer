@@ -17,7 +17,13 @@ export default withRequestValidation({
   const plugin = route.plugins['odeuropa-vocabulary'].timeline;
 
   const timelineQuery = JSON.parse(
-    JSON.stringify(getQueryObject(plugin.query, { id: query.id, language: query.locale }))
+    JSON.stringify(
+      getQueryObject(plugin.query, {
+        id: query.id,
+        interval: query.interval,
+        language: query.locale,
+      })
+    )
   );
 
   const debugSparqlQuery = await SparqlClient.getSparqlQuery(timelineQuery);

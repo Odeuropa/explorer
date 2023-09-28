@@ -1,3 +1,15 @@
+const generateDateFilter = (date) => {
+  if (!date) return '';
+  return `
+  ?source schema:dateCreated/time:hasBeginning ?begin .
+  FILTER(
+    ${date
+      .split(',')
+      .map((d) => `(?begin >= "${d}"^^xsd:gYear && ?begin <= "${parseInt(d, 10) + 20}"^^xsd:gYear)`)
+      .join(' || ')}
+  )`;
+};
+
 module.exports = {
   view: 'odeuropa-vocabulary',
   uriBase: 'http://data.odeuropa.eu/vocabulary/fragrant-spaces',
@@ -110,7 +122,7 @@ module.exports = {
     'odeuropa-vocabulary': {
       wordCloud: {
         quality: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -122,6 +134,9 @@ module.exports = {
                   ?assignment crm:P141_assigned/rdfs:label ?word .
                   ?assignment crm:P140_assigned_attribute_to ?smell .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -143,7 +158,7 @@ module.exports = {
           },
         },
         emotion: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -155,6 +170,9 @@ module.exports = {
                   ?emotion reo:readP27 ?experience .
                   ?emotion rdfs:label ?word .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -176,7 +194,7 @@ module.exports = {
           },
         },
         smellscape: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -187,6 +205,9 @@ module.exports = {
                   ?emission crm:P7_took_place_at ?place .
                   ?place rdfs:label ?word .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -211,28 +232,60 @@ module.exports = {
       visuals: {
         route: 'smells',
         showAllFilter: 'source',
-        baseWhere: [
+        baseWhere: ({ date }) =>
           `
           ?place crm:P137_exemplifies ?_vocab .
           ?emission crm:P7_took_place_at ?place .
           ?emission od:F1_generated ?id .
           ?source crm:P67_refers_to ?emission .
           ?source a crm:E36_Visual_Item .
+          ${generateDateFilter(date)}
           `,
-        ],
       },
       texts: {
         route: 'smells',
         showAllFilter: 'source',
-        baseWhere: [
+        baseWhere: ({ date }) =>
           `
           ?place crm:P137_exemplifies ?_vocab .
           ?emission crm:P7_took_place_at ?place .
           ?emission od:F1_generated ?id .
           ?source crm:P67_refers_to ?emission .
           ?source a crm:E33_Linguistic_Object .
+          ${generateDateFilter(date)}
           `,
-        ],
+      },
+      timeline: {
+        query: ({ id, interval }) => ({
+          '@graph': [
+            {
+              '@id': '?interval_start',
+              count: '?count',
+            },
+          ],
+          $where: [
+            `
+            {
+              SELECT (COUNT(DISTINCT ?smell) AS ?count) ?interval_start
+              WHERE {
+                VALUES ?id { <${id}> }
+                {
+                    ?place crm:P137_exemplifies ?id .
+                    ?emission crm:P7_took_place_at ?place .
+                    ?emission od:F1_generated ?smell .
+                    ?emission_source crm:P67_refers_to ?emission .
+                    ?emission_source schema:dateCreated/time:hasBeginning ?begin .
+                    BIND(FLOOR(YEAR(?begin) / ${interval}) * ${interval} AS ?interval_start)
+                }
+              }
+              GROUP BY ?interval_start
+              ORDER BY ?interval_start
+            }
+            `,
+          ],
+          $distinct: false,
+          $langTag: 'hide',
+        }),
       },
     },
   },

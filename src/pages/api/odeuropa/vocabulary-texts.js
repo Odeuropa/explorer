@@ -26,6 +26,8 @@ export default withRequestValidation({
     JSON.stringify(getQueryObject(originalRoute.query, { language: query.locale }))
   );
 
+  const baseWhereQuery = baseWhere({ date: query.date, tag: query.tag, language: query.locale });
+
   let totalResults = 0;
   const paginationQuery = {
     proto: {
@@ -34,7 +36,7 @@ export default withRequestValidation({
     $where: `
     SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {
       VALUES ${`?${key || '_vocab'}`} { <${query.id}> }
-      ${baseWhere}
+      ${baseWhereQuery}
     }
   `,
   };
@@ -54,7 +56,7 @@ export default withRequestValidation({
     $where: [
       `{ SELECT DISTINCT ?id WHERE { VALUES ${`?${key || '_vocab'}`} { <${
         query.id
-      }> } ${baseWhere} } LIMIT 20 }`,
+      }> } ${baseWhereQuery} } LIMIT 20 }`,
       ...originalQuery.$where,
     ],
   };

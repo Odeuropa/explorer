@@ -1,3 +1,15 @@
+const generateDateFilter = (date) => {
+  if (!date) return '';
+  return `
+  ?source schema:dateCreated/time:hasBeginning ?begin .
+  FILTER(
+    ${date
+      .split(',')
+      .map((d) => `(?begin >= "${d}"^^xsd:gYear && ?begin <= "${parseInt(d, 10) + 20}"^^xsd:gYear)`)
+      .join(' || ')}
+  )`;
+};
+
 module.exports = {
   view: 'odeuropa-vocabulary',
   showInNavbar: true,
@@ -124,7 +136,7 @@ module.exports = {
       },
       wordCloud: {
         quality: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -136,6 +148,9 @@ module.exports = {
                   ?assignment crm:P141_assigned/rdfs:label ?word .
                   ?assignment crm:P140_assigned_attribute_to ?smell .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -157,7 +172,7 @@ module.exports = {
           },
         },
         emotion: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -169,6 +184,9 @@ module.exports = {
                   ?emotion reo:readP27 ?experience .
                   ?emotion rdfs:label ?word .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -190,7 +208,7 @@ module.exports = {
           },
         },
         smellscape: {
-          query: ({ id, category }) => {
+          query: ({ id, category, date }) => {
             const $where = [
               `
               {
@@ -201,6 +219,9 @@ module.exports = {
                   ?emission crm:P7_took_place_at ?place .
                   ?place rdfs:label ?word .
                   ${category ? `?id skos:broader* <${category}> .` : ''}
+
+                  ?source crm:P67_refers_to ?emission .
+                  ${generateDateFilter(date)}
                 }
                 GROUP BY ?word
                 ORDER BY DESC(?count)
@@ -225,29 +246,29 @@ module.exports = {
       visuals: {
         route: 'smells',
         showAllFilter: 'source',
-        baseWhere: [
+        baseWhere: ({ date }) =>
           `
           ?emission od:F1_generated ?id .
           ?object crm:P137_exemplifies ?_vocab .
           ?source crm:P138_represents ?object .
           ?source crm:P67_refers_to ?emission .
+          ${generateDateFilter(date)}
           `,
-        ],
       },
       texts: {
         route: 'smells',
         showAllFilter: 'source',
-        baseWhere: [
+        baseWhere: ({ date }) =>
           `
           ?emission od:F3_had_source/crm:P137_exemplifies ?_vocab .
           ?emission od:F1_generated ?id .
           ?source crm:P67_refers_to ?id .
           ?source a crm:E33_Linguistic_Object .
+          ${generateDateFilter(date)}
           `,
-        ],
       },
       timeline: {
-        query: ({ id }) => ({
+        query: ({ id, interval }) => ({
           '@graph': [
             {
               '@id': '?interval_start',
@@ -265,7 +286,7 @@ module.exports = {
                     ?emission od:F3_had_source / crm:P137_exemplifies ?id .
                     ?emission_source crm:P67_refers_to ?emission .
                     ?emission_source schema:dateCreated/time:hasBeginning ?begin .
-                    BIND(FLOOR(YEAR(?begin) / 20) * 20 AS ?interval_start)
+                    BIND(FLOOR(YEAR(?begin) / ${interval}) * ${interval} AS ?interval_start)
                 }
               }
               GROUP BY ?interval_start

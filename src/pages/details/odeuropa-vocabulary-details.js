@@ -111,15 +111,6 @@ const WordCloudsContainer = styled.div`
 
 const TIMELINE_INTERVAL = 20; // years
 
-const filterItemWithDates = (item, targetDates) => {
-  if (!Array.isArray(targetDates) || targetDates.length === 0) return true;
-  const time = [].concat(item.time).filter((x) => x)[0];
-  const timeBegin = parseInt(time?.begin, 10);
-  return targetDates.some(
-    (targetDate) => timeBegin >= targetDate && timeBegin < targetDate + TIMELINE_INTERVAL
-  );
-};
-
 const filterItemWithTag = (item, targetTag) => {
   if (!targetTag) return true;
   return [].concat(item.adjective).includes(targetTag);
@@ -172,58 +163,96 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
   const [favorites, setFavorites] = useState([]);
   const [timelineDates, setTimelineDates] = useState({});
   const [timelineDebug, setTimelineDebug] = useState();
-  const [resultToDateMapping, setResultToDateMapping] = useState({});
   const [showingAllTexts, setShowingAllTexts] = useState(false);
   const [showingAllVisuals, setShowingAllVisuals] = useState(false);
+  const [currentQueryString, setCurrentQueryString] = useState();
 
-  const updateTimelineWithResults = (results) => {
-    if (!Array.isArray(results)) return;
-
-    // Map dates into a `{ "id": "date" }` object to prevent duplicates
-    // when loading additional results
-    const resultToDate = results.reduce((acc, result) => {
-      acc[result['@id']] = []
-        .concat(result.time)
-        .map((time) => time?.begin)
-        .filter((x) => x);
-      return acc;
-    }, resultToDateMapping);
-    setResultToDateMapping(resultToDate);
-  };
-
-  useEffect(() => {
-    if (!result) return;
-
+  const buildQueryString = () => {
     const q = {
-      id: result['@id'],
+      id: result?.['@id'],
       type: query.type,
       date: query.date,
       tag: query.tag,
       locale: i18n.language,
     };
-    const qs = queryString.stringify(q);
+    return queryString.stringify(q);
+  };
 
-    (async () => {
-      for (const cloud of Object.keys(wordCloud)) {
-        const wordCloudRes = await (
-          await fetch(
-            `${window.location.origin}/api/odeuropa/vocabulary-wordcloud?cloud=${cloud}&${qs}`
-          )
-        ).json();
-        setWordCloudDebug((prev) => ({
-          ...prev,
-          [cloud]: wordCloudRes.debugSparqlQuery,
-        }));
-        setWordCloud((prev) => ({
-          ...prev,
-          [cloud]: wordCloudRes.error ? null : formatWordCloudData(wordCloudRes.results),
-        }));
-      }
-    })();
+  const loadTexts = async () => {
+    setTexts(undefined);
+    setFilteredTexts(null);
+    setTextsCount(0);
+
+    const qs = buildQueryString();
+    const { results, favorites, totalResults, debugSparqlQuery } = await (
+      await fetch(`${window.location.origin}/api/odeuropa/vocabulary-texts?${qs}`)
+    ).json();
+    if (results) {
+      setTexts(results.error ? null : results);
+      setTextsDebug(debugSparqlQuery);
+      setTextsCount(totalResults);
+      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
+    }
+  };
+
+  const loadVisuals = async () => {
+    setVisuals(undefined);
+    setFilteredVisuals(null);
+    setVisualsCount(0);
+
+    const qs = buildQueryString();
+    const { results, favorites, totalResults, debugSparqlQuery } = await (
+      await fetch(`${window.location.origin}/api/odeuropa/vocabulary-visuals?${qs}`)
+    ).json();
+    if (results) {
+      setVisuals(results.error ? null : results);
+      setVisualsDebug(debugSparqlQuery);
+      setVisualsCount(totalResults);
+      setFavorites((prev) => [...new Set([...prev, ...favorites])]);
+    }
+  };
+
+  const loadWordClouds = async () => {
+    setWordCloud(
+      Object.keys(wordCloud).reduce((acc, cur) => {
+        acc[cur] = undefined;
+        return acc;
+      }, {})
+    );
+
+    const qs = buildQueryString();
+    for (const cloud of Object.keys(wordCloud)) {
+      const wordCloudRes = await (
+        await fetch(
+          `${window.location.origin}/api/odeuropa/vocabulary-wordcloud?cloud=${cloud}&${qs}`
+        )
+      ).json();
+      setWordCloudDebug((prev) => ({
+        ...prev,
+        [cloud]: wordCloudRes.debugSparqlQuery,
+      }));
+      setWordCloud((prev) => ({
+        ...prev,
+        [cloud]: wordCloudRes.error ? null : formatWordCloudData(wordCloudRes.results),
+      }));
+    }
+  };
+
+  useEffect(() => {
+    if (!result) return;
+
+    const qs = buildQueryString();
+    if (currentQueryString === qs) {
+      return;
+    }
+
+    setCurrentQueryString(qs);
 
     (async () => {
       const timelineRes = await (
-        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-timeline?${qs}`)
+        await fetch(
+          `${window.location.origin}/api/odeuropa/vocabulary-timeline?interval=${TIMELINE_INTERVAL}&${qs}`
+        )
       ).json();
 
       const newTimelineDates = timelineRes.results.reduce(
@@ -238,62 +267,21 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
       setTimelineDebug(timelineRes.debugSparqlQuery);
     })();
 
-    (async () => {
-      const { results, favorites, totalResults, debugSparqlQuery } = await (
-        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-texts?${qs}`)
-      ).json();
-      if (results) {
-        setTexts(results.error ? null : results);
-        setTextsDebug(debugSparqlQuery);
-        setTextsCount(totalResults);
-        setFavorites((prev) => [...new Set([...prev, ...favorites])]);
-        updateTimelineWithResults(results);
-      }
-    })();
-
-    (async () => {
-      const { results, favorites, totalResults, debugSparqlQuery } = await (
-        await fetch(`${window.location.origin}/api/odeuropa/vocabulary-visuals?${qs}`)
-      ).json();
-      if (results) {
-        setVisuals(results.error ? null : results);
-        setVisualsDebug(debugSparqlQuery);
-        setVisualsCount(totalResults);
-        setFavorites((prev) => [...new Set([...prev, ...favorites])]);
-        updateTimelineWithResults(results);
-      }
-    })();
-  }, [result]);
+    loadTexts();
+    loadVisuals();
+    loadWordClouds();
+  }, [result, query]);
 
   useEffect(() => {
-    if (!texts) return;
-    if (!query.date && !query.tag) {
-      setFilteredTexts(texts);
-      return;
+    if (texts) {
+      setFilteredTexts(
+        query.tag ? texts.filter((item) => filterItemWithTag(item, query.tag)) : texts
+      );
+    } else {
+      setFilteredTexts(null);
     }
-    const targetDates = (query.date || '')
-      .split(',')
-      .map((date) => parseInt(date, 10))
-      .filter((x) => x);
-    setFilteredTexts(
-      texts.filter(
-        (item) => filterItemWithDates(item, targetDates) && filterItemWithTag(item, query.tag)
-      )
-    );
-  }, [texts, query]);
-
-  useEffect(() => {
-    if (!visuals) return;
-    if (!query.date) {
-      setFilteredVisuals(visuals);
-      return;
-    }
-    const targetDates = query.date
-      .split(',')
-      .map((date) => parseInt(date, 10))
-      .filter((x) => x);
-    setFilteredVisuals(visuals.filter((item) => filterItemWithDates(item, targetDates)));
-  }, [visuals, query]);
+    setFilteredVisuals(visuals || null);
+  }, [texts, visuals, query]);
 
   if (!result) {
     return (

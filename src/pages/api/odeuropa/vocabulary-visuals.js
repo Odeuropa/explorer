@@ -22,6 +22,8 @@ export default withRequestValidation({
   const { baseWhere, key } = plugin;
   const originalRoute = config.routes[plugin.route];
 
+  const baseWhereQuery = baseWhere({ date: query.date, tag: query.tag, language: query.locale });
+
   const originalQuery = JSON.parse(
     JSON.stringify(getQueryObject(originalRoute.query, { language: query.locale }))
   );
@@ -34,7 +36,7 @@ export default withRequestValidation({
     $where: `
     SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {
       VALUES ${`?${key || '_vocab'}`} { <${query.id}> }
-      ${baseWhere}
+      ${baseWhereQuery}
     }
   `,
   };
@@ -54,7 +56,7 @@ export default withRequestValidation({
     $where: [
       `{ SELECT DISTINCT ?id WHERE { VALUES ${`?${key || '_vocab'}`} { <${
         query.id
-      }> } ${baseWhere} } LIMIT 20 }`,
+      }> } ${baseWhereQuery} } LIMIT 20 }`,
       ...originalQuery.$where,
     ],
   };
