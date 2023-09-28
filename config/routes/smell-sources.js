@@ -269,7 +269,6 @@ module.exports = {
                 }
               }
               GROUP BY ?interval_start
-              HAVING(?interval_start >= 1300 && ?interval_start <= 2000)
               ORDER BY ?interval_start
             }
             `,
