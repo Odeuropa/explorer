@@ -33,7 +33,8 @@
   "routes": {
     "smells": "Durchsuche",
     "smell-sources": "Geruchsquellen",
-    "fragrant-spaces": "duftende Orte"
+    "fragrant-spaces": "duftende Orte",
+    "gestures-allegories": "Gesten und Allegorien"
   },
   "routes-descriptions": {
     "smell-sources": "Gegenstände und Stoffe, die bekanntermaßen einen Geruch abgeben"

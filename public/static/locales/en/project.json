@@ -33,7 +33,8 @@
   "routes": {
     "smells": "Browse",
     "smell-sources": "Smell sources",
-    "fragrant-spaces": "Fragrant Spaces"
+    "fragrant-spaces": "Fragrant Spaces",
+    "gestures-allegories": "Gestures and Allegories"
   },
   "routes-descriptions": {
     "smell-sources": "Objects and substances which are recognised to emit an odour"

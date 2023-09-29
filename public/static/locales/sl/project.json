@@ -33,7 +33,8 @@
   "routes": {
     "smells": "Prebrskaj",
     "smell-sources": "Viri vonja",
-    "fragrant-spaces": "Dišeči prostori"
+    "fragrant-spaces": "Dišeči prostori",
+    "gestures-allegories": "Geste in alegorije"
   },
   "routes-descriptions": {
     "smell-sources": "Predmeti in snovi, za katere je znano, da oddajajo vonj"

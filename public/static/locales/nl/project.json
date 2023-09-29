@@ -33,7 +33,8 @@
   "routes": {
     "smells": "Bladeren",
     "smell-sources": "Geurbronnen",
-    "fragrant-spaces": "Geurige ruimtes en landschappen"
+    "fragrant-spaces": "Geurige ruimtes en landschappen",
+    "gestures-allegories": "Gebaren en allegorieën"
   },
   "routes-descriptions": {
     "smell-sources": "Objecten en stoffen waarvan bekend is dat ze een geur verspreiden"

@@ -1,6 +1,7 @@
 const smells = require('./config/routes/smells');
 const smellSources = require('./config/routes/smell-sources');
 const fragrantSpaces = require('./config/routes/fragrant-spaces');
+const gesturesAllegories = require('./config/routes/gestures-allegories');
 
 module.exports = {
   debug: typeof process !== 'undefined' && process.env.NODE_ENV === 'development',
@@ -78,6 +79,7 @@ module.exports = {
     smells,
     'smell-sources': smellSources,
     'fragrant-spaces': fragrantSpaces,
+    'gestures-allegories': gesturesAllegories,
   },
   imagesDomains: ['data.odeuropa.eu', 'commons.wikimedia.org'],
   graphs: () => ({
