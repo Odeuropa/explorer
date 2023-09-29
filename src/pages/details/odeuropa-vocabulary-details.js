@@ -425,51 +425,55 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
         </Debug>
 
         <WordCloudsContainer>
-          {Object.keys(wordCloud).map((cloud) => (
-            <Element
-              key={cloud}
-              style={{ maxWidth: '50%', width: `${100 / Object.keys(wordCloud).length}%` }}
-            >
-              <h3 style={{ color: 'gray' }}>
-                {t(`project:odeuropa-vocabulary-details.wordCloud.title.${cloud}`)}
-              </h3>
-              {typeof wordCloud[cloud] === 'undefined' && (
-                <Element
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  paddingRight="1em"
-                >
-                  <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
-                  {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
-                </Element>
-              )}
-              {wordCloud[cloud] === null && (
-                <span style={{ color: 'red', paddingRight: '1em' }}>
-                  {t('project:odeuropa-vocabulary-details.wordCloud.error')}
-                </span>
-              )}
-              {wordCloud[cloud]?.length > 0 && (
-                <Element
-                  display="flex"
-                  justifyContent="center"
-                  height="100%"
-                  paddingRight="1em"
-                  style={{ textAlign: 'center' }}
-                >
-                  <TagCloud
-                    minSize={24}
-                    maxSize={48}
-                    tags={wordCloud[cloud]}
-                    randomSeed={42}
-                    colorOptions={{
-                      luminosity: 'bright',
-                    }}
-                  />
-                </Element>
-              )}
-            </Element>
-          ))}
+          {Object.keys(wordCloud)
+            .filter(
+              (cloud) =>
+                typeof wordCloud[cloud] === 'undefined' ||
+                wordCloud[cloud] === null ||
+                wordCloud[cloud]?.length > 0
+            )
+            .map((cloud) => (
+              <Element key={cloud} style={{ flex: '1 1 0px' }}>
+                <h3 style={{ color: 'gray' }}>
+                  {t(`project:odeuropa-vocabulary-details.wordCloud.title.${cloud}`)}
+                </h3>
+                {typeof wordCloud[cloud] === 'undefined' && (
+                  <Element
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    paddingRight="1em"
+                  >
+                    <Spinner size="24" style={{ marginRight: '0.5em' }} />{' '}
+                    {t('project:odeuropa-vocabulary-details.wordCloud.loading')}
+                  </Element>
+                )}
+                {wordCloud[cloud] === null && (
+                  <span style={{ color: 'red', paddingRight: '1em' }}>
+                    {t('project:odeuropa-vocabulary-details.wordCloud.error')}
+                  </span>
+                )}
+                {wordCloud[cloud]?.length > 0 && (
+                  <Element
+                    display="flex"
+                    justifyContent="center"
+                    height="100%"
+                    paddingRight="1em"
+                    style={{ textAlign: 'center' }}
+                  >
+                    <TagCloud
+                      minSize={24}
+                      maxSize={48}
+                      tags={wordCloud[cloud]}
+                      randomSeed={42}
+                      colorOptions={{
+                        luminosity: 'bright',
+                      }}
+                    />
+                  </Element>
+                )}
+              </Element>
+            ))}
         </WordCloudsContainer>
         <Element display="flex" flexDirection="row" alignItems="center" paddingX="1em">
           {Object.keys(wordCloud).map((cloud) => (
