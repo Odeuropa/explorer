@@ -529,7 +529,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     item={item}
                     route={cardRoute}
                     type={route.details.route}
-                    searchApi="/api/odeuropa/vocabulary-texts"
+                    searchApi="odeuropa/vocabulary-texts"
                     isFavorite={favorites.includes(item['@id'])}
                     onToggleFavorite={(saved) => {
                       setFavorites((prev) =>
@@ -612,7 +612,7 @@ const OdeuropaVocabularyDetailsPage = ({ result, debugSparqlQuery }) => {
                     item={item}
                     route={cardRoute}
                     type={route.details.route}
-                    searchApi="/api/odeuropa/vocabulary-visuals"
+                    searchApi="odeuropa/vocabulary-visuals"
                     isFavorite={favorites.includes(item['@id'])}
                     onToggleFavorite={(saved) => {
                       setFavorites((prev) =>

@@ -88,7 +88,7 @@ function ListsPage({ isOwner, collaborators, list, shareLink, inviteUrl }) {
                   item={result}
                   route={route}
                   type={route.details.route}
-                  searchApi="/api/search"
+                  searchApi="search"
                   showFavorite
                   isFavorite={favorites.includes(result['@id'])}
                   onToggleFavorite={(saved) => {

@@ -431,7 +431,7 @@ const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
           page={pageNumber}
           type={route.details.route}
           displayText={displayText}
-          searchApi="/api/search"
+          searchApi="search"
           onSeeMore={onSeeMore}
           isFavorite={favorites.includes(result['@id'])}
           onToggleFavorite={(saved) =>
