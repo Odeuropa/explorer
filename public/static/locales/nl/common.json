@@ -1,176 +1,176 @@
 {
   "sidebar": {
-    "combined": "combined"
+    "combined": "gecombineerd"
   },
   "profileButton": {
-    "label": "Profile",
-    "signIn": "Sign in",
-    "signOut": "Sign out",
-    "signedAs": "Signed in as <0>{{name}}</0>",
-    "yourProfile": "Your profile"
+    "label": "Profiel",
+    "signIn": "Inloggen",
+    "signOut": "Uitloggen",
+    "signedAs": "Ingelogd als <0>{{name}}</0>",
+    "yourProfile": "Uw profiel"
   },
   "burger": {
-    "label": "Toggle menu"
+    "label": "Schakel menu"
   },
   "listDeletion": {
-    "title": "Delete list",
-    "deleteButton": "Delete list",
-    "confirmText": "Are you sure you want to delete the list \"<0>{{name}}</0>\"? This action cannot be undone!"
+    "title": "Lijst verwijderen",
+    "deleteButton": "Lijst verwijderen",
+    "confirmText": "Weet u zeker dat u de lijst wilt verwijderen? \"<0>{{name}}</0>\"? Dit kan niet ongedaan worden!"
   },
   "listSettings": {
-    "title": "List settings",
+    "title": "Lijstinstellingen",
     "labels": {
-      "name": "Name",
-      "public": "Public?"
+      "name": "Naam",
+      "public": "Openbaar?"
     }
   },
   "listSocials": {
-    "title": "Socials list"
+    "title": "Sociale media lijst"
   },
   "listCollaboration": {
-    "title": "Invite collaborators",
-    "firstLine": "Share this link with your collaborators to invite them.",
-    "secondLine": "Be careful who you share this link with because it will allow them to add and remove items from this list!",
-    "invite": "Invite"
+    "title": "Gebruikers uitnodigen",
+    "firstLine": "Deel deze link met andere gebruikers om ze uit te nodigen.",
+    "secondLine": "Deel deze link niet met iedereen want hiermee kunnen mensen items toevoegen en verwijderen van deze lijst!",
+    "invite": "Uitnodigen"
   },
   "listRemoveCollaborator": {
-    "title": "Remove a collaborator",
-    "confirmText": "Are you sure you want to remove the user \"<0>{{name}}</0>\"? They won't be able to collaborate on this list anymore.",
-    "removeButton": "Remove"
+    "title": "Verwijder een gebruiker",
+    "confirmText": "Weet u zeker dat u de gebruiker \"<0>{{name}}</0>\" wilt verwijderen? Ze kunnen dan niet meer samenwerken aan deze lijst.",
+    "removeButton": "Verwijder"
   },
   "providerButton": {
-    "label": "Sign in with {{provider}}"
+    "label": "Log in met {{provider}}"
   },
   "saveButton": {
-    "title": "Save to a list",
+    "title": "Opslaan naar een lijst",
     "labels": {
-      "listName": "List name"
+      "listName": "Naam van de lijst"
     },
-    "createButton": "Add to a new list",
-    "loading": "Loading...",
-    "save": "Save",
-    "saved": "Saved"
+    "createButton": "Toevoegen aan een nieuwe lijst",
+    "loading": "Laden...",
+    "save": "Opslaan",
+    "saved": "Opgeslagen"
   },
   "buttons": {
-    "save": "Save",
-    "close": "Close",
-    "cancel": "Cancel",
-    "search": "Search",
-    "searchByText": "Search by text",
-    "searchByImage": "Search by image",
-    "download": "Download",
+    "save": "Opslaan",
+    "close": "Sluiten",
+    "cancel": "Annuleren",
+    "search": "Zoeken",
+    "searchByText": "Zoeken in de tekst",
+    "searchByImage": "Zoeken in afbeeldingen",
+    "download": "Downloaden",
     "virtualLoom": {
       "download": "Virtual Loom",
       "web": "Web",
       "desktop": "Desktop"
     },
     "downloadJSON": "Linked Data JSON",
-    "downloadSelectedImage": "Download selected image",
-    "editQuery": "Edit the query",
+    "downloadSelectedImage": "Download geselecteerde afbeelding",
+    "editQuery": "Zoekopdracht aanpassen",
     "permalink": "permalink",
-    "original": "view original",
-    "similar": "View similar",
-    "copy": "Copy",
-    "copied": "Copied"
+    "original": "origineel bekijken",
+    "similar": "vergelijkbaar bekijken",
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd"
   },
   "list": {
-    "items": "Items in the list",
-    "empty": "This list is empty!",
-    "operations": "Operations",
-    "created": "Created on: <0>{{date}}</0>",
-    "updated": "Last update: <0>{{date}}</0>",
+    "items": "Items in de lijst",
+    "empty": "Deze lijst is leeg!",
+    "operations": "Operaties",
+    "created": "Gemaakt op: <0>{{date}}</0>",
+    "updated": "Laatste update: <0>{{date}}</0>",
     "privacy": {
-      "text": "This list is <0>{{status}}</0>.",
+      "text": "Deze lijst is <0>{{status}}</0>.",
       "status": {
-        "public": "public",
-        "private": "private"
+        "public": "publiek",
+        "private": "privé"
       }
     },
-    "shareLink": "Public link: <0>{{link}}</0>",
-    "collaborators": "Collaborators",
+    "shareLink": "Publieke link: <0>{{link}}</0>",
+    "collaborators": "Gebruikers",
     "invite": {
-      "title": "Invitation",
-      "firstLine": "You have been invited to collaborate on the list <0>{{name}}</0>",
-      "secondLine": "If you accept, the owner of this list will be able to see your name.",
-      "decline": "Decline",
-      "accept": "Accept"
+      "title": "Uitnodiging",
+      "firstLine": "U bent uitgenodigd om aan deze lijst mee te werken <0>{{name}}</0>",
+      "secondLine": "Als u deze uitnodiging accepteert, zal de eigenaar van deze lijst uw naam kunnen zien.",
+      "decline": "Afwijzen",
+      "accept": "Accepteren"
     }
   },
   "profile": {
-    "title": "Profile",
+    "title": "Profiel",
     "lists": {
-      "title": "My lists",
+      "title": "Mijn lijsten",
       "count": "{{count}} items",
-      "lastEdit": "last edit on <0>{{date}}</0>",
+      "lastEdit": "laatste wijziging op <0>{{date}}</0>",
       "open": "Open"
     },
     "deleteAccount": {
-      "title": "Delete account",
-      "text": "Are you sure you wish to <0>permanently delete</0> your account? <1>This action cannot be undone!</1>",
-      "consequences": "Deleting this account will also remove:",
-      "lists": "All user created lists",
-      "sessions": "All connected social accounts and sessions",
-      "cancel": "Cancel account deletion",
-      "confirm": "Yes, delete my account"
+      "title": "Account verwijderen",
+      "text": "Weet u zeker dat u uw account <0>permanent wilt verwijderen</0>? <1>Dit kan niet ongedaan gemaakt worden!</1>",
+      "consequences": "Het opheffen van dit account verwijdert ook:",
+      "lists": "Alle lijsten die door de gebruiker gemaakt zijn",
+      "sessions": "Alle verbonden social media accounts en sessie",
+      "cancel": "Annuleren verwijderen account",
+      "confirm": "Ja, verwijder mijn account"
     },
     "connectedAccounts": {
-      "title": "Connected accounts",
-      "unlink": "Unlink this connection",
-      "new": "Connect another account"
+      "title": "Verbonden accounts",
+      "unlink": "Unlink deze verbinding",
+      "new": "Verbind een ander account"
     }
   },
   "errors": {
-    "generic": "An error occurred",
-    "listNotFound": "List not found",
-    "resultNotFound": "Result not found",
-    "routeNotFound": "Route not found",
-    "pageNotFound": "Page not found",
+    "generic": "Foutmelding",
+    "listNotFound": "Lijst niet gevonden",
+    "resultNotFound": "Resultaat niet gevonden",
+    "routeNotFound": "Route niet gevonden",
+    "pageNotFound": "Pagina niet gevonden",
     "signin": {
-      "Signin": "Try signing in with a different account.",
-      "OAuthSignin": "Try signing in with a different account.",
-      "OAuthCallback": "Try signing in with a different account.",
-      "OAuthCreateAccount": "Try signing in with a different account.",
-      "EmailCreateAccount": "Try signing in with a different account.",
-      "Callback": "Try signing in with a different account.",
-      "OAuthAccountNotLinked": "To confirm your identity, sign in with the same account you used originally.",
-      "EmailSignin": "The e-mail could not be sent.",
-      "CredentialsSignin": "Sign in failed. Check the details you provided are correct.",
-      "SessionRequired": "Please sign in to access this page.",
-      "default": "Unable to sign in."
+      "Signin": "Probeer in te loggen met een ander account.",
+      "OAuthSignin": "Probeer in te loggen met een ander account.",
+      "OAuthCallback": "Probeer in te loggen met een ander account.",
+      "OAuthCreateAccount": "Probeer in te loggen met een ander account.",
+      "EmailCreateAccount": "Probeer in te loggen met een ander account.",
+      "Callback": "Probeer in te loggen met een ander account.",
+      "OAuthAccountNotLinked": "Log in met het account dat u eerder hebt gebruikt om uw identiteit te bevestigen.",
+      "EmailSignin": "De email kon niet verstuurd worden.",
+      "CredentialsSignin": "Inloggen niet gelukt. Controleer of de details correct zijn.",
+      "SessionRequired": "Log in om deze pagina te bekijken.",
+      "default": "Inloggen niet gelukt."
     }
   },
   "home": {
     "title": "Home",
     "searchByImage": {
-      "dropTitle": "Drop the files here ...",
-      "dropText": "Drag 'n drop some files here, or click to select files",
-      "uploading": "Uploading image...",
-      "processing": "Processing the image"
+      "dropTitle": "Sleep de bestanden hierheen ...",
+      "dropText": "Drag 'n drop bestanden hier, of klik om bestanden te selecteren",
+      "uploading": "Afbeelding wordt geupload...",
+      "processing": "Afbeelding wordt verwerkt."
     }
   },
   "vocabulary": {
     "explore": "Explore"
   },
   "collection": {
-    "noDescription": "No description for this collection.",
-    "items_one": "{{count}} item in the collection",
-    "items_other": "{{count}} items in the collection"
+    "noDescription": "Geen beschrijving voor deze collectie.",
+    "items_one": "{{count}} item in de collectie",
+    "items_other": "{{count}} items in de collectie"
   },
   "listing": {
-    "items_one": "{{count}} item in the list",
-    "items_other": "{{count}} items in the list"
+    "items_one": "{{count}} item in de lijst",
+    "items_other": "{{count}} items in de lijst"
   },
   "footer": {
-    "contact": "Contact us:"
+    "contact": "Contact opnemen:"
   },
   "similarity": {
-    "visual": "Visually similar images",
-    "semantic": "Objects with similar properties"
+    "visual": "Visueel vergelijkbare afbeeldingen",
+    "semantic": "Objecten met vergelijkbare eigenschappen"
   },
   "pagination": {
-    "back": "Back to search results",
-    "previous": "Previous result",
-    "next": "Next result",
-    "loading": "Loading…"
+    "back": "Terug naar zoekresultaten",
+    "previous": "Vorig resultaat",
+    "next": "Volgend resultaat",
+    "loading": "Laden…"
   }
 }
