@@ -1,31 +1,31 @@
 {
   "buttons": {
-    "clear": "CLEAR",
+    "clear": "WIS",
     "filter": "FILTER",
-    "loadMore": "Load more",
-    "paginatePrevious": "Previous",
-    "paginateNext": "Next",
+    "loadMore": "Laad meer",
+    "paginatePrevious": "Vorige",
+    "paginateNext": "Volgende",
     "toggleMap": "Toggle map"
   },
   "labels": {
-    "searchResults_one": "{{count}} search result",
-    "searchResults_other": "{{count}} search results",
-    "sortBy": "Sort by",
-    "similarity": "Similarity",
-    "select": "Select...",
-    "browse": "Browse {{type}}",
-    "noResults": "Your search did not match any documents",
-    "page": "Page {{page}}",
-    "loading": "Loading..."
+    "searchResults_one": "{{count}} zoekresultaten",
+    "searchResults_other": "{{count}} zoekresultaten",
+    "sortBy": "Sorteer",
+    "similarity": "Overeenkomsten",
+    "select": "Selecteer...",
+    "browse": "Navigeer {{type}}",
+    "noResults": "Uw zoekopdracht leverde geen resultaten op",
+    "page": "Pagina {{page}}",
+    "loading": "Laden..."
   },
   "fields": {
-    "graph": "Graph",
-    "q": "Text search",
-    "languages": "Languages",
-    "options": "Options",
-    "searchIn": "Search in",
-    "titleOnly": "Title only",
-    "contentOnly": "Content only",
-    "titleAndContent": "Title and content"
+    "graph": "Graaf",
+    "q": "Zoeken in tekst",
+    "languages": "Talen",
+    "options": "Opties",
+    "searchIn": "Zoeken in",
+    "titleOnly": "Alleen titel",
+    "contentOnly": "Alleen inhoud",
+    "titleAndContent": "Titel en inhoud"
   }
 }
