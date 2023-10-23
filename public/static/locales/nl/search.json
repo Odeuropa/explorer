@@ -5,7 +5,7 @@
     "loadMore": "Laad meer",
     "paginatePrevious": "Vorige",
     "paginateNext": "Volgende",
-    "toggleMap": "Toggle map"
+    "toggleMap": "Schakel kaart aan/uit"
   },
   "labels": {
     "searchResults_one": "{{count}} zoekresultaten",
