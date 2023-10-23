@@ -1,0 +1,31 @@
+{
+  "buttons": {
+    "clear": "CLEAR",
+    "filter": "FILTER",
+    "loadMore": "Load more",
+    "paginatePrevious": "Previous",
+    "paginateNext": "Next",
+    "toggleMap": "Toggle map"
+  },
+  "labels": {
+    "searchResults_one": "{{count}} search result",
+    "searchResults_other": "{{count}} search results",
+    "sortBy": "Sort by",
+    "similarity": "Similarity",
+    "select": "Select...",
+    "browse": "Browse {{type}}",
+    "noResults": "Your search did not match any documents",
+    "page": "Page {{page}}",
+    "loading": "Loading..."
+  },
+  "fields": {
+    "graph": "Graph",
+    "q": "Text search",
+    "languages": "Languages",
+    "options": "Options",
+    "searchIn": "Search in",
+    "titleOnly": "Title only",
+    "contentOnly": "Content only",
+    "titleAndContent": "Title and content"
+  }
+}
