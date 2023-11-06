@@ -650,6 +650,7 @@ module.exports = {
           `
           ?emission od:F1_generated ?id .
           ?emission od:F3_had_source ?source .
+          ?source skos:inScheme [] .
           {
             ?source skos:prefLabel ?sourceLabel .
             FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
