@@ -254,7 +254,7 @@ module.exports = {
             ?emission od:F1_generated ?id .
             {
               OPTIONAL {
-                ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
+                ?emission od:F3_had_source ?smellSource .
                 ?smellSource skos:prefLabel ?smellSourceLabel .
                 FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
               }
@@ -263,9 +263,13 @@ module.exports = {
             {
               OPTIONAL {
                 ?emission od:F4_had_carrier ?carrier .
-                ?carrier rdfs:label ?carrierLabel .
+                OPTIONAL { ?carrier skos:prefLabel ?carrierLabel_hl . FILTER(LANGMATCHES(LANG(?carrierLabel_hl), "${language}")) }
+                OPTIONAL { ?carrier skos:prefLabel ?carrierLabel_en . FILTER(LANGMATCHES(LANG(?carrierLabel_en), "en")) }
+                OPTIONAL { ?carrier rdfs:label ?carrierLabel_original . }
+                OPTIONAL { BIND(COALESCE(?carrierLabel_hl, ?carrierLabel_en, ?carrierLabel_original) AS ?carrierLabel) }
                 OPTIONAL {
-                  ?carrier crm:P137_exemplifies ?carrierExemplifies .
+                  BIND(?carrier as ?carrierExemplifies)
+                  FILTER EXISTS { ?carrier skos:inScheme [] }
                 }
               }
             }
@@ -298,7 +302,7 @@ module.exports = {
                   ?emotion rdfs:label ?emotionLabel .
                 }
                 OPTIONAL {
-                  ?emotion crm:P137_exemplifies ?emotionType .
+                  ?emotion crm:P2_has_type ?emotionType .
                   ?emotionType skos:prefLabel ?emotionTypeLabel .
                 }
               }
@@ -534,7 +538,7 @@ module.exports = {
           ?emission od:F1_generated ?id .
           {
             OPTIONAL {
-              ?emission od:F3_had_source / crm:P137_exemplifies ?smellSource .
+              ?emission od:F3_had_source ?smellSource .
               ?smellSource skos:prefLabel ?smellSourceLabel .
               FILTER(LANG(?smellSourceLabel) = "${language}" || LANG(?smellSourceLabel) = "")
             }
@@ -578,7 +582,7 @@ module.exports = {
                 ?emotion rdfs:label ?emotionLabel .
               }
               OPTIONAL {
-                ?emotion crm:P137_exemplifies ?emotionType .
+                ?emotion crm:P2_has_type ?emotionType .
                 ?emotionType skos:prefLabel ?emotionTypeLabel .
               }
             }
@@ -645,7 +649,7 @@ module.exports = {
         $where: [
           `
           ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          ?emission od:F3_had_source ?source .
           {
             ?source skos:prefLabel ?sourceLabel .
             FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
@@ -665,11 +669,11 @@ module.exports = {
         `
         ?emission od:F1_generated ?id .
         {
-          ?emission od:F3_had_source / crm:P137_exemplifies ?source_${index} .
+          ?emission od:F3_had_source ?source_${index} .
         }
         UNION
         {
-          ?emission od:F3_had_source / crm:P137_exemplifies / skos:broader* ?source_${index}_narrower
+          ?emission od:F3_had_source / skos:broader* ?source_${index}_narrower
         }
         `,
       ],
@@ -683,27 +687,22 @@ module.exports = {
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?carrierExemplifies',
-            label: '?carrierExemplifiesLabel',
+            '@id': '?carrier',
+            label: '?carrierLabel',
           },
         ],
         $where: [
           `
           ?emission od:F4_had_carrier ?carrier .
-          ?carrier crm:P137_exemplifies ?carrierExemplifies .
-          olfactory-objects:carrier skos:member ?carrierExemplifies .
-          ?carrierExemplifies skos:prefLabel ?carrierExemplifiesLabel .
-          FILTER(LANG(?carrierExemplifiesLabel) = "${language}" || LANG(?carrierExemplifiesLabel) = "")
+          olfactory-objects:carrier skos:member ?carrier .
+          ?carrier skos:prefLabel ?carrierLabel .
+          FILTER(LANG(?carrierLabel) = "${language}" || LANG(?carrierLabel) = "")
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?emission od:F1_generated ?id',
-        '?emission od:F4_had_carrier ?carrier',
-        '?carrier crm:P137_exemplifies ?carrierExemplifies',
-      ],
-      filterFunc: (val) => `?carrierExemplifies = <${val}>`,
+      whereFunc: () => ['?emission od:F1_generated ?id', '?emission od:F4_had_carrier ?carrier'],
+      filterFunc: (val) => `?carrier = <${val}>`,
     },
     {
       id: 'quality',
@@ -749,8 +748,7 @@ module.exports = {
         ],
         $where: [
           `
-          ?emotion reo:readP27 ?experience .
-          ?emotion crm:P137_exemplifies ?emotionType .
+          ?emotionType reo:readP27 ?experience .
           OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
           OPTIONAL { ?emotionType rdfs:label ?original_label . }
@@ -762,7 +760,7 @@ module.exports = {
       whereFunc: () => [
         '?experience od:F2_perceived ?id',
         '?emotion reo:readP27 ?experience',
-        '?emotion crm:P137_exemplifies ?emotionType',
+        '?emotion crm:P2_has_type ?emotionType',
       ],
       filterFunc: (val) => `?emotionType = <${val}>`,
     },
@@ -813,7 +811,7 @@ module.exports = {
           `
           ?id a od:L11_Smell .
           ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          ?emission od:F3_had_source ?source .
           ?emission time:hasTime ?time .
           ?time time:hasBeginning ?timeBegin .
           `,
@@ -846,7 +844,7 @@ module.exports = {
           `
           ?id a od:L11_Smell .
           ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source / crm:P137_exemplifies ?source .
+          ?emission od:F3_had_source ?source .
           ?emission time:hasTime ?time .
           ?time time:hasEnd ?timeEnd .
           `,

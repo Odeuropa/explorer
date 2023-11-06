@@ -35,7 +35,7 @@ module.exports = {
       $where: [
         `
         {
-          ?experience od:F5_involved_gesture / crm:P137_exemplifies ?id .
+          ?experience od:F5_involved_gesture ?id .
           ?experience od:F2_perceived ?smell .
         }
         {
@@ -74,12 +74,11 @@ module.exports = {
     $where: [
       `
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
-      FILTER EXISTS { [] crm:P137_exemplifies ?id . }
+      FILTER EXISTS { [] od:F3_had_source ?id . }
       {
         SELECT DISTINCT ?id (COUNT(DISTINCT ?emission) AS ?count) WHERE {
           ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
-          ?item crm:P137_exemplifies ?id .
-          ?emission od:F3_had_source ?item .
+          ?emission od:F3_had_source ?id .
         }
         GROUP BY ?id
       }
@@ -117,7 +116,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?assignment a crm:E13_Attribute_Assignment .
                   ?assignment crm:P141_assigned/rdfs:label ?word .
@@ -153,7 +152,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?experience od:F2_perceived ?smell .
                   ?emotion reo:readP27 ?experience .
@@ -189,7 +188,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?emission crm:P7_took_place_at ?place .
                   ?place rdfs:label ?word .
@@ -223,7 +222,7 @@ module.exports = {
         showAllFilter: 'source',
         baseWhere: ({ date }) =>
           `
-          ?experience od:F5_involved_gesture / crm:P137_exemplifies ?_vocab .
+          ?experience od:F5_involved_gesture ?_vocab .
           ?experience od:F2_perceived ?id .
           ?source crm:P67_refers_to ?experience .
           ?source a crm:E36_Visual_Item .
@@ -235,7 +234,7 @@ module.exports = {
         showAllFilter: 'source',
         baseWhere: ({ date }) =>
           `
-          ?experience od:F5_involved_gesture / crm:P137_exemplifies ?_vocab .
+          ?experience od:F5_involved_gesture ?_vocab .
           ?experience od:F2_perceived ?id .
           ?source crm:P67_refers_to ?experience .
           ?source a crm:E33_Linguistic_Object .
@@ -257,7 +256,7 @@ module.exports = {
               WHERE {
                 VALUES ?id { <${id}> }
                 {
-                    ?experience od:F5_involved_gesture / crm:P137_exemplifies ?id .
+                    ?experience od:F5_involved_gesture ?id .
                     ?experience od:F2_perceived ?smell .
                     ?experience_source crm:P67_refers_to ?experience .
                     ?experience_source schema:dateCreated/time:hasBeginning ?begin .

@@ -70,12 +70,11 @@ module.exports = {
     $where: [
       `
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
-      FILTER EXISTS { [] crm:P137_exemplifies ?id . }
+      FILTER EXISTS { [] od:F3_had_source ?id . }
       {
         SELECT DISTINCT ?id (COUNT(DISTINCT ?emission) AS ?count) WHERE {
           ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-objects> .
-          ?item crm:P137_exemplifies ?id .
-          ?emission od:F3_had_source ?item .
+          ?emission od:F3_had_source ?id .
         }
         GROUP BY ?id
       }
@@ -133,7 +132,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?assignment a crm:E13_Attribute_Assignment .
                   ?assignment crm:P141_assigned/rdfs:label ?word .
@@ -169,7 +168,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?experience od:F2_perceived ?smell .
                   ?emotion reo:readP27 ?experience .
@@ -205,7 +204,7 @@ module.exports = {
               {
                 SELECT ?word (COUNT(?smell) AS ?count) WHERE {
                   VALUES ?id { <${id}> }
-                  ?emission od:F3_had_source/crm:P137_exemplifies ?id .
+                  ?emission od:F3_had_source ?id .
                   ?emission od:F1_generated ?smell .
                   ?emission crm:P7_took_place_at ?place .
                   ?place rdfs:label ?word .
@@ -240,8 +239,7 @@ module.exports = {
         baseWhere: ({ date }) =>
           `
           ?emission od:F1_generated ?id .
-          ?object crm:P137_exemplifies ?_vocab .
-          ?source crm:P138_represents ?object .
+          ?source crm:P138_represents ?_vocab .
           ?source crm:P67_refers_to ?emission .
           ${generateDateFilter(date)}
           `,
@@ -251,7 +249,7 @@ module.exports = {
         showAllFilter: 'source',
         baseWhere: ({ date }) =>
           `
-          ?emission od:F3_had_source/crm:P137_exemplifies ?_vocab .
+          ?emission od:F3_had_source ?_vocab .
           ?emission od:F1_generated ?id .
           ?source crm:P67_refers_to ?id .
           ?source a crm:E33_Linguistic_Object .
@@ -274,7 +272,7 @@ module.exports = {
                 VALUES ?id { <${id}> }
                 {
                     ?emission od:F1_generated ?smell .
-                    ?emission od:F3_had_source / crm:P137_exemplifies ?id .
+                    ?emission od:F3_had_source ?id .
                     ?emission_source crm:P67_refers_to ?emission .
                     ?emission_source schema:dateCreated/time:hasBeginning ?begin .
                     BIND(FLOOR(YEAR(?begin) / ${interval}) * ${interval} AS ?interval_start)
