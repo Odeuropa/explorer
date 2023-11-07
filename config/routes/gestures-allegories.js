@@ -74,11 +74,11 @@ module.exports = {
     $where: [
       `
       ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
-      FILTER EXISTS { [] od:F3_had_source ?id . }
+      FILTER EXISTS { [] od:F5_involved_gesture ?id . }
       {
-        SELECT DISTINCT ?id (COUNT(DISTINCT ?emission) AS ?count) WHERE {
+        SELECT DISTINCT ?id (COUNT(DISTINCT ?experience) AS ?count) WHERE {
           ?id skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
-          ?emission od:F3_had_source ?id .
+          ?experience od:F5_involved_gesture ?id .
         }
         GROUP BY ?id
       }
