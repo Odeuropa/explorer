@@ -169,7 +169,8 @@ module.exports = {
           ?fragment nsa:spatialW ?fragmentW .
           ?fragment nsa:spatialH ?fragmentH .
           ?fragment rdf:value ?fragmentScore .
-          ?fragment oa:hasBody/rdfs:label ?fragmentLabel .
+          ?fragment oa:hasBody/skos:prefLabel ?fragmentLabel .
+          FILTER(LANG(?fragmentLabel) = "${language}" || LANG(?sourceLabel) = "")
         }
         UNION
         {
