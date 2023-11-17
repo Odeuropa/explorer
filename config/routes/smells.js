@@ -755,6 +755,7 @@ module.exports = {
           OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
           OPTIONAL { ?emotionType rdfs:label ?original_label . }
           BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionTypeLabel)
+          FILTER(BOUND(?emotionTypeLabel))
           `,
         ],
         $langTag: 'hide',
