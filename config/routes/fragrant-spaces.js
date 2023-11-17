@@ -221,7 +221,7 @@ module.exports = {
       },
       visuals: {
         route: 'smells',
-        showAllFilter: 'source',
+        showAllFilter: 'space',
         baseWhere: ({ date }) =>
           `
           ?place crm:P137_exemplifies ?_vocab .
@@ -234,7 +234,7 @@ module.exports = {
       },
       texts: {
         route: 'smells',
-        showAllFilter: 'source',
+        showAllFilter: 'space',
         baseWhere: ({ date }) =>
           `
           ?place crm:P137_exemplifies ?_vocab .

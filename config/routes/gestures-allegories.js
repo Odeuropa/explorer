@@ -219,7 +219,7 @@ module.exports = {
       },
       visuals: {
         route: 'smells',
-        showAllFilter: 'source',
+        showAllFilter: 'gesture',
         baseWhere: ({ date }) =>
           `
           ?experience od:F5_involved_gesture ?_vocab .
@@ -231,7 +231,7 @@ module.exports = {
       },
       texts: {
         route: 'smells',
-        showAllFilter: 'source',
+        showAllFilter: 'gesture',
         baseWhere: ({ date }) =>
           `
           ?experience od:F5_involved_gesture ?_vocab .

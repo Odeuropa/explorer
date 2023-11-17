@@ -978,5 +978,65 @@ module.exports = {
       }),
       filterFunc: (val) => `?g = <${val}>`,
     },
+    {
+      id: 'space',
+      isHidden: true,
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?space',
+            label: '?spaceLabel',
+          },
+        ],
+        $where: [
+          `
+          ?space skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
+          OPTIONAL { ?space skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?space skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL { ?space rdfs:label ?original_label . }
+          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?spaceLabel)
+          FILTER(BOUND(?spaceLabel))
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?experience od:F2_perceived ?id',
+        '?experience crm:P7_took_place_at / crm:P137_exemplifies ?space',
+      ],
+      filterFunc: (val) => `?space = <${val}>`,
+    },
+    {
+      id: 'gesture',
+      isHidden: true,
+      isMulti: true,
+      isSortable: false,
+      query: ({ language }) => ({
+        '@graph': [
+          {
+            '@id': '?gesture',
+            label: '?gestureLabel',
+          },
+        ],
+        $where: [
+          `
+          ?gesture skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
+          OPTIONAL { ?gesture skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?gesture skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL { ?gesture rdfs:label ?original_label . }
+          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?gestureLabel)
+          FILTER(BOUND(?gestureLabel))
+          `,
+        ],
+        $langTag: 'hide',
+      }),
+      whereFunc: () => [
+        '?experience od:F2_perceived ?id',
+        '?experience od:F5_involved_gesture ?gesture',
+      ],
+      filterFunc: (val) => `?gesture = <${val}>`,
+    },
   ],
 };
