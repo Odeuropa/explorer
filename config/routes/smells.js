@@ -300,7 +300,9 @@ module.exports = {
               OPTIONAL {
                 ?emotion reo:readP27 ?experience .
                 OPTIONAL {
-                  ?emotion rdfs:label ?emotionLabel .
+                  OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANGMATCHES(LANG(?emotionLabel), "${language}")) }
+                  OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANG(?emotionLabel) = "en") }
+                  OPTIONAL { ?emotion rdfs:label ?emotionLabel . }
                 }
                 OPTIONAL {
                   ?emotion crm:P2_has_type ?emotionType .
@@ -580,7 +582,9 @@ module.exports = {
             OPTIONAL {
               ?emotion reo:readP27 ?experience .
               OPTIONAL {
-                ?emotion rdfs:label ?emotionLabel .
+                OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANGMATCHES(LANG(?emotionLabel), "${language}")) }
+                OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANG(?emotionLabel) = "en") }
+                OPTIONAL { ?emotion rdfs:label ?emotionLabel . }
               }
               OPTIONAL {
                 ?emotion crm:P2_has_type ?emotionType .
@@ -752,11 +756,9 @@ module.exports = {
           `
           ?emotion reo:readP27 ?experience .
           ?emotion skos:inScheme [] .
-          OPTIONAL { ?emotion skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?emotion skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL { ?emotion rdfs:label ?original_label . }
-          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionLabel)
-          FILTER(BOUND(?emotionLabel))
+          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANGMATCHES(LANG(?emotionLabel), "${language}")) }
+          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANG(?emotionLabel) = "en") }
+          OPTIONAL { ?emotion rdfs:label ?emotionLabel . }
           `,
         ],
         $langTag: 'hide',
