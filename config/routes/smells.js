@@ -751,6 +751,7 @@ module.exports = {
         $where: [
           `
           ?emotionType reo:readP27 ?experience .
+          ?emotionType skos:inScheme [] .
           OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
           OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
           OPTIONAL { ?emotionType rdfs:label ?original_label . }
