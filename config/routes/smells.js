@@ -397,7 +397,6 @@ module.exports = {
         carrier: {
           '@id': '?carrier',
           label: '?carrierLabel',
-          exemplifies: '?carrierExemplifies',
         },
         time: {
           '@id': '?time',
