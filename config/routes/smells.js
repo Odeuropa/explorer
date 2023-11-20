@@ -744,29 +744,25 @@ module.exports = {
       query: ({ language }) => ({
         '@graph': [
           {
-            '@id': '?emotionType',
-            label: '?emotionTypeLabel',
+            '@id': '?emotion',
+            label: '?emotionLabel',
           },
         ],
         $where: [
           `
-          ?emotionType reo:readP27 ?experience .
-          ?emotionType skos:inScheme [] .
-          OPTIONAL { ?emotionType skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?emotionType skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL { ?emotionType rdfs:label ?original_label . }
-          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionTypeLabel)
-          FILTER(BOUND(?emotionTypeLabel))
+          ?emotion reo:readP27 ?experience .
+          ?emotion skos:inScheme [] .
+          OPTIONAL { ?emotion skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
+          OPTIONAL { ?emotion skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
+          OPTIONAL { ?emotion rdfs:label ?original_label . }
+          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?emotionLabel)
+          FILTER(BOUND(?emotionLabel))
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?experience od:F2_perceived ?id',
-        '?emotion reo:readP27 ?experience',
-        '?emotion crm:P2_has_type ?emotionType',
-      ],
-      filterFunc: (val) => `?emotionType = <${val}>`,
+      whereFunc: () => ['?experience od:F2_perceived ?id', '?emotion reo:readP27 ?experience'],
+      filterFunc: (val) => `?emotion = <${val}>`,
     },
     {
       id: 'language',
