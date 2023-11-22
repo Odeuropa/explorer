@@ -131,6 +131,7 @@ const OdeuropaCard = ({
   page,
   displayText,
   searchApi,
+  searchParams,
   onSeeMore,
   isFavorite,
   onToggleFavorite,
@@ -238,6 +239,7 @@ const OdeuropaCard = ({
     type,
     page,
     searchApi,
+    searchParams,
     passHref: true,
   };
 
