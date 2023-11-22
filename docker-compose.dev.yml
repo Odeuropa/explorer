@@ -55,6 +55,7 @@ services:
       - ./src/pages/odeuropa-browse.js:/usr/src/app/src/pages/odeuropa-browse.js
       - ./src/pages/details/odeuropa-texts.js:/usr/src/app/src/pages/details/odeuropa-texts.js
       - ./src/pages/details/odeuropa-vocabulary-details.js:/usr/src/app/src/pages/details/odeuropa-vocabulary-details.js
+      - ./src/pages/about.js:/usr/src/app/src/pages/about.js
       - ./src/pages/index.js:/usr/src/app/src/pages/index.js
       - ./src/pages/lists/[listId]/index.js:/usr/src/app/src/pages/lists/[listId]/index.js
       - ./src/pages/odeuropa-vocabulary.js:/usr/src/app/src/pages/odeuropa-vocabulary.js
