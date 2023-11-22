@@ -258,7 +258,12 @@ const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
     );
   }, [data]);
 
-  totalPages = totalResults >= 0 ? Math.ceil(totalResults / PAGE_SIZE) : currentPage + 1;
+  totalPages =
+    totalResults >= 0
+      ? Math.ceil(totalResults / PAGE_SIZE)
+      : totalResults < PAGE_SIZE
+      ? currentPage
+      : currentPage + 1;
 
   const debouncedHandleResize = useDebounce(() => {
     if (typeof window !== 'undefined') {
