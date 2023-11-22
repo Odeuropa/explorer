@@ -673,17 +673,11 @@ module.exports = {
       whereFunc: (_val, index) => [
         `
         ?emission od:F1_generated ?id .
-        {
-          ?emission od:F3_had_source ?source_${index} .
-        }
-        UNION
-        {
-          ?emission od:F3_had_source / skos:broader* ?source_${index}_narrower
-        }
+        ?emission od:F3_had_source ?source_${index} .
         `,
       ],
       filterFunc: (val, index) =>
-        `?source_${index} = <${val}> || ?source_${index}_narrower = <${val}>`,
+        `?source_${index} = <${val}> || ?source_0 / skos:broader* <${val}>`,
     },
     {
       id: 'carrier',
