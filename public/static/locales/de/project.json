@@ -4,7 +4,7 @@
   },
   "search": "Suche",
   "footer": {
-    "text": "Dieses Vorführungsmodell wurde im Kontext des Forschungsprojektes <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a> entwickelt, welches eine Förderung des Forschungs- und Innovationsprogramm Horizon 2020 der europäischen Union unter der Finanzhilfevereinbarung Nr. 101004469 erhielt."
+    "text": "Dieses Vorführungsmodell wurde im Kontext des Forschungsprojektes <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a> entwickelt, welches eine Förderung des Forschungs- und Innovationsprogramm Horizon 2020 der europäischen Union unter der Finanzhilfevereinbarung Nr. 101004469 erhielt.<br />Bereitgestellt von <a href=\"https://www.ontotext.com/products/graphdb/\" target=\"_blank\" rel\"noopener\"><img src=\"/images/GraphDB.png\" title=\"Ontotext GraphDB\" alt=\"Ontotext GraphDB\" height=\"40\" style=\"vertical-align:middle;\" /></a>"
   },
   "searchOptions": {
     "title": "Nur Titel",

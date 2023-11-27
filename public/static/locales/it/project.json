@@ -4,7 +4,7 @@
   },
   "search": "Cerca",
   "footer": {
-    "text": "Questa applicazione dimostrativa è stata sviluppata nel contesto di <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, un progetto di ricerca che ha ricevuto finanziamenti dall'Unione Europea nel programma di ricerca e innovazione Horizon 2020, all'interno del grant agreement No. 101004469."
+    "text": "Questa applicazione dimostrativa è stata sviluppata nel contesto di <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, un progetto di ricerca che ha ricevuto finanziamenti dall'Unione Europea nel programma di ricerca e innovazione Horizon 2020, all'interno del grant agreement No. 101004469.<br />Servito da <a href=\"https://www.ontotext.com/products/graphdb/\" target=\"_blank\" rel\"noopener\"><img src=\"/images/GraphDB.png\" title=\"Ontotext GraphDB\" alt=\"Ontotext GraphDB\" height=\"40\" style=\"vertical-align:middle;\" /></a>"
   },
   "searchOptions": {
     "title": "Solo titolo",

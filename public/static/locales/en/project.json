@@ -4,7 +4,7 @@
   },
   "search": "Search",
   "footer": {
-    "text": "This demonstrator has been developed in the context of <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, a research project that has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 101004469."
+    "text": "This demonstrator has been developed in the context of <a href=\"https://odeuropa.eu/\" target=\"blank\" rel=\"noopener noreferrer\">Odeuropa</a>, a research project that has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No. 101004469.<br />Served by <a href=\"https://www.ontotext.com/products/graphdb/\" target=\"_blank\" rel\"noopener\"><img src=\"/images/GraphDB.png\" title=\"Ontotext GraphDB\" alt=\"Ontotext GraphDB\" height=\"40\" style=\"vertical-align:middle;\" /></a>"
   },
   "searchOptions": {
     "title": "Title only",

@@ -22,6 +22,7 @@ services:
       - ./public/images/eu-logo.png:/usr/src/app/public/images/eu-logo.png
       - ./public/images/favicon.png:/usr/src/app/public/images/favicon.png
       - ./public/images/footer.png:/usr/src/app/public/images/footer.png
+      - ./public/images/GraphDB.png:/usr/src/app/public/images/GraphDB.png
       - ./public/images/logo.png:/usr/src/app/public/images/logo.png
       - ./public/images/odeuropa-homepage/:/usr/src/app/public/images/odeuropa-homepage/
       - ./public/images/odeuropa-map/:/usr/src/app/public/images/odeuropa-map/
