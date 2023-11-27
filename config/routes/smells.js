@@ -42,7 +42,7 @@ module.exports = {
   filterByGraph: false,
   hideFilterButton: true,
   orderByVariable: null,
-  countResults: false,
+  countResults: true,
   details: {
     view: 'odeuropa-texts',
     showPermalink: true,
