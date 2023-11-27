@@ -1,7 +1,8 @@
-const escapeAll = /["\\\t\n\r\b\f\u0000-\u0019]|[\ud800-\udbff][\udc00-\udfff]/g;
+const escapeAll = /['\\\t\n\r\b\f\u0000-\u0019]|[\ud800-\udbff][\udc00-\udfff]/g;
 const escapedCharacters = {
   '\\': '\\\\',
-  '"': '\\"',
+  "'": "\\'",
+  '"': '"',
   '\t': '\\t',
   '\n': '\\n',
   '\r': '\\r',
@@ -340,7 +341,7 @@ module.exports = {
       `
       {
         ?search a luc-index:search ;
-        luc:query ${JSON.stringify(lucQuery.join(' || '))} ;
+        luc:query '${lucQuery.join(' || ')}' ;
         luc:entities ?id .
       }
       `,
