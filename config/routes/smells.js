@@ -653,9 +653,11 @@ module.exports = {
         ],
         $where: [
           `
-          ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source ?source .
-          ?source skos:inScheme [] .
+          FILTER EXISTS {
+            ?emission od:F1_generated [] .
+            ?emission od:F3_had_source ?source .
+            ?source skos:inScheme [] .
+          }
           {
             ?source skos:prefLabel ?sourceLabel .
             FILTER(LANG(?sourceLabel) = "${language}" || LANG(?sourceLabel) = "")
@@ -671,11 +673,11 @@ module.exports = {
         ],
         $langTag: 'hide',
       }),
-      whereFunc: (_val, index) => [
+      whereFunc: (val, index) => [
         `
         ?emission od:F1_generated ?id .
         ?emission od:F3_had_source / skos:broader* ?source_${index} .
-        VALUES ?source_${index} { <${_val}> }
+        VALUES ?source_${index} { <${val}> }
         `,
       ],
     },
@@ -692,16 +694,21 @@ module.exports = {
         ],
         $where: [
           `
-          ?emission od:F4_had_carrier ?carrier .
-          olfactory-objects:carrier skos:member ?carrier .
+          [] od:F4_had_carrier ?carrier .
+          FILTER EXISTS { olfactory-objects:carrier skos:member ?carrier }
           ?carrier skos:prefLabel ?carrierLabel .
           FILTER(LANG(?carrierLabel) = "${language}" || LANG(?carrierLabel) = "")
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => ['?emission od:F1_generated ?id', '?emission od:F4_had_carrier ?carrier'],
-      filterFunc: (val) => `?carrier = <${val}>`,
+      whereFunc: (val, index) => [
+        `
+        ?emission od:F1_generated ?id .
+        ?emission od:F4_had_carrier ?carrier_${index} .
+        VALUES ?carrier_${index} { <${val}> }
+        `,
+      ],
     },
     {
       id: 'quality',
@@ -716,23 +723,23 @@ module.exports = {
         ],
         $where: [
           `
-          ?assignment crm:P140_assigned_attribute_to ?id .
-          ?assignment crm:P141_assigned ?quality .
-          ?quality skos:inScheme [] .
-          OPTIONAL { ?quality skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?quality skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL { ?quality rdfs:label ?original_label . }
-          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?qualityLabel)
+          FILTER EXISTS {
+            ?quality ^crm:P141_assigned / crm:P140_assigned_attribute_to ?id .
+            ?quality skos:inScheme [] .
+          }
+          OPTIONAL { ?quality skos:prefLabel ?qualityLabel FILTER(LANGMATCHES(LANG(?qualityLabel), "${language}")) }
+          OPTIONAL { ?quality skos:prefLabel ?qualityLabel FILTER(LANGMATCHES(LANG(?qualityLabel), "en")) }
+          OPTIONAL { ?quality skos:prefLabel ?qualityLabel }
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?assignment crm:P140_assigned_attribute_to ?id',
-        '?assignment crm:P141_assigned ?quality',
-        '?quality skos:inScheme []',
+      whereFunc: (val, index) => [
+        `
+        ?id ^crm:P140_assigned_attribute_to / crm:P141_assigned ?quality_${index} .
+        VALUES ?quality_${index} { <${val}> }
+        `,
       ],
-      filterFunc: (val) => `?quality = <${val}>`,
     },
     {
       id: 'emotion',
@@ -747,16 +754,20 @@ module.exports = {
         ],
         $where: [
           `
-          ?emotion reo:readP27 ?experience .
-          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANGMATCHES(LANG(?emotionLabel), "${language}")) }
-          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel . FILTER(LANG(?emotionLabel) = "en") }
-          OPTIONAL { ?emotion rdfs:label ?emotionLabel . }
+          FILTER EXISTS { ?emotion reo:readP27 [] }
+          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel FILTER(LANGMATCHES(LANG(?emotionLabel), "${language}")) }
+          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel FILTER(LANGMATCHES(LANG(?emotionLabel), "en")) }
+          OPTIONAL { ?emotion skos:prefLabel ?emotionLabel }
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => ['?experience od:F2_perceived ?id', '?emotion reo:readP27 ?experience'],
-      filterFunc: (val) => `?emotion = <${val}>`,
+      whereFunc: (val, index) => [
+        `
+        ?emotion_${index} reo:readP27 / od:F2_perceived ?id .
+        VALUES ?emotion_${index} { <${val}> }
+        `,
+      ],
     },
     {
       id: 'language',
@@ -771,16 +782,17 @@ module.exports = {
         ],
         $where: [
           `
-          ?source schema:inLanguage ?language .
+          [] schema:inLanguage ?language .
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?textualObject crm:P67_refers_to ?id',
-        '?textualObject schema:inLanguage ?language',
+      whereFunc: (val) => [
+        `
+        ?id ^crm:P67_refers_to / schema:inLanguage ?language .
+        VALUES ?language { ${JSON.stringify(val)} }
+        `,
       ],
-      filterFunc: (val) => `STR(?language) = ${JSON.stringify(val)}`,
     },
     {
       id: 'time',
@@ -803,11 +815,13 @@ module.exports = {
         ],
         $where: [
           `
-          ?id a od:L11_Smell .
-          ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source ?source .
           ?emission time:hasTime ?time .
           ?time time:hasBeginning ?timeBegin .
+          FILTER EXISTS {
+            ?id a od:L11_Smell .
+            ?emission od:F1_generated ?id .
+            ?emission od:F3_had_source ?source .
+          }
           `,
         ],
         $langTag: 'hide',
@@ -836,11 +850,13 @@ module.exports = {
         ],
         $where: [
           `
-          ?id a od:L11_Smell .
-          ?emission od:F1_generated ?id .
-          ?emission od:F3_had_source ?source .
           ?emission time:hasTime ?time .
           ?time time:hasEnd ?timeEnd .
+          FILTER EXISTS {
+            ?id a od:L11_Smell .
+            ?emission od:F1_generated ?id .
+            ?emission od:F3_had_source ?source .
+          }
           `,
         ],
         $langTag: 'hide',
@@ -866,10 +882,16 @@ module.exports = {
         { label: '20th century', value: 1900, key: 'twentieth-century' },
       ],
       whereFunc: () => [
-        '?emission od:F1_generated ?id',
-        '?emission time:hasTime ?time',
-        '?time time:hasBeginning ?timeBegin',
-        '?time time:hasEnd ?timeEnd',
+        `
+        ?emission time:hasTime ?time .
+        ?time time:hasBeginning ?timeBegin .
+        ?time time:hasEnd ?timeEnd .
+        FILTER EXISTS {
+            ?id a od:L11_Smell .
+            ?emission od:F1_generated ?id .
+            ?emission od:F3_had_source ?source .
+        }
+        `,
       ],
       filterFunc: (val) =>
         `?timeBegin >= ${JSON.stringify(
@@ -890,9 +912,15 @@ module.exports = {
         { label: 'Autumn', value: 'autumn' },
       ],
       whereFunc: () => [
-        '?emission od:F1_generated ?id',
-        '?emission time:hasTime ?time',
-        '?time time:hasBeginning ?timeBegin',
+        `
+        ?time time:hasBeginning ?timeBegin .
+        FILTER EXISTS {
+            ?id a od:L11_Smell .
+            ?emission od:F1_generated ?id .
+            ?emission od:F3_had_source ?source .
+            ?emission time:hasTime ?time .
+        }
+        `,
       ],
       filterFunc: (val) => {
         if (val === 'winter') return `MONTH(?timeBegin) IN (12, 1, 2)`; // December, January, February
@@ -906,7 +934,7 @@ module.exports = {
       id: 'place',
       isMulti: true,
       isSortable: false,
-      query: ({ language }) => ({
+      query: () => ({
         '@graph': [
           {
             '@id': '?country',
@@ -915,19 +943,22 @@ module.exports = {
         ],
         $where: [
           `
-          ?id a od:L11_Smell .
-          ?experience od:F2_perceived ?id .
+          FILTER EXISTS {
+            ?id a od:L11_Smell .
+            ?experience od:F2_perceived ?id .
+          }
           ?experience crm:P7_took_place_at / gn:parentCountry ?country .
           ?country gn:name ?countryName .
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?experience od:F2_perceived ?id',
-        '?experience crm:P7_took_place_at / gn:parentCountry ?placeCountry',
+      whereFunc: (val, index) => [
+        `
+        ?placeCountry_${index} ^gn:parentCountry / ^ crm:P7_took_place_at / od:F2_perceived ?id .
+        VALUES ?placeCountry_${index} { <${val}> }
+        `,
       ],
-      filterFunc: (val) => `?placeCountry = <${val}>`,
     },
     {
       id: 'museum',
@@ -941,17 +972,22 @@ module.exports = {
           },
         ],
         $where: [
-          '?id crm:P53_has_former_or_current_location ?location',
-          '?location a gn:Feature',
-          '?location gn:name ?locationName',
+          `
+          FILTER EXISTS {
+            ?id crm:P53_has_former_or_current_location ?location .
+            ?location a gn:Feature
+          }
+          ?location gn:name ?locationName .
+          `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?source crm:P67_refers_to ?id',
-        '?source crm:P53_has_former_or_current_location ?location',
+      whereFunc: (val, index) => [
+        `
+        ?location_${index} ^crm:P53_has_former_or_current_location / crm:P67_refers_to ?id .
+        VALUES ?location_${index} { <${val}> }
+        `,
       ],
-      filterFunc: (val) => `?location = <${val}>`,
     },
     {
       id: 'graphs',
@@ -968,7 +1004,11 @@ module.exports = {
         $orderby: 'ASC(?label)',
         $langTag: 'hide',
       }),
-      filterFunc: (val) => `?g = <${val}>`,
+      whereFunc: (val) => [
+        `
+        VALUES ?g { <${val}> }
+        `,
+      ],
     },
     {
       id: 'space',
@@ -985,11 +1025,9 @@ module.exports = {
         $where: [
           `
           ?space skos:inScheme <http://data.odeuropa.eu/vocabulary/fragrant-spaces> .
-          OPTIONAL { ?space skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?space skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL { ?space rdfs:label ?original_label . }
-          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?spaceLabel)
-          FILTER(BOUND(?spaceLabel))
+          OPTIONAL { ?space skos:prefLabel ?spaceLabel FILTER(LANGMATCHES(LANG(?spaceLabel), "${language}")) }
+          OPTIONAL { ?space skos:prefLabel ?spaceLabel FILTER(LANGMATCHES(LANG(?spaceLabel), "en")) }
+          OPTIONAL { ?space skos:prefLabel ?spaceLabel }
           `,
         ],
         $langTag: 'hide',
@@ -1015,20 +1053,20 @@ module.exports = {
         $where: [
           `
           ?gesture skos:inScheme <http://data.odeuropa.eu/vocabulary/olfactory-gestures> .
-          OPTIONAL { ?gesture skos:prefLabel ?label_hl . FILTER(LANGMATCHES(LANG(?label_hl), "${language}")) }
-          OPTIONAL { ?gesture skos:prefLabel ?label_en . FILTER(LANGMATCHES(LANG(?label_en), "en")) }
-          OPTIONAL { ?gesture rdfs:label ?original_label . }
-          BIND(COALESCE(?label_hl, ?label_en, ?original_label) AS ?gestureLabel)
-          FILTER(BOUND(?gestureLabel))
+          OPTIONAL { ?gesture skos:prefLabel ?gestureLabel FILTER(LANGMATCHES(LANG(?gestureLabel), "${language}")) }
+          OPTIONAL { ?gesture skos:prefLabel ?gestureLabel FILTER(LANGMATCHES(LANG(?gestureLabel), "en")) }
+          OPTIONAL { ?gesture skos:prefLabel ?gestureLabel }
           `,
         ],
         $langTag: 'hide',
       }),
-      whereFunc: () => [
-        '?experience od:F2_perceived ?id',
-        '?experience od:F5_involved_gesture ?gesture',
+      whereFunc: (val) => [
+        `
+        ?experience od:F2_perceived ?id .
+        ?experience od:F5_involved_gesture ?gesture_${index} .
+        VALUES ?gesture_${index} { <${val}> }
+        `,
       ],
-      filterFunc: (val) => `?gesture = <${val}>`,
     },
   ],
 };
