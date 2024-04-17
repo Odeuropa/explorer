@@ -1060,7 +1060,7 @@ module.exports = {
         ],
         $langTag: 'hide',
       }),
-      whereFunc: (val) => [
+      whereFunc: (val, index) => [
         `
         ?experience od:F2_perceived ?id .
         ?experience od:F5_involved_gesture ?gesture_${index} .
