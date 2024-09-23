@@ -2,8 +2,7 @@ version: '3'
 services:
   web:
     build:
-      context: /Users/thibaultehrhart/Projects/D2KLab/explorer
-      dockerfile: ./Dockerfile
+      dockerfile: ./dev.Dockerfile
     command:
       - /bin/sh
       - -c
