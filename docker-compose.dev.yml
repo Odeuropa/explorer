@@ -7,7 +7,7 @@ services:
       - /bin/sh
       - -c
       - |
-        npm install react-leaflet @changey/react-leaflet-markercluster leaflet-gesture-handling react-tagcloud
+        npm install react-leaflet@4.2.1 @changey/react-leaflet-markercluster@4.0.0-rc1 leaflet-gesture-handling@1.2.2 react-tagcloud@2.3.3
         npm run dev
     ports:
       - '3001:3001'
