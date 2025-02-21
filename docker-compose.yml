@@ -27,6 +27,7 @@ services:
   redis:
     container_name: odeuropa-explorer_redis
     image: redis
+    command: ["redis-server", "--appendonly", "no", "--maxmemory", "4gb", "--maxmemory-policy", "allkeys-lru"]
 volumes:
   mongo: {}
   images: {}
