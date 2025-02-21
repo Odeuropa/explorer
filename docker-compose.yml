@@ -4,6 +4,8 @@ services:
     container_name: odeuropa-explorer_web
     build:
       context: https://github.com/D2KLab/explorer.git
+    args:
+       MONGODB_URI: ${MONGODB_URI}
     depends_on:
       - mongo
       - redis
