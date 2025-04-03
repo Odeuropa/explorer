@@ -712,16 +712,64 @@ const OdeuropaBrowsePage = ({ baseUrl, filters }) => {
 
 export async function getServerSideProps(context) {
   const { req, res, query, locale } = context;
-  const filters = await getFilters(query, { language: locale });
-  const session = await unstable_getServerSession(req, res, authOptions);
 
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
-      baseUrl: process.env.SITE,
-      filters,
-    },
-  };
+  try {
+    if (!locale) {
+      console.warn('Missing locale in getServerSideProps for OdeuropaBrowsePage');
+    }
+
+    let filters = [];
+    try {
+      filters = await getFilters(query, { language: locale });
+    } catch (filterError) {
+      console.error('Error fetching filters:', filterError);
+      filters = [];
+    }
+
+    let session = null;
+    try {
+      session = await unstable_getServerSession(req, res, authOptions);
+    } catch (sessionError) {
+      console.error('Error retrieving session:', sessionError);
+    }
+
+    let translations = {};
+    try {
+      translations = await serverSideTranslations(locale, ['common', 'project', 'search']);
+    } catch (translationError) {
+      console.error('Error loading translations:', translationError);
+      translations = { _nextI18Next: { initialLocale: locale || 'en' } };
+    }
+
+    return {
+      props: {
+        ...translations,
+        baseUrl: process.env.SITE || '',
+        filters,
+        ...(session ? { session } : {}),
+      },
+    };
+  } catch (error) {
+    console.error('Critical error in getServerSideProps for OdeuropaBrowsePage:', error);
+
+    if (res) {
+      res.statusCode = 500;
+    }
+
+    return {
+      props: {
+        ...(await serverSideTranslations(locale, ['common', 'project', 'search']).catch(() => ({
+          _nextI18Next: { initialLocale: locale || 'en' },
+        }))),
+        baseUrl: process.env.SITE || '',
+        filters: [],
+        error: {
+          message: 'Failed to load page data',
+          code: 'SERVER_ERROR',
+        },
+      },
+    };
+  }
 }
 
 export default OdeuropaBrowsePage;

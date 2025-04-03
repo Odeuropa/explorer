@@ -660,25 +660,65 @@ const OdeuropaDetailsPage = ({ result, inList, searchData, debugSparqlQuery }) =
 export async function getServerSideProps(context) {
   const { req, res, query, locale } = context;
 
-  const result = await getEntity(query, locale);
-  const inList = await isEntityInList(result?.['@id'], query, req, res);
-  const debugSparqlQuery = await getEntityDebugQuery(query, locale);
+  try {
+    const [result, searchData] = await Promise.all([
+      getEntity(query, locale).catch((error) => {
+        console.error('Error fetching entity:', error);
+        return null;
+      }),
 
-  if (!result && res) {
-    res.statusCode = 404;
+      getSearchData(context).catch((error) => {
+        console.error('Error fetching search data:', error);
+        return { filters: [] };
+      }),
+    ]);
+
+    let inList = false;
+    let debugSparqlQuery = '';
+
+    if (result?.['@id']) {
+      inList = await isEntityInList(result['@id'], query, req, res).catch(() => false);
+
+      if (process.env.NODE_ENV === 'development' || query.debug === 'true') {
+        debugSparqlQuery = await getEntityDebugQuery(query, locale).catch(() => '');
+      }
+    }
+
+    if (!result && res) {
+      res.statusCode = 404;
+    }
+
+    return {
+      props: {
+        ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
+        result,
+        inList,
+        searchData,
+        ...(process.env.NODE_ENV === 'development' || query.debug === 'true'
+          ? { debugSparqlQuery }
+          : {}),
+      },
+    };
+  } catch (error) {
+    console.error('Critical error in getServerSideProps:', error);
+
+    if (res) {
+      res.statusCode = 500;
+    }
+
+    return {
+      props: {
+        ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
+        error: {
+          message: 'Failed to load data',
+          code: 'SERVER_ERROR',
+        },
+        result: null,
+        inList: false,
+        searchData: { filters: [] },
+      },
+    };
   }
-
-  const searchData = await getSearchData(context);
-
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common', 'project', 'search'])),
-      result,
-      inList,
-      searchData,
-      debugSparqlQuery,
-    },
-  };
 }
 
 export default OdeuropaDetailsPage;
