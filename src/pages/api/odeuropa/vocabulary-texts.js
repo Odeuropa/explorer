@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 
 import SparqlClient from '@helpers/sparql';
 import { getQueryObject, removeEmptyObjects } from '@helpers/utils';
@@ -72,7 +72,7 @@ export default withRequestValidation({
   const results = [].concat(removeEmptyObjects(textsQueryRes['@graph']));
 
   const favorites = [];
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
   if (session) {
     const user = await getSessionUser(session);
     if (user) {

@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
-import 'react-18-image-lightbox/style.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { TagCloud } from 'react-tagcloud';
 import { ChevronDown } from '@styled-icons/boxicons-regular/ChevronDown';

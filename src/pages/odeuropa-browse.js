@@ -1,6 +1,6 @@
 import DefaultErrorPage from 'next/error';
 import Router, { useRouter } from 'next/router';
-import { unstable_getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import queryString from 'query-string';
@@ -728,7 +728,7 @@ export async function getServerSideProps(context) {
 
     let session = null;
     try {
-      session = await unstable_getServerSession(req, res, authOptions);
+      session = await getServerSession(req, res, authOptions);
     } catch (sessionError) {
       console.error('Error retrieving session:', sessionError);
     }
