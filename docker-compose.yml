@@ -1,11 +1,10 @@
-version: '3'
 services:
   web:
     container_name: odeuropa-explorer_web
     build:
       context: https://github.com/D2KLab/explorer.git
-    args:
-       MONGODB_URI: ${MONGODB_URI}
+      args:
+        MONGODB_URI: ${MONGODB_URI}
     depends_on:
       - mongo
       - redis
@@ -29,7 +28,16 @@ services:
   redis:
     container_name: odeuropa-explorer_redis
     image: redis
-    command: ["redis-server", "--appendonly", "no", "--maxmemory", "4gb", "--maxmemory-policy", "allkeys-lru"]
+    command:
+      [
+        'redis-server',
+        '--appendonly',
+        'no',
+        '--maxmemory',
+        '4gb',
+        '--maxmemory-policy',
+        'allkeys-lru',
+      ]
 volumes:
   mongo: {}
   images: {}
